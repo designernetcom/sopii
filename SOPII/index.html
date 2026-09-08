@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#FBF8F3" />
+
+    <!--
+      Baseline metadata for the homepage.
+
+      Once React mounts, SEOHead replaces every tag below with the values the
+      admin panel publishes for the current route — it removes these rather
+      than adding alongside them, so a page never carries two descriptions or
+      two canonicals. What is here matters for the moments before that: the
+      first paint, and any crawler that does not execute JavaScript.
+    -->
+    <title>SOPII — Contemporary Indian Fashion</title>
+    <meta
+      name="description"
+      content="Handwoven sarees, blouses, dresses and everyday elegance from SOPII — contemporary Indian fashion made with craftspeople across India."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="SOPII" />
+    <meta property="og:title" content="SOPII — Contemporary Indian Fashion" />
+    <meta
+      property="og:description"
+      content="Handwoven sarees, blouses, dresses and everyday elegance from SOPII."
+    />
+    <meta property="og:image" content="/final_logo.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <!--
+      Fonts.
+
+      The connection is opened as early as possible, and `display=swap` means
+      text paints in the fallback face immediately rather than staying
+      invisible.
+
+      The stylesheet itself is loaded *without blocking render*. A stylesheet
+      from a second origin sits on the critical path — the browser will not
+      paint until it has connected, requested and parsed it, which measured at
+      850ms of blocked rendering on a throttled phone. Loading it as
+      `media="print"` makes it non-blocking, and the `onload` flips it back to
+      `all` the moment it arrives, so the faces still apply. `<noscript>` keeps
+      it working where scripts are off.
+
+      The weights are trimmed to the four the shop actually uses. Inter 300 and
+      Playfair 500/600 and its italic were requested and never applied to
+      anything, which is three extra font files on a connection that has
+      better things to do.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400&display=swap"
+      media="print"
+      onload="this.media='all'"
+    />
+    <noscript>
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@400&display=swap"
+      />
+    </noscript>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

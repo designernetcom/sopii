@@ -1,0 +1,255 @@
+import type {
+  AdminUser,
+  PermissionAction,
+  PermissionMatrix,
+  ResourceKey,
+  Role,
+} from '@/types';
+import { daysAgo } from './seed';
+
+export const RESOURCES: { key: ResourceKey; label: string }[] = [
+  { key: 'dashboard', label: 'Dashboard' },
+  { key: 'products', label: 'Products' },
+  { key: 'categories', label: 'Categories' },
+  { key: 'collections', label: 'Collections' },
+  { key: 'inventory', label: 'Inventory' },
+  { key: 'orders', label: 'Orders' },
+  { key: 'customers', label: 'Customers' },
+  { key: 'coupons', label: 'Coupons' },
+  { key: 'reviews', label: 'Reviews' },
+  { key: 'homepage', label: 'Homepage' },
+  { key: 'media', label: 'Media Library' },
+  { key: 'reports', label: 'Reports' },
+  { key: 'notifications', label: 'Notifications' },
+  { key: 'seo', label: 'SEO Management' },
+  { key: 'admin_users', label: 'Admin Users' },
+  { key: 'roles', label: 'Roles & Permissions' },
+  { key: 'settings', label: 'Settings' },
+];
+
+export const ACTIONS: PermissionAction[] = ['view', 'create', 'edit', 'delete'];
+
+function matrix(config: Partial<Record<ResourceKey, string>>): PermissionMatrix {
+  const result = {} as PermissionMatrix;
+  RESOURCES.forEach(({ key }) => {
+    const spec = config[key] ?? '';
+    result[key] = {
+      view: spec.includes('v'),
+      create: spec.includes('c'),
+      edit: spec.includes('e'),
+      delete: spec.includes('d'),
+    };
+  });
+  return result;
+}
+
+const FULL: Partial<Record<ResourceKey, string>> = Object.fromEntries(
+  RESOURCES.map(({ key }) => [key, 'vced']),
+);
+
+export const roles: Role[] = [
+  {
+    id: 'role_super_admin',
+    key: 'super_admin',
+    name: 'Super Admin',
+    description: 'Unrestricted access to every module, including billing and role management.',
+    system: true,
+    userCount: 1,
+    permissions: matrix(FULL),
+    createdAt: daysAgo(500),
+  },
+  {
+    id: 'role_admin',
+    key: 'admin',
+    name: 'Admin',
+    description: 'Runs day-to-day commerce: products, orders, customers and inventory.',
+    system: true,
+    userCount: 2,
+    permissions: matrix({
+      dashboard: 'v',
+      products: 'vced',
+      categories: 'vce',
+      collections: 'vce',
+      inventory: 'vce',
+      orders: 'vce',
+      customers: 'vce',
+      coupons: 'vced',
+      reviews: 'vced',
+      homepage: 'v',
+      media: 'vc',
+      reports: 'v',
+      notifications: 'v',
+      seo: 'vced',
+      settings: 'v',
+    }),
+    createdAt: daysAgo(480),
+  },
+  {
+    id: 'role_manager',
+    key: 'manager',
+    name: 'Manager',
+    description: 'Operational oversight of orders, products, inventory and reporting.',
+    system: true,
+    userCount: 2,
+    permissions: matrix({
+      dashboard: 'v',
+      products: 'vce',
+      categories: 'v',
+      collections: 'v',
+      inventory: 'vce',
+      orders: 'vce',
+      customers: 'v',
+      coupons: 'v',
+      reviews: 've',
+      reports: 'v',
+      notifications: 'v',
+    }),
+    createdAt: daysAgo(440),
+  },
+  {
+    id: 'role_content',
+    key: 'content_manager',
+    name: 'Content Manager',
+    description: 'Owns storefront merchandising: homepage, banners, collections and media.',
+    system: true,
+    userCount: 1,
+    permissions: matrix({
+      dashboard: 'v',
+      products: 've',
+      categories: 'vce',
+      collections: 'vced',
+      homepage: 'vced',
+      media: 'vced',
+      reviews: 've',
+      notifications: 'v',
+      seo: 'vced',
+    }),
+    createdAt: daysAgo(400),
+  },
+  {
+    id: 'role_support',
+    key: 'support',
+    name: 'Support Staff',
+    description: 'Handles customer conversations, order lookups and review moderation.',
+    system: true,
+    userCount: 1,
+    permissions: matrix({
+      dashboard: 'v',
+      products: 'v',
+      orders: 've',
+      customers: 've',
+      reviews: 've',
+      coupons: 'v',
+      notifications: 'v',
+    }),
+    createdAt: daysAgo(360),
+  },
+];
+
+export const roleById = new Map(roles.map((r) => [r.id, r]));
+
+export const adminUsers: AdminUser[] = [
+  {
+    id: 'adm_0001',
+    name: 'Rajesh Gawas',
+    email: 'rajesh@sopii.in',
+    phone: '+91 9820011223',
+    avatar: undefined,
+    roleId: 'role_super_admin',
+    roleName: 'Super Admin',
+    status: 'active',
+    twoFactorEnabled: true,
+    lastLoginAt: daysAgo(0, 3),
+    loginActivity: [
+      { id: 'la1', device: 'Windows 11', browser: 'Chrome 128', ip: '103.21.58.14', location: 'Mumbai, IN', at: daysAgo(0, 2), current: true },
+      { id: 'la2', device: 'iPhone 15', browser: 'Safari Mobile', ip: '49.36.180.77', location: 'Mumbai, IN', at: daysAgo(1, 8), current: false },
+      { id: 'la3', device: 'MacBook Pro', browser: 'Chrome 128', ip: '103.21.58.14', location: 'Mumbai, IN', at: daysAgo(3, 10), current: false },
+      { id: 'la4', device: 'Windows 11', browser: 'Edge 127', ip: '117.216.44.8', location: 'Pune, IN', at: daysAgo(9, 12), current: false },
+    ],
+    createdAt: daysAgo(500),
+  },
+  {
+    id: 'adm_0002',
+    name: 'Meera Nair',
+    email: 'meera@sopii.in',
+    phone: '+91 9845567788',
+    roleId: 'role_admin',
+    roleName: 'Admin',
+    status: 'active',
+    twoFactorEnabled: true,
+    lastLoginAt: daysAgo(0, 9),
+    loginActivity: [
+      { id: 'la5', device: 'MacBook Air', browser: 'Safari 17', ip: '106.51.22.9', location: 'Bengaluru, IN', at: daysAgo(0, 6), current: false },
+    ],
+    createdAt: daysAgo(420),
+  },
+  {
+    id: 'adm_0003',
+    name: 'Aditya Rao',
+    email: 'aditya@sopii.in',
+    phone: '+91 9930112244',
+    roleId: 'role_manager',
+    roleName: 'Manager',
+    status: 'active',
+    twoFactorEnabled: false,
+    lastLoginAt: daysAgo(1, 12),
+    loginActivity: [
+      { id: 'la6', device: 'Windows 10', browser: 'Chrome 127', ip: '182.70.14.201', location: 'Hyderabad, IN', at: daysAgo(1, 5), current: false },
+    ],
+    createdAt: daysAgo(380),
+  },
+  {
+    id: 'adm_0004',
+    name: 'Sneha Kulkarni',
+    email: 'sneha@sopii.in',
+    phone: '+91 9764553311',
+    roleId: 'role_content',
+    roleName: 'Content Manager',
+    status: 'active',
+    twoFactorEnabled: false,
+    lastLoginAt: daysAgo(2, 14),
+    loginActivity: [
+      { id: 'la7', device: 'iPad Air', browser: 'Safari 17', ip: '49.15.201.33', location: 'Pune, IN', at: daysAgo(2, 4), current: false },
+    ],
+    createdAt: daysAgo(300),
+  },
+  {
+    id: 'adm_0005',
+    name: 'Karthik Menon',
+    email: 'karthik@sopii.in',
+    phone: '+91 9895223344',
+    roleId: 'role_support',
+    roleName: 'Support Staff',
+    status: 'active',
+    twoFactorEnabled: false,
+    lastLoginAt: daysAgo(0, 4),
+    loginActivity: [
+      { id: 'la8', device: 'Windows 11', browser: 'Firefox 129', ip: '157.32.88.190', location: 'Kochi, IN', at: daysAgo(0, 3), current: false },
+    ],
+    createdAt: daysAgo(220),
+  },
+  {
+    id: 'adm_0006',
+    name: 'Divya Shetty',
+    email: 'divya@sopii.in',
+    roleId: 'role_manager',
+    roleName: 'Manager',
+    status: 'invited',
+    twoFactorEnabled: false,
+    lastLoginAt: undefined,
+    loginActivity: [],
+    createdAt: daysAgo(6),
+  },
+  {
+    id: 'adm_0007',
+    name: 'Varun Bhatt',
+    email: 'varun@sopii.in',
+    roleId: 'role_admin',
+    roleName: 'Admin',
+    status: 'suspended',
+    twoFactorEnabled: false,
+    lastLoginAt: daysAgo(64),
+    loginActivity: [],
+    createdAt: daysAgo(190),
+  },
+];

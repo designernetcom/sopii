@@ -1,0 +1,490 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================================================
+   SOPII — Design System Base
+   ========================================================================== */
+
+@layer base {
+  :root {
+    --header-h: 56px;
+    --bottom-nav-h: 60px;
+    /* The notch/home-indicator inset, hoisted into a variable so spacers and
+       sticky bars can add it without each one repeating the env() call. */
+    --safe-b: env(safe-area-inset-bottom, 0px);
+    /* Everything a fixed bottom bar occupies, which is what page content has
+       to clear. */
+    --bottom-gap: calc(var(--bottom-nav-h) + var(--safe-b));
+  }
+
+  @media (min-width: 400px) {
+    :root {
+      --header-h: 64px;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    :root {
+      --header-h: 80px;
+      --bottom-nav-h: 0px;
+    }
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* Stops iOS enlarging text when the phone is turned to landscape. */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /*
+   * The horizontal-overflow backstop.
+   *
+   * One overflowing child — a wide table, a long unbroken word, a decorative
+   * element positioned past the edge — makes the *whole page* scroll sideways
+   * on a phone, and the usual symptom is a header that slides away from the
+   * content beneath it. Clipping at the root means a mistake anywhere degrades
+   * to a clipped element rather than a broken page.
+   *
+   * `overflow-x: clip` rather than `hidden`: `hidden` on html/body silently
+   * turns every `position: sticky` descendant into a scroll container of its
+   * own and breaks the sticky header. `clip` does not.
+   */
+  html,
+  body {
+    overflow-x: clip;
+    max-width: 100%;
+  }
+
+  /*
+   * Long words — an unbroken product code, a support email, a pasted URL — are
+   * the other half of that story: at 320px they push their container wider
+   * than the screen. Breaking them is always better than a sideways page.
+   */
+  body {
+    overflow-wrap: break-word;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-ivory text-charcoal font-sans antialiased;
+    background: linear-gradient(180deg, #f8f3ee 0%, #fffdfb 100%);
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: -0.01em;
+  }
+
+  /*
+   * Touch targets.
+   *
+   * The WCAG 2.5.8 minimum is 24px and the practical minimum on a phone is
+   * ~44px. Rather than hunting every control, the floor is set once here for
+   * coarse pointers only, so the desktop's compact icon buttons are untouched.
+   *
+   * Scoped to controls that are *not* inside a line of prose: an inline link in
+   * a paragraph cannot be 44px tall without wrecking the leading, and WCAG
+   * exempts it for exactly that reason.
+   */
+  @media (pointer: coarse) {
+    button:not(.btn-inline),
+    [role='button']:not(.btn-inline),
+    select,
+    summary,
+    a.tap-target {
+      min-height: 44px;
+    }
+
+    /* Buttons that are only an icon need the width too, not just the height. */
+    button.tap-square,
+    a.tap-square {
+      min-width: 44px;
+    }
+  }
+
+  /*
+   * Plum headings on the home and collection pages.
+   *
+   * `:not([class*='text-'])` is the important part. These selectors are more
+   * specific than a Tailwind colour utility, so before this exclusion they also
+   * repainted headings inside the *dark* sections — the customer-reviews block
+   * sets `text-cream` on charcoal, and this rule was overriding it back to
+   * plum: #6B2E5A on #2D1F2B measures 1.66:1, which is illegible. Any heading
+   * that names its own colour is now left alone.
+   */
+  .home-page :is(h1, h2, h3, h4, .section-title):not([class*='text-']),
+  .collection-page :is(h1, h2, h3, h4, .section-title, .eyebrow):not([class*='text-']) {
+    color: #6B2E5A;
+  }
+
+  .brand-logo {
+    display: block;
+    width: auto;
+    max-height: 72px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 12px rgba(125, 43, 105, 0.08));
+  }
+
+  .brand-logo--compact {
+    max-height: 8cqi;
+  }
+
+  /* Colour is deliberately inherited, not set: body supplies charcoal, and a
+     heading inside a dark panel picks up that panel's light text instead. */
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display font-normal;
+    letter-spacing: -0.01em;
+  }
+
+  /* Visible, on-brand focus ring for keyboard users only */
+  :focus-visible {
+    outline: 2px solid theme('colors.gold.DEFAULT');
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  ::selection {
+    background: theme('colors.gold.pale');
+    color: theme('colors.charcoal.DEFAULT');
+  }
+
+  /* Thin, unobtrusive scrollbars on desktop */
+  @media (min-width: 1024px) {
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: theme('colors.beige') transparent;
+    }
+    *::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    *::-webkit-scrollbar-thumb {
+      background: theme('colors.beige');
+      border-radius: 99px;
+    }
+    *::-webkit-scrollbar-track {
+      background: transparent;
+    }
+  }
+}
+
+@layer components {
+  /* --- Layout ------------------------------------------------------------ */
+  .container-site {
+    @apply mx-auto w-full max-w-site px-4 sm:px-6 lg:px-8 xl:px-10;
+  }
+
+  .section {
+    @apply py-14 sm:py-16 lg:py-24;
+  }
+
+  /*
+   * The hero frame.
+   *
+   * Written in plain CSS rather than as Tailwind arbitrary values because the
+   * `vh` fallback needs *two* height declarations for the same rule — a
+   * browser without `dvh` support takes the first and ignores the second.
+   * Tailwind cannot express that, and a JS style object cannot either: the
+   * second key would simply overwrite the first.
+   */
+  /*
+   * Phone: the frame takes its shape from the artwork, not from the viewport.
+   *
+   * A `dvh`-based hero is a different shape on every handset — 58dvh is 329px
+   * on a 320x568 phone and 520px on a 414x896 one — so the same banner gets
+   * cropped two quite different ways. An `aspect-ratio` gives every phone the
+   * same window onto the image, and the height cap stops a tall ratio from
+   * taking the entire first fold on a short screen.
+   *
+   * `--hero-ratio` is set by Hero.jsx from the artwork actually in use:
+   * portrait when the store has supplied mobile banner crops (the common
+   * case — the admin panel has a `mobileImage` field per banner), landscape
+   * when it has not and the desktop plate has to be reused. Getting this
+   * backwards is expensive: a portrait 822x1280 banner in a landscape box
+   * loses 41% of its height.
+   */
+  .hero-frame {
+    aspect-ratio: var(--hero-ratio, 3 / 4);
+    width: 100%;
+    /* Low enough that a landscape banner's own proportions can actually be
+       honoured — a 280px floor was overriding the ratio on every phone and
+       reintroducing exactly the inconsistency this replaced. */
+    min-height: 260px;
+    max-height: min(70vh, 620px);
+    max-height: min(70dvh, 620px);
+  }
+
+  @media (min-width: 640px) {
+    .hero-frame {
+      /* Back to the original viewport-height sizing from `sm` up: the desktop
+         plate is landscape and the layout is unchanged there. */
+      aspect-ratio: auto;
+      height: 78vh;
+      height: 78dvh;
+      min-height: 460px;
+      max-height: none;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .hero-frame {
+      height: 86vh;
+      height: 86dvh;
+      min-height: 600px;
+    }
+  }
+
+  /* --- Typography -------------------------------------------------------- */
+  /* `text-clay-deep`, not `text-clay`: see the palette note in
+     tailwind.config.js — this is the one place the brand clay is set small
+     enough to fall under the AA contrast threshold. */
+  .eyebrow {
+    @apply font-sans text-[10px] sm:text-[11px] font-medium uppercase tracking-widest3 text-clay-deep;
+  }
+
+  .section-title {
+    @apply font-display text-[26px] leading-tight sm:text-4xl lg:text-[42px];
+  }
+
+  .section-sub {
+    @apply mt-3 max-w-xl text-sm text-charcoal-muted sm:text-base;
+  }
+
+  /* --- Buttons ----------------------------------------------------------- */
+  .btn {
+    /*
+     * `min-h-[44px]` on mobile only. The padding alone gives about 40px, which
+     * is under the comfortable tap minimum; from `sm` the desktop proportions
+     * are restored exactly as they were.
+     */
+    @apply inline-flex min-h-[44px] items-center justify-center gap-2 whitespace-nowrap
+           border px-6 py-3 text-[11px] font-medium uppercase tracking-widest2
+           transition-all duration-300 ease-silk
+           disabled:cursor-not-allowed disabled:opacity-45
+           sm:min-h-0;
+  }
+
+  .btn-primary {
+    @apply btn border-plum bg-plum text-cream
+           hover:bg-transparent hover:text-plum;
+  }
+
+  .btn-outline {
+    @apply btn border-plum bg-transparent text-plum
+           hover:bg-plum hover:text-cream;
+  }
+
+  .btn-light {
+    @apply btn border-cream bg-cream text-charcoal
+           hover:bg-transparent hover:text-cream;
+  }
+
+  .btn-ghost {
+    @apply btn min-h-0 border-transparent px-2 py-1 text-charcoal-muted hover:text-charcoal;
+  }
+
+  .btn-sm {
+    @apply min-h-[40px] px-4 py-2 text-[10px] sm:min-h-0;
+  }
+
+  /* --- Forms ------------------------------------------------------------- */
+  /*
+   * `text-base` (16px) on mobile, `text-sm` (14px) from `sm`.
+   *
+   * This is not a style choice. iOS Safari zooms the entire page in when a
+   * focused input's font-size is below 16px, and the shopper is then left on a
+   * zoomed, sideways-scrolling checkout that they have to pinch back out of.
+   * The desktop size is unchanged.
+   */
+  .field {
+    @apply w-full border border-beige bg-cream px-4 py-3 text-base text-charcoal
+           placeholder:text-charcoal-faint
+           focus:border-clay focus:outline-none focus:ring-0
+           transition-colors duration-200
+           sm:text-sm;
+  }
+
+  /*
+   * Same rule for selects and any input that opts out of `.field`. Applied by
+   * media query rather than by class so a control added later cannot forget.
+   */
+  @media (max-width: 639px) {
+    input[type='text'],
+    input[type='email'],
+    input[type='tel'],
+    input[type='number'],
+    input[type='password'],
+    input[type='search'],
+    input[type='url'],
+    textarea,
+    select {
+      font-size: max(16px, 1em);
+    }
+  }
+
+  .field-label {
+    @apply mb-1.5 block text-[11px] font-medium uppercase tracking-widest2 text-charcoal-muted;
+  }
+
+  /*
+   * Footer type.
+   *
+   * The footer sits on charcoal, so it cannot borrow `.eyebrow` — that one is
+   * `text-clay-deep`, which is tuned for cream and measures about 2.6:1 the
+   * other way round. Gold-soft on charcoal is 8.4:1, so the 10px headings clear
+   * AA with room to spare, and it keeps the heading colour a brand one rather
+   * than a grey.
+   *
+   * `.footer-link` sets no size on purpose: the columns run at 13px and the
+   * bottom bar at 12px, and leaving the size to the caller means neither has to
+   * out-specify this rule.
+   */
+  .footer-eyebrow {
+    @apply font-sans text-[10px] sm:text-[11px] font-medium uppercase tracking-widest3 text-gold-soft;
+  }
+
+  .footer-link {
+    @apply text-cream/70 transition-colors duration-200 hover:text-cream;
+  }
+
+  /*
+   * Footer accordion.
+   *
+   * On a phone each column is a collapsed <details>. From `sm` every panel is
+   * forced open and the disclosure furniture disappears, so the desktop footer
+   * is exactly the stacked list of links it has always been — no state, no
+   * JavaScript, and the links stay in the DOM for crawlers either way.
+   */
+  .footer-section > *:not(summary) {
+    display: none;
+  }
+  .footer-section[open] > *:not(summary) {
+    display: block;
+  }
+  .footer-section[open] .footer-chevron {
+    transform: rotate(180deg);
+  }
+
+  @media (min-width: 640px) {
+    .footer-section > *:not(summary) {
+      display: block;
+    }
+  }
+
+  /* --- Links ------------------------------------------------------------- */
+  .link-underline {
+    @apply relative inline-block after:absolute after:-bottom-0.5 after:left-0
+           after:h-px after:w-full after:origin-right after:scale-x-0
+           after:bg-current after:transition-transform after:duration-300 after:ease-silk
+           hover:after:origin-left hover:after:scale-x-100;
+  }
+
+  /* --- Utilities --------------------------------------------------------- */
+  .hide-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /*
+   * Shimmer placeholder.
+   *
+   * One utility rather than a component-level animation, so every skeleton in
+   * the shop sweeps at the same speed and in the same direction, and so the
+   * reduced-motion rule at the top of this file switches all of them off at
+   * once. `.skeleton-dark` is the same sweep tuned for the editorial headers,
+   * which sit on a charcoal photograph where a sand block would glare.
+   */
+  .skeleton {
+    @apply relative overflow-hidden bg-sand;
+  }
+  .skeleton::after {
+    content: '';
+    @apply absolute inset-0 -translate-x-full animate-shimmer;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 255, 255, 0.55),
+      transparent
+    );
+  }
+
+  .skeleton-dark {
+    @apply bg-charcoal-soft/60;
+  }
+  .skeleton-dark::after {
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(255, 253, 251, 0.16),
+      transparent
+    );
+  }
+
+  /* Screen-reader-only text that becomes visible when focused (skip link) */
+  .skip-link {
+    @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]
+           focus:bg-charcoal focus:px-5 focus:py-3 focus:text-xs focus:uppercase
+           focus:tracking-widest2 focus:text-cream;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /*
+   * Viewport height that survives the mobile address bar.
+   *
+   * `100vh` on a phone is the height with the browser chrome *hidden*, so a
+   * `vh`-sized hero is taller than the screen on load and resizes as the bar
+   * collapses — a visible jump, and a layout-shift penalty. `dvh` tracks the
+   * real visible height. The `vh` line first keeps older browsers working.
+   */
+  .h-screen-d {
+    height: 100vh;
+    height: 100dvh;
+  }
+  .min-h-screen-d {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  .max-h-screen-d {
+    max-height: 100vh;
+    max-height: 100dvh;
+  }
+
+  /** Clears the fixed bottom nav, notch included. */
+  .pb-bottom-nav {
+    padding-bottom: var(--bottom-gap);
+  }
+  .h-bottom-nav {
+    height: var(--bottom-gap);
+  }
+  /** For a sticky bar sitting directly on the home indicator. */
+  .pb-safe {
+    padding-bottom: var(--safe-b);
+  }
+
+  /* Staggered reveal helper used by scroll-in animations */
+  .stagger > * {
+    animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}

@@ -1,0 +1,277 @@
+<!--
+  SOPII — order confirmation.
+
+  Rendered by lib/email.ts. Placeholders are {{name}} for a value and
+  {{#each products}}…{{/each}} for the line-item loop; everything substituted is
+  HTML-escaped at render time, so a product called `Saree <script>` arrives as
+  text rather than as markup in somebody's inbox.
+
+  WHY THIS LOOKS LIKE 2005 HTML
+  -----------------------------
+  Because email clients are 2005 HTML renderers. Outlook on Windows uses Word's
+  engine; Gmail strips <style> blocks from forwarded mail. So: tables for
+  layout, inline styles, no flexbox or grid, no external CSS, no web fonts. The
+  one <style> block carries only the mobile media query and the dark-mode hint —
+  both are progressive enhancements, and the mail is readable without either.
+
+  Width is 600px, which is the widest that survives a desktop preview pane.
+-->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>Order {{orderNumber}} confirmed</title>
+    <style>
+      /* Clients that honour <style> get a phone layout; the rest get the
+         600px table, which is still legible on a phone. */
+      @media only screen and (max-width: 620px) {
+        .sp-shell { width: 100% !important; }
+        .sp-pad { padding-left: 20px !important; padding-right: 20px !important; }
+        .sp-stack { display: block !important; width: 100% !important; }
+        .sp-total-label { text-align: left !important; }
+        .sp-hide-sm { display: none !important; }
+        .sp-thumb { width: 64px !important; height: 80px !important; }
+      }
+      @media (prefers-color-scheme: dark) {
+        .sp-body { background: #14110f !important; }
+        .sp-card { background: #1d1916 !important; }
+        .sp-text { color: #f2ece5 !important; }
+        .sp-muted { color: #b6aa9b !important; }
+        .sp-rule { border-color: #332c26 !important; }
+      }
+    </style>
+  </head>
+
+  <body
+    class="sp-body"
+    style="margin:0;padding:0;background:#f6f2ed;-webkit-font-smoothing:antialiased;"
+  >
+    <!-- Shown in the inbox list next to the subject, and nowhere else. -->
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0;">
+      Order {{orderNumber}} is confirmed — {{total}}. Expected delivery {{expectedDelivery}}.
+    </div>
+
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+           style="background:#f6f2ed;padding:24px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" class="sp-shell" width="600" cellpadding="0" cellspacing="0"
+                 border="0" style="width:600px;max-width:600px;">
+
+            <!-- brand -->
+            <tr>
+              <td align="center" style="padding:8px 0 22px;">
+                <img src="{{logoUrl}}" width="132" alt="SOPII"
+                     style="display:block;border:0;width:132px;height:auto;" />
+              </td>
+            </tr>
+
+            <!-- confirmation -->
+            <tr>
+              <td class="sp-card" style="background:#ffffff;border-radius:14px 14px 0 0;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="sp-pad" align="center" style="padding:38px 40px 30px;">
+                      <div style="font-size:32px;line-height:1;">{{badge}}</div>
+                      <h1 class="sp-text"
+                          style="margin:14px 0 0;font-family:Georgia,'Times New Roman',serif;
+                                 font-size:26px;line-height:1.25;font-weight:400;color:#2b2119;">
+                        {{headline}}
+                      </h1>
+                      <p class="sp-muted"
+                         style="margin:12px 0 0;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+                                font-size:15px;line-height:1.6;color:#6f6255;">
+                        {{intro}}
+                      </p>
+                    </td>
+                  </tr>
+
+                  <!-- order meta -->
+                  <tr>
+                    <td class="sp-pad" style="padding:0 40px;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                             style="background:#faf7f3;border-radius:10px;">
+                        <tr>
+                          <td style="padding:16px 20px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                              <tr>
+                                <td class="sp-stack" width="50%" style="padding:4px 0;">
+                                  <div class="sp-muted" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9a8b7b;">Order number</div>
+                                  <div class="sp-text" style="font-size:15px;font-weight:700;color:#2b2119;padding-top:3px;">{{orderNumber}}</div>
+                                </td>
+                                <td class="sp-stack" width="50%" style="padding:4px 0;">
+                                  <div class="sp-muted" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9a8b7b;">Order date</div>
+                                  <div class="sp-text" style="font-size:15px;color:#2b2119;padding-top:3px;">{{orderDate}}</div>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- items -->
+                  <tr>
+                    <td class="sp-pad" style="padding:26px 40px 0;">
+                      <div class="sp-muted"
+                           style="font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+                                  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9a8b7b;
+                                  padding-bottom:10px;">
+                        Your items
+                      </div>
+
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                        {{#each products}}
+                        <tr>
+                          <td style="padding:12px 0;border-top:1px solid #ece5dc;" class="sp-rule">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                              <tr>
+                                <td width="72" valign="top" style="padding-right:14px;">
+                                  <img src="{{image}}" class="sp-thumb" width="72" height="90" alt=""
+                                       style="display:block;border:0;width:72px;height:90px;
+                                              object-fit:cover;border-radius:6px;background:#f1eae1;" />
+                                </td>
+                                <td valign="top"
+                                    style="font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                                  <div class="sp-text" style="font-size:15px;line-height:1.4;color:#2b2119;">{{name}}</div>
+                                  <div class="sp-muted" style="font-size:13px;color:#8b7d6e;padding-top:4px;">{{variant}}</div>
+                                  <div class="sp-muted" style="font-size:13px;color:#8b7d6e;padding-top:4px;">Qty {{quantity}} × {{price}}</div>
+                                </td>
+                                <td valign="top" align="right"
+                                    style="font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+                                           font-size:15px;font-weight:600;color:#2b2119;white-space:nowrap;padding-left:10px;">
+                                  {{total}}
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                        {{/each}}
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- totals -->
+                  <tr>
+                    <td class="sp-pad" style="padding:18px 40px 0;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                             style="font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;font-size:14px;">
+                        <tr>
+                          <td class="sp-muted" style="padding:5px 0;color:#6f6255;border-top:1px solid #ece5dc;">Subtotal</td>
+                          <td class="sp-text" align="right" style="padding:5px 0;color:#2b2119;border-top:1px solid #ece5dc;">{{subtotal}}</td>
+                        </tr>
+                        {{#if hasDiscount}}
+                        <tr>
+                          <td style="padding:5px 0;color:#3f7d58;">Discount{{discountLabel}}</td>
+                          <td align="right" style="padding:5px 0;color:#3f7d58;">−{{discount}}</td>
+                        </tr>
+                        {{/if}}
+                        <tr>
+                          <td class="sp-muted" style="padding:5px 0;color:#6f6255;">Shipping</td>
+                          <td class="sp-text" align="right" style="padding:5px 0;color:#2b2119;">{{shipping}}</td>
+                        </tr>
+                        {{#if hasCodCharge}}
+                        <tr>
+                          <td class="sp-muted" style="padding:5px 0;color:#6f6255;">Cash on delivery fee</td>
+                          <td class="sp-text" align="right" style="padding:5px 0;color:#2b2119;">{{codCharge}}</td>
+                        </tr>
+                        {{/if}}
+                        <tr>
+                          <td class="sp-muted" style="padding:5px 0;color:#6f6255;">GST</td>
+                          <td class="sp-text" align="right" style="padding:5px 0;color:#2b2119;">{{tax}}</td>
+                        </tr>
+                        <tr>
+                          <td class="sp-text sp-total-label"
+                              style="padding:12px 0 0;border-top:2px solid #2b2119;font-size:16px;font-weight:700;color:#2b2119;">
+                            Total
+                          </td>
+                          <td class="sp-text" align="right"
+                              style="padding:12px 0 0;border-top:2px solid #2b2119;font-size:18px;font-weight:700;color:#2b2119;">
+                            {{total}}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td class="sp-muted" colspan="2" style="padding:8px 0 0;font-size:13px;color:#8b7d6e;">
+                            Paid by {{paymentMethod}}{{paymentNote}}
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- track -->
+                  <tr>
+                    <td class="sp-pad" align="center" style="padding:30px 40px 4px;">
+                      <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                        <tr>
+                          <td align="center" bgcolor="#2b2119" style="border-radius:8px;">
+                            <a href="{{trackingUrl}}"
+                               style="display:inline-block;padding:14px 34px;
+                                      font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+                                      font-size:15px;font-weight:600;color:#ffffff;text-decoration:none;">
+                              Track Order
+                            </a>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+
+                  <!-- delivery + address -->
+                  <tr>
+                    <td class="sp-pad" style="padding:28px 40px 34px;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"
+                             style="font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                        <tr>
+                          <td class="sp-stack" width="50%" valign="top" style="padding:14px 10px 0 0;border-top:1px solid #ece5dc;">
+                            <div class="sp-muted" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9a8b7b;">Expected delivery</div>
+                            <div class="sp-text" style="font-size:14px;line-height:1.6;color:#2b2119;padding-top:5px;">{{expectedDelivery}}</div>
+                          </td>
+                          <td class="sp-stack" width="50%" valign="top" style="padding:14px 0 0 10px;border-top:1px solid #ece5dc;">
+                            <div class="sp-muted" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:#9a8b7b;">Shipping address</div>
+                            <div class="sp-text" style="font-size:14px;line-height:1.6;color:#2b2119;padding-top:5px;">{{shippingAddress}}</div>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- support -->
+            <tr>
+              <td class="sp-card" style="background:#ffffff;border-radius:0 0 14px 14px;border-top:1px solid #ece5dc;">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                  <tr>
+                    <td class="sp-pad" align="center"
+                        style="padding:24px 40px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                      <div class="sp-text" style="font-size:14px;font-weight:600;color:#2b2119;">Need help with this order?</div>
+                      <div class="sp-muted" style="font-size:13px;line-height:1.7;color:#6f6255;padding-top:6px;">
+                        {{supportLine}}
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- footer -->
+            <tr>
+              <td align="center"
+                  style="padding:22px 30px 6px;font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
+                <div class="sp-muted" style="font-size:12px;line-height:1.7;color:#9a8b7b;">
+                  You are receiving this because you placed order {{orderNumber}} with SOPII.<br />
+                  This is a transactional message about your purchase.
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

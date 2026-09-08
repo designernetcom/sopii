@@ -1,0 +1,6 @@
+.env
+.env.*
+*.env.bak*
+node_modules/
+dist/
+build/

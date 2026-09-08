@@ -1,0 +1,34 @@
+<svg width="1200" height="480" viewBox="0 0 1200 480" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="brandGradient" x1="140" y1="40" x2="980" y2="360" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B2E6F"/>
+      <stop offset="0.46" stop-color="#6F1E5F"/>
+      <stop offset="1" stop-color="#A6468D"/>
+    </linearGradient>
+    <linearGradient id="goldGradient" x1="150" y1="80" x2="1000" y2="240" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D8B66F"/>
+      <stop offset="0.48" stop-color="#C89B56"/>
+      <stop offset="1" stop-color="#F5E0A6"/>
+    </linearGradient>
+  </defs>
+
+  <g opacity="0.9">
+    <path d="M140 230C172 126 260 82 356 85C467 88 553 146 621 219C677 281 752 336 880 332C914 331 954 323 992 309" stroke="url(#goldGradient)" stroke-width="12" stroke-linecap="round"/>
+    <path d="M121 287C190 325 251 330 318 319C390 307 455 271 527 234C587 203 656 183 742 190C797 195 856 215 915 248" stroke="url(#goldGradient)" stroke-width="10" stroke-linecap="round"/>
+    <path d="M275 355C419 309 603 338 742 376C779 385 821 395 857 407" stroke="url(#goldGradient)" stroke-width="7" stroke-linecap="round"/>
+  </g>
+
+  <g>
+    <path d="M804 155C813 122 841 106 874 116C903 125 912 162 888 179C862 197 823 186 804 155Z" fill="url(#goldGradient)"/>
+    <circle cx="895" cy="120" r="9" fill="#D7B667"/>
+    <circle cx="932" cy="140" r="7" fill="#D7B667"/>
+    <circle cx="958" cy="170" r="6" fill="#D7B667"/>
+  </g>
+
+  <text x="120" y="320" fill="url(#brandGradient)" stroke="#C79B59" stroke-width="4" paint-order="stroke fill" font-size="248" font-weight="700" letter-spacing="-14" font-family="'Segoe Script', 'Lucida Handwriting', 'Bradley Hand', cursive" font-style="italic">SOPII</text>
+
+  <path d="M224 340C457 382 642 385 932 305" stroke="#C79B59" stroke-width="6" stroke-linecap="round" opacity="0.9"/>
+
+  <text x="500" y="420" fill="#7D2A69" font-size="52" letter-spacing="7" font-weight="600" font-family="Georgia, 'Times New Roman', serif">BY SONIKA &amp; PRIYANKA</text>
+  <text x="634" y="468" fill="#B58948" font-size="38" font-style="italic" font-family="Georgia, serif">Elegance in Every drape</text>
+</svg>
