@@ -154,9 +154,9 @@ export default function ProductDetails() {
 
             {/* Options */}
             <div className="mt-8 space-y-6">
-              <ColorSelector colors={product.colors} value={color} onChange={setColor} />
+              {/* <ColorSelector colors={product.colors} value={color} onChange={setColor} /> */}
 
-              <SizeSelector
+              {/* <SizeSelector
                 sizes={product.sizes}
                 value={size}
                 onChange={(s) => {
@@ -164,7 +164,7 @@ export default function ProductDetails() {
                   setError('');
                 }}
                 onSizeGuide={product.sizes.length > 1 ? () => setSizeGuideOpen(true) : undefined}
-              />
+              /> */}
 
               <div>
                 <p className="mb-2.5 text-[11px] font-medium uppercase tracking-widest2 text-charcoal-muted">
@@ -208,9 +208,9 @@ export default function ProductDetails() {
             {/* Delivery reassurance */}
             <ul className="mt-8 grid gap-3 border-y border-beige py-6 sm:grid-cols-3">
               {[
-                { icon: Truck, label: 'Free shipping', text: 'Above ₹1,999' },
-                { icon: RefreshCw, label: '15-day returns', text: 'No questions asked' },
-                { icon: PackageCheck, label: 'Ships in 24h', text: 'Dispatched from Mumbai' },
+                { icon: Truck, label: 'Free shipping', text: 'Above ₹9,999' },
+                { icon: RefreshCw, label: 'No returns', text: 'No questions asked' },
+                { icon: PackageCheck, label: 'Ships in 24h', text: 'Dispatched from Pune' },
               ].map((item) => (
                 <li key={item.label} className="flex items-center gap-2.5">
                   <item.icon size={16} className="shrink-0 text-clay" strokeWidth={1.4} aria-hidden="true" />
@@ -293,12 +293,12 @@ export default function ProductDetails() {
       </div>
 
       {/* ------------------------------- Reviews ------------------------------ */}
-      <section id="reviews" className="border-t border-beige bg-sand/30 scroll-mt-24">
+      {/* <section id="reviews" className="border-t border-beige bg-sand/30 scroll-mt-24">
         <div className="container-site py-12 lg:py-16">
           <h2 className="font-display text-2xl sm:text-3xl">Customer Reviews</h2>
 
           <div className="mt-8 grid gap-10 lg:grid-cols-[280px_1fr] lg:gap-16">
-            {/* Summary */}
+          
             <div>
               <p className="font-display text-5xl">{(average || product.rating).toFixed(1)}</p>
               <Rating value={average || product.rating} size={16} className="mt-2" />
@@ -322,7 +322,7 @@ export default function ProductDetails() {
               </ul>
             </div>
 
-            {/* List */}
+         
             <ul className="divide-y divide-beige border-t border-beige">
               {reviews.map((review) => (
                 <li key={review.id} className="py-6">
@@ -352,7 +352,7 @@ export default function ProductDetails() {
             </ul>
           </div>
         </div>
-      </section>
+      </section> */}
 
       {/* --------------------------- Recommendations -------------------------- */}
       {completeTheLook.length > 0 ? (

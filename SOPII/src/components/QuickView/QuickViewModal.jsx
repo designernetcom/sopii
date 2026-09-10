@@ -88,7 +88,7 @@ export function QuickViewModal() {
           </p>
 
           <div className="mt-6 space-y-5">
-            <ColorSelector colors={product.colors} value={color} onChange={setColor} />
+            {/* <ColorSelector colors={product.colors} value={color} onChange={setColor} />
             <SizeSelector
               sizes={product.sizes}
               value={size}
@@ -96,7 +96,7 @@ export function QuickViewModal() {
                 setSize(s);
                 setError('');
               }}
-            />
+            /> */}
           </div>
 
           <div className="mt-6 flex items-center gap-4">
