@@ -1,9 +1,20 @@
 import { Link } from 'react-router-dom';
-import { photo } from '../../utils/images';
 import { Image } from '../ui/Image';
 import { useSiteSettings } from '../../context/CatalogContext';
 import { cn } from '../../utils/cn';
 import { usePageSeo } from '../SEO/SEOHead';
+
+/**
+ * The editorial photograph on the left of every authentication screen.
+ *
+ * A fixed Cloudinary URL rather than the generated placeholder that used to
+ * sit here: the auth screens are one continuous surface, so a shopper who goes
+ * Log In -> Forgot Password -> Reset should not watch the artwork change under
+ * them. `<Image>` resizes and re-encodes it per browser, so the one URL costs
+ * a phone no more than a phone-sized file.
+ */
+const PANEL_IMAGE =
+  'https://res.cloudinary.com/w2brnx9l/image/upload/v1788938564/sopii/products/unassigned/vhurm92pwhignvzhvocg.png';
 
 /**
  * §21's split layout, shared by every authentication screen.
@@ -25,7 +36,6 @@ export function AuthLayout({
   subtitle,
   children,
   footer,
-  seed = 801,
   wide = false,
 }) {
   const { brand: BRAND } = useSiteSettings();
@@ -40,10 +50,11 @@ export function AuthLayout({
     <div className="grid min-h-[70vh] lg:grid-cols-2">
       <div className="relative hidden lg:block" aria-hidden="true">
         <Image
-          src={photo({ seed, tags: 'fashion', w: 1000, h: 1400 })}
+          src={PANEL_IMAGE}
           alt=""
-          ratio="h-full"
-          wrapperClassName="h-full"
+          ratio="h-[900px]"
+          wrapperClassName="w-full"
+          preset="detail"
           priority
         />
         <div className="absolute inset-0 bg-gradient-to-t from-charcoal/75 via-charcoal/20 to-transparent" />

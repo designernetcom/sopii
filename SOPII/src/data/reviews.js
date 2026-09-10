@@ -9,51 +9,7 @@ export const TESTIMONIALS = [
     location: 'Bengaluru',
     product: 'Aarohi Handwoven Cotton Saree',
   },
-  {
-    id: 'r2',
-    rating: 5,
-    title: 'Wore it to two weddings already',
-    body: 'I was nervous ordering silk online. It drapes far better than anything I have bought in a store at twice the price, and the blouse fit straight out of the box.',
-    author: 'Ritika S.',
-    location: 'Delhi',
-    product: 'Meherzad Silk Blend Saree',
-  },
-  {
-    id: 'r3',
-    rating: 5,
-    title: 'The cotton is the real thing',
-    body: 'Genuine mulmul, not a blend pretending to be one. I have washed it four times and it has only got softer. Ordering two more.',
-    author: 'Ananya R.',
-    location: 'Chennai',
-    product: 'Ishira Mulmul Cotton Saree',
-  },
-  {
-    id: 'r4',
-    rating: 4,
-    title: 'Beautiful, and quick to arrive',
-    body: 'Delivered in three days to a small town in Kerala. The embroidery on the blouse is properly hand-done — you can see it on the reverse.',
-    author: 'Meera K.',
-    location: 'Thrissur',
-    product: 'Manvi Embroidered Blouse',
-  },
-  {
-    id: 'r5',
-    rating: 5,
-    title: 'My most complimented purchase',
-    body: 'Three people asked where the jhumkas were from at one dinner. Light enough that I forgot I had them on, which is the highest praise I can give an earring.',
-    author: 'Sneha T.',
-    location: 'Pune',
-    product: 'Chandni Oxidised Jhumkas',
-  },
-  {
-    id: 'r6',
-    rating: 5,
-    title: 'Returns were genuinely painless',
-    body: 'Ordered two sizes, sent one back. Pickup was arranged the next morning and the refund landed in four days. No arguments.',
-    author: 'Divya N.',
-    location: 'Hyderabad',
-    product: 'Amara Tiered Midi Dress',
-  },
+
 ];
 
 /**

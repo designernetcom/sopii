@@ -131,12 +131,12 @@ export default function Login() {
         ) : null}
 
         {/* Google sits above the divider — §12's layout, and the order people expect. */}
-        {google.enabled ? (
+        {/* {google.enabled ? (
           <>
             <GoogleLoginButton next={from} />
             <AuthDivider />
           </>
-        ) : null}
+        ) : null} */}
 
         {method === 'password' ? (
           <>
@@ -161,14 +161,14 @@ export default function Login() {
                 </button>
               ) : null}
 
-              <button
+              {/* <button
                 type="button"
                 onClick={() => switchTo('otp')}
                 className="btn-outline w-full border-beige text-charcoal hover:border-charcoal hover:bg-transparent hover:text-charcoal"
               >
                 <Smartphone size={15} strokeWidth={1.6} aria-hidden="true" />
                 Login with Mobile OTP
-              </button>
+              </button> */}
             </div>
           </>
         ) : (

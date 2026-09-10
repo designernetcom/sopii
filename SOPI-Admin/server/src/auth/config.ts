@@ -41,6 +41,27 @@ function flag(value: string | undefined, fallback: boolean): boolean {
   return value === 'true' || value === '1' || value === 'yes';
 }
 
+/**
+ * A comma-separated list of origins, normalised and de-duplicated.
+ *
+ * Anything that is not a parseable absolute URL is dropped rather than kept as
+ * a string that would later fail an origin comparison in a way nobody could
+ * read — an allowlist that silently contains junk is worse than a short one.
+ */
+function originList(value: string | undefined): string[] {
+  const seen = new Set<string>();
+  for (const raw of (value ?? '').split(',')) {
+    const trimmed = raw.trim();
+    if (!trimmed) continue;
+    try {
+      seen.add(new URL(trimmed).origin);
+    } catch {
+      console.warn(`[auth] Ignoring unparseable origin in SHOP_ALT_URLS: ${trimmed}`);
+    }
+  }
+  return [...seen];
+}
+
 /* --------------------------------- secrets --------------------------------- */
 
 /*
@@ -244,10 +265,20 @@ export const authConfig = {
    * Where a browser is sent back to after the Google round trip. A `next`
    * parameter is honoured only when it resolves inside one of these origins,
    * so the callback cannot be turned into an open redirect.
+   *
+   * `shop` is the *canonical* origin: the one baked into emailed links, where
+   * localhost is useless because the mail is opened on a phone. It is not
+   * necessarily the origin the browser is on. A developer running the shop at
+   * localhost:5174 against this server would be thrown out to the public
+   * domain at the end of a Google sign-in and never come back, so
+   * `shopAlternates` lists the other origins the OAuth callback may return
+   * to. Order matters only for `shop`; the rest are an allowlist.
    */
   frontends: {
-    shop: process.env.SHOP_URL?.trim() || 'http://localhost:5174',
+    shop: process.env.SHOP_URL?.trim() || 'https://sopiistore.com',
     admin: process.env.ADMIN_URL?.trim() || 'http://localhost:5173',
+    /** Extra shop origins the OAuth callback may return to, e.g. a dev server. */
+    shopAlternates: originList(process.env.SHOP_ALT_URLS),
   },
 
   /*

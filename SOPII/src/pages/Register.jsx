@@ -31,12 +31,12 @@ export default function Register() {
       }
     >
       <div className="space-y-6">
-        {google.enabled ? (
+        {/* {google.enabled ? (
           <>
             <GoogleLoginButton next="/account" label="Sign up with Google" />
             <AuthDivider />
           </>
-        ) : null}
+        ) : null} */}
 
         <RegisterForm
           onSuccess={(result) => {

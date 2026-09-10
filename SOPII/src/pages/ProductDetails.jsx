@@ -267,9 +267,9 @@ export default function ProductDetails() {
                   title: 'Shipping Information',
                   content: (
                     <div className="space-y-2">
-                      <p>Dispatched within 24 hours on working days from our Mumbai studio.</p>
+                      <p>Dispatched within 24 hours on working days from our Pune studio.</p>
                       <p>Metro cities: 2–4 working days. Rest of India: 4–7 working days.</p>
-                      <p>Free shipping on orders above ₹1,999. Cash on delivery available.</p>
+                      {/* <p>Free shipping on orders above ₹10,999. Cash on delivery available.</p> */}
                     </div>
                   ),
                 },
@@ -279,11 +279,10 @@ export default function ProductDetails() {
                   content: (
                     <div className="space-y-2">
                       <p>
-                        Return or exchange within 15 days of delivery, provided tags are intact and
-                        the piece is unworn.
+                        No Return 
                       </p>
-                      <p>Reverse pickup is free across serviceable pin codes.</p>
-                      <p>Refunds are processed within 5 working days of the item reaching us.</p>
+                      {/* <p>Reverse pickup is free across serviceable pin codes.</p>
+                      <p>Refunds are processed within 5 working days of the item reaching us.</p> */}
                     </div>
                   ),
                 },

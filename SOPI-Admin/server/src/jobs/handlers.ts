@@ -23,7 +23,7 @@
 
 import { NotificationModel } from '../db/models.js';
 import { invalidate, NAMESPACE } from '../lib/cache.js';
-import { sendAndRecordOrderEmail, type OrderEmailKind } from '../lib/email.js';
+import { EmailService, sendAndRecordOrderEmail, type OrderEmailKind } from '../lib/email.js';
 import { logger } from '../lib/logger.js';
 import { JOB, registerHandler } from '../lib/queue.js';
 import { whatsappEnabled } from '../auth/whatsappConfig.js';
@@ -150,6 +150,67 @@ registerHandler(JOB.emailSend, async (payload) => {
 
   if (result.status === 'failed') {
     logger.warn('job.email.failed', { template, detail: result.error ?? 'unknown' });
+  }
+});
+
+/* ------------------------------ password reset ------------------------------ */
+
+/**
+ * The reset link, retried.
+ *
+ * `/forgot-password` sends inline and only enqueues this when that attempt
+ * failed in a way a retry might clear — a timeout, a throttle, a 4xx. So this
+ * handler exists for the case the shopper has already been told "instructions
+ * have been sent": the sentence is a promise, and one flaky SMTP round trip
+ * should not be what breaks it.
+ *
+ * Bounded by the link itself rather than by the queue. Five attempts at 2s,
+ * 4s, 8s, 16s, 32s all land inside the hour the token is good for, but a job
+ * whose lease was reclaimed by a worker restart could come back much later,
+ * and mailing a dead link is worse than mailing nothing — so `expiresAt` is
+ * checked first and an expired job is dropped rather than retried.
+ *
+ * Idempotent in the only sense that matters here: running twice sends the same
+ * one-time link to the same mailbox twice. It does not mint a second token and
+ * does not invalidate the first.
+ *
+ * NOTHING IDENTIFYING IS LOGGED, and the URL never is — it carries the token,
+ * which is the credential.
+ */
+registerHandler(JOB.passwordResetSend, async (payload) => {
+  const to = String(payload.to ?? '');
+  const resetUrl = String(payload.resetUrl ?? '');
+
+  if (!to || !resetUrl) {
+    // A payload this shape will never succeed, so it is dropped rather than
+    // retried five times on the way to the failed pile.
+    logger.warn('job.password_reset.malformed', { detail: 'missing recipient or link' });
+    return;
+  }
+
+  const expiresAt = Number(payload.expiresAt ?? 0);
+  if (expiresAt && expiresAt <= Date.now()) {
+    logger.warn('job.password_reset.expired', { detail: 'link expired before it could be sent' });
+    return;
+  }
+
+  /*
+   * `rethrowTransient` is what makes the retry happen: the service reports a
+   * transient fault as a value for the route's sake, and as a throw for ours.
+   */
+  const result = await EmailService.sendPasswordReset({
+    to,
+    resetUrl,
+    name: payload.name ? String(payload.name) : undefined,
+    expiresIn: payload.expiresIn ? String(payload.expiresIn) : undefined,
+    attempt: Number(payload.attempt ?? 2),
+    source: 'queue',
+    rethrowTransient: true,
+  });
+
+  if (result.status !== 'sent') {
+    // Permanent, or the mailer is unconfigured. Neither improves on a retry.
+    logger.warn('job.password_reset.failed', { detail: result.error ?? 'unknown' });
   }
 });
 

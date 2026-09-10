@@ -579,6 +579,12 @@ export function adaptSettings(raw, fallbackBrand) {
       name: store.storeName || fallbackBrand.name,
       email: store.supportEmail || fallbackBrand.email,
       phone: store.phone || fallbackBrand.phone,
+      /*
+       * NOT `store.phone`. The panel publishes one contact number and it may
+       * be a landline, which cannot receive WhatsApp — falling back to it here
+       * is what made the rail link to wa.me/912248901200.
+       */
+      whatsapp: store.whatsapp || fallbackBrand.whatsapp,
       address: addressLine || fallbackBrand.address,
     },
     currencySymbol: store.currencySymbol || '₹',
@@ -773,11 +779,11 @@ export const adaptOrders = (raw = []) => raw.map(adaptOrder);
  * Header navigation, built from the live category tree and collection list.
  *
  * The shape matches what `Header`, `MegaMenu` and `MobileMenu` already render:
- * a flat item for a plain link, `columns` for a mega panel, `feature` for the
- * promo tile. Renaming a category or adding a subcategory in the admin panel
- * therefore changes the menu, with no navigation file to keep in sync.
+ * a flat item for a plain link, `columns` for a mega panel. Renaming a category
+ * or adding a subcategory in the admin panel therefore changes the menu, with
+ * no navigation file to keep in sync.
  */
-export function buildNavigation(categories = [], collections = []) {
+export function buildNavigation(categories = []) {
   const items = [{ label: 'New Arrivals', to: '/new-arrivals' }];
 
   categories.forEach((category) => {
@@ -800,26 +806,10 @@ export function buildNavigation(categories = [], collections = []) {
 
     /* A category with nothing under it gets a plain link rather than a mega
        panel holding a single column. */
-    const featured = collections.find((collection) => collection.featured) ?? collections[0];
-
     items.push({
       label: category.name,
       to: category.to,
-      ...(category.children.length
-        ? {
-            columns,
-            feature: featured
-              ? {
-                  eyebrow: featured.eyebrow,
-                  title: featured.name,
-                  to: `/collections/${featured.slug}`,
-                  image: featured.banner,
-                  seed: featured.seed,
-                  tags: featured.tags,
-                }
-              : undefined,
-          }
-        : {}),
+      ...(category.children.length ? { columns } : {}),
     });
   });
 

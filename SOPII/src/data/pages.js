@@ -90,13 +90,13 @@ export const STATIC_PAGES = {
     title: 'Careers',
     eyebrow: 'About SOPII',
     intro:
-      'A small team in Mumbai, doing a lot. If you like ownership over process, you will like it here.',
+      'A small team in Pune, doing a lot. If you like ownership over process, you will like it here.',
     seed: 904,
     tags: 'fashion',
     sections: [
       {
         heading: 'Open roles',
-        body: 'Textile Sourcing Associate (Mumbai) · Frontend Engineer (Remote, India) · Customer Experience Lead (Mumbai) · Studio Photographer (Contract).',
+        body: 'Textile Sourcing Associate (Pune) · Frontend Engineer (Remote, India) · Customer Experience Lead (Mumbai) · Studio Photographer (Contract).',
       },
       {
         heading: 'How we hire',
@@ -104,7 +104,7 @@ export const STATIC_PAGES = {
       },
       {
         heading: 'Apply',
-        body: 'Write to careers@sopii.com with the role in the subject line and anything you have made. A portfolio, a repository or a paragraph on what you would change about this website all work.',
+        body: 'Write to careers@sopiistore.com with the role in the subject line and anything you have made. A portfolio, a repository or a paragraph on what you would change about this website all work.',
       },
     ],
   },
@@ -119,15 +119,12 @@ export const STATIC_PAGES = {
     sections: [
       {
         heading: 'Customer care',
-        body: 'Email care@sopii.com or call +91 98200 00000 for anything to do with an order, a return or sizing advice.',
+        body: 'Email care@sopiistore.com or call +91 8105292614 , +91 7972185287 for anything to do with an order, a return or sizing advice.',
       },
-      {
-        heading: 'Wholesale and press',
-        body: 'Write to wholesale@sopii.com or press@sopii.com. Please include your publication or store name and a rough timeline.',
-      },
+
       {
         heading: 'Visit the studio',
-        body: 'Studio 4, Kala Ghoda, Mumbai 400001. Open by appointment, Tuesday to Saturday. Email ahead and we will pull pieces in your size before you arrive.',
+        body: 'Gat.No. 606, shop No -228,2nd Floor, NEBC , Jadhavwadi, Chikhali, Pune -411062.',
       },
     ],
   },
@@ -141,7 +138,7 @@ export const STATIC_PAGES = {
     sections: [
       {
         heading: 'Dispatch',
-        body: 'Orders placed before 2pm IST on a working day are dispatched the same day. Everything else goes out the next working day from our Mumbai studio.',
+        body: 'Orders placed before 2pm IST on a working day are dispatched the same day. Everything else goes out the next working day from our Pune studio.',
       },
       {
         heading: 'Delivery times',
@@ -149,40 +146,38 @@ export const STATIC_PAGES = {
       },
       {
         heading: 'Shipping charges',
-        body: 'Free standard shipping on orders above ₹1,999. Below that, standard shipping is ₹99. Cash on delivery is available across serviceable pin codes at no extra charge.',
+        body: 'Free standard shipping on orders above ₹9,999. Below that, standard shipping is ₹99. Cash on delivery is available across serviceable pin codes at no extra charge.',
       },
-      {
-        heading: 'International',
-        body: 'We ship to 24 countries via DHL. International rates are calculated at checkout and duties are payable by the recipient.',
-      },
+
     ],
   },
 
-  returns: {
-    title: 'Return Policy',
-    eyebrow: 'Customer Care',
-    intro: 'Fifteen days, free reverse pickup, no interrogation.',
-    seed: 907,
-    tags: 'fashion',
-    sections: [
-      {
-        heading: 'What can be returned',
-        body: 'Any unworn piece with its original tags intact, within 15 days of delivery. Jewellery and gift boxes can be returned only if unopened, for hygiene reasons.',
-      },
-      {
-        heading: 'How to start a return',
-        body: 'Email care@sopii.com with your order number, or open the order in My Orders and request a return. We arrange a free reverse pickup within 48 hours across serviceable pin codes.',
-      },
-      {
-        heading: 'Refunds',
-        body: 'Refunds are processed within 5 working days of the piece reaching our studio and passing a quick condition check. Prepaid orders are refunded to the original payment method; COD orders to a bank account you provide.',
-      },
-      {
-        heading: 'Exchanges',
-        body: 'Size exchanges are free once per order. If the size you want is out of stock we will refund you rather than make you wait for a restock.',
-      },
-    ],
-  },
+ returns: {
+  title: 'Return Policy',
+  eyebrow: 'Customer Care',
+  intro: 'All sales are final. We do not accept returns or exchanges.',
+  seed: 907,
+  tags: 'fashion',
+  sections: [
+    {
+      heading: 'Final Sale Policy',
+      body: 'To maintain strict quality control and offer the best possible pricing, every purchase is final sale. Once an order is processed, it cannot be returned, cancelled, or exchanged.',
+    },
+    {
+      heading: 'Damaged or Wrong Items',
+      body: 'If your item arrives damaged, defective, or incorrect, email care@sopiistore.com within 48 hours of delivery with photo proof and your order number. We will gladly arrange a replacement or refund for verified issues.',
+    },
+    {
+      heading: 'Sizing & Selection',
+      body: 'Because we do not offer size exchanges, we highly recommend checking our detailed size charts or contacting our team before purchasing to ensure the perfect fit.',
+    },
+    {
+      heading: 'Refund Exceptions',
+      body: 'Refunds are strictly limited to instances of damaged goods or inventory errors where a replacement is unavailable. Approved refunds take 5 working days to process back to your original payment method.',
+    },
+  ],
+},
+
 
   'size-guide': {
     title: 'Size Guide',
@@ -206,7 +201,7 @@ export const STATIC_PAGES = {
       },
       {
         heading: 'Still unsure?',
-        body: 'Send us your measurements at care@sopii.com and we will tell you which size to take — including when the honest answer is that a piece will not fit well.',
+        body: 'Send us your measurements at care@sopiistore.com and we will tell you which size to take — including when the honest answer is that a piece will not fit well.',
       },
     ],
   },
@@ -241,7 +236,7 @@ export const STATIC_PAGES = {
       },
       {
         heading: 'Can I change or cancel an order?',
-        body: 'Yes, as long as it has not been dispatched. Email care@sopii.com with your order number as soon as you can and we will stop it at the studio.',
+        body: 'Yes, as long as it has not been dispatched. Email care@sopiistore.com with your order number as soon as you can and we will stop it at the studio.',
       },
       {
         heading: 'Do you restock sold-out pieces?',

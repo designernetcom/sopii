@@ -445,6 +445,8 @@ export interface OAuthStateDoc {
   nonce: string;
   surface: 'shop' | 'admin';
   redirectTo: string;
+  /** The front-end origin the flow started from, so the callback returns there. */
+  returnOrigin?: string;
   /** Set when the flow is started by someone already signed in (§26). */
   linkUserId?: string;
   ip?: string;
@@ -461,6 +463,7 @@ const oauthStateSchema = new Schema<OAuthStateDoc>(
     nonce: { type: String, required: true },
     surface: { type: String, enum: ['shop', 'admin'], default: 'shop' },
     redirectTo: { type: String, default: '/' },
+    returnOrigin: String,
     linkUserId: String,
     ip: String,
     consumedAt: Date,

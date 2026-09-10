@@ -8,16 +8,24 @@ export const BRAND = {
   name: 'SOPII',
   tagline: 'Contemporary Indian Fashion',
   handle: '@sopii.fashion',
-  email: 'care@sopii.com',
-  phone: '+91 98200 00000',
+  email: 'care@sopiistore.com',
+  phone: '+91 8105292614',
+  /*
+   * The number the WhatsApp rail opens a chat with — deliberately separate
+   * from `phone` above. A store's published contact number is often a landline
+   * (the panel currently publishes +91 22 4890 1200), and wa.me will happily
+   * build a link to one that opens to an error page. Only a number that can
+   * actually receive WhatsApp belongs here.
+   */
+  whatsapp: '+91 8105292614',
   address: 'Studio 4, Kala Ghoda, Mumbai 400001',
 };
 
 /** Rotating strip above the header. Add or remove items freely. */
 export const ANNOUNCEMENTS = [
-  'FREE SHIPPING ABOVE ₹1999',
-  'EASY 15-DAY RETURNS',
-  'COD AVAILABLE ACROSS INDIA',
+  'FREE SHIPPING ABOVE ₹19999',
+  'NO RETURNS',
+  // 'COD AVAILABLE ACROSS INDIA',
   'HANDCRAFTED IN INDIA',
 ];
 
@@ -93,7 +101,7 @@ export const OCCASIONS = [
     tags: 'cotton,textile',
     seed: 401,
     image:
-      'https://suta.in/cdn/shop/files/saree_9656048d-67a5-4c6b-93b9-5fe16f6ef69d.jpg?format=webp&v=1752903494&width=1000',
+      'https://res.cloudinary.com/w2brnx9l/image/upload/f_auto,q_auto,c_fill,g_auto,w_600,h_750,dpr_auto/v1788952767/sopii/products/unassigned/y3mocozgvsytgifdpwne.jpg',
   },
   {
     name: 'Office Wear',
@@ -101,7 +109,7 @@ export const OCCASIONS = [
     tags: 'workwear',
     seed: 402,
     image:
-      'https://suta.in/cdn/shop/files/Women_Kurta_48b4326a-29bd-46bb-b479-1782742c8203.jpg?format=webp&v=1752903557&width=1000',
+      'https://res.cloudinary.com/w2brnx9l/image/upload/v1788955282/images_1.jpg',
   },
   {
     name: 'Festive',
@@ -109,7 +117,7 @@ export const OCCASIONS = [
     tags: 'silk',
     seed: 403,
     image:
-      'https://suta.in/cdn/shop/files/Blouse_246f00ce-a14f-48bc-ab1f-97bd4f2bd429.jpg?format=webp&v=1752903535&width=1000',
+      'https://res.cloudinary.com/w2brnx9l/image/upload/v1788955429/A1iINuxGMAL._AC_UY1100_.jpg',
   },
   {
     name: 'Wedding',
@@ -125,7 +133,7 @@ export const OCCASIONS = [
     tags: 'evening',
     seed: 405,
     image:
-      'https://suta.in/cdn/shop/files/men_shirt_a94b3669-cf37-4e2c-b6fc-f20ee013e9f7.jpg?format=webp&v=1752903744&width=1000',
+      'https://res.cloudinary.com/w2brnx9l/image/upload/v1788955801/xl-mens-formal-casual-daily-wear-plain-shirt-with-colors-original-imagxxfnhxsc2bsz.webp',
   },
   {
     name: 'Vacation',
@@ -133,7 +141,7 @@ export const OCCASIONS = [
     tags: 'summer',
     seed: 406,
     image:
-      'https://suta.in/cdn/shop/files/lehengas_5cac219a-48dd-4287-a6f1-3e6168e6cb41.jpg?format=webp&v=1752903631&width=1000',
+      'https://res.cloudinary.com/w2brnx9l/image/upload/v1788955925/i-need-a-vacation.jpg',
   },
 ];
 
@@ -146,11 +154,16 @@ export const INSTAGRAM_POSTS = [
   { id: 'ig6', seed: 506, tags: 'silk', caption: 'Festive season, unlocked' },
 ];
 
+/**
+ * `color` is the channel's own brand hue, used by the home page's social rail
+ * for the hover state and the label pill — nowhere else. The footer ignores it
+ * and stays plum, because a column of four different brand colours reads as a
+ * ransom note; a single icon lighting up under the cursor does not.
+ */
 export const SOCIAL_LINKS = [
-  { name: 'Instagram', icon: 'Instagram', href: 'https://instagram.com' },
-  { name: 'Facebook', icon: 'Facebook', href: 'https://facebook.com' },
-  { name: 'Pinterest', icon: 'Sparkle', href: 'https://pinterest.com' },
-  { name: 'YouTube', icon: 'Youtube', href: 'https://youtube.com' },
+  { name: 'Instagram', icon: 'Instagram', href: 'https://instagram.com', color: '#E1306C' },
+  { name: 'Facebook', icon: 'Facebook', href: 'https://facebook.com', color: '#1877F2' },
+  { name: 'YouTube', icon: 'Youtube', href: 'https://youtube.com', color: '#FF0000' },
 ];
 
 export const FOOTER_COLUMNS = [
@@ -218,6 +231,16 @@ export const LEGAL_LINKS = [
   { label: 'Shipping Policy', to: '/pages/shipping' },
   { label: 'Return Policy', to: '/pages/returns' },
 ];
+
+/**
+ * The build credit, on the last line of the footer.
+ *
+ * Here rather than inline in the component for the same reason every other
+ * string on this page is: the footer renders the site's constants, and a
+ * company name that changes — an agency, a legal suffix, a rebrand — should be
+ * a one-line edit in this file and not a hunt through JSX.
+ */
+export const BUILT_BY = 'Netcom Business Solutions Pvt Ltd';
 
 /**
  * Fallback coupons — used only when the API cannot be reached. Live codes come

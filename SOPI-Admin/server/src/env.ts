@@ -254,9 +254,9 @@ export const env = {
     /** Where "Track Order" points. Falls back to the shop front's own origin. */
     orderTrackingBase:
       process.env.ORDER_TRACKING_URL?.trim() ||
-      `${(process.env.SHOP_URL?.trim() || 'http://localhost:5174').replace(/\/+$/, '')}/account/orders`,
+      `${(process.env.SHOP_URL?.trim() || 'https://sopiistore.com').replace(/\/+$/, '')}/account/orders`,
     /** The shop front's origin — the logo and the reset link are served from it. */
-    shopUrl: (process.env.SHOP_URL?.trim() || 'http://localhost:5174').replace(/\/+$/, ''),
+    shopUrl: (process.env.SHOP_URL?.trim() || 'https://sopiistore.com').replace(/\/+$/, ''),
     supportEmail: process.env.SUPPORT_EMAIL?.trim() || '',
     supportPhone: process.env.SUPPORT_PHONE?.trim() || '',
   },

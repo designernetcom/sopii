@@ -76,7 +76,7 @@ export default function AuthCallback() {
 
   if (error) {
     return (
-      <AuthLayout eyebrow="Account" title="Sign-in unsuccessful" seed={801}>
+      <AuthLayout eyebrow="Account" title="Sign-in unsuccessful">
         <div className="space-y-5">
           <p
             role="alert"

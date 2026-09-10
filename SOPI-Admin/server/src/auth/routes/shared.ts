@@ -145,6 +145,52 @@ export const text = (value: unknown, max = 200) =>
 /** Passwords are not trimmed — a leading space is a legitimate character. */
 export const secret = (value: unknown) => (typeof value === 'string' ? value : '');
 
+/** Every origin a front end is allowed to live on, canonical ones first. */
+export function allowedFrontendOrigins(): string[] {
+  const origins: string[] = [];
+  for (const candidate of [
+    authConfig.frontends.shop,
+    authConfig.frontends.admin,
+    ...authConfig.frontends.shopAlternates,
+  ]) {
+    try {
+      const { origin } = new URL(candidate);
+      if (!origins.includes(origin)) origins.push(origin);
+    } catch {
+      /* a misconfigured SHOP_URL/ADMIN_URL is not worth a crash here */
+    }
+  }
+  return origins;
+}
+
+/**
+ * The origin to send a browser back to at the end of a redirect flow.
+ *
+ * `SHOP_URL` is the canonical origin — the one emailed links must use — but it
+ * is not necessarily the one the browser is on. A shop running at
+ * localhost:5174 against this server starts the Google flow from there, and
+ * returning it to the public domain strands it on a different site with no
+ * session. The `Referer` of the top-level navigation says where it came from;
+ * it is only honoured when it matches an origin already on the allowlist, so a
+ * forged one buys nothing.
+ *
+ * Falls back to the configured front end whenever the header is absent — a
+ * referrer policy may strip it, and that must degrade rather than break.
+ */
+export function returnOrigin(req: Request, surface: Surface): string {
+  const fallback = surface === 'admin' ? authConfig.frontends.admin : authConfig.frontends.shop;
+
+  const referer = req.get('referer') || req.get('origin');
+  if (!referer) return fallback;
+
+  try {
+    const { origin } = new URL(referer);
+    return allowedFrontendOrigins().includes(origin) ? origin : fallback;
+  } catch {
+    return fallback;
+  }
+}
+
 /**
  * Keeps a `next` parameter inside one of the configured front ends.
  *
@@ -152,26 +198,25 @@ export const secret = (value: unknown) => (typeof value === 'string' ? value : '
  * plain path is discarded, which is what stops the OAuth callback from being
  * used as an open redirect.
  */
-export function safeRedirect(next: unknown, surface: Surface): string {
-  const base = surface === 'admin' ? authConfig.frontends.admin : authConfig.frontends.shop;
+export function safeRedirect(next: unknown, surface: Surface, base = ''): string {
+  const origin =
+    base || (surface === 'admin' ? authConfig.frontends.admin : authConfig.frontends.shop);
   const fallback = surface === 'admin' ? '/admin/dashboard' : '/account';
 
   const raw = typeof next === 'string' ? next.trim() : '';
-  if (!raw) return new URL(fallback, base).toString();
+  if (!raw) return new URL(fallback, origin).toString();
 
   if (raw.startsWith('/') && !raw.startsWith('//')) {
-    return new URL(raw, base).toString();
+    return new URL(raw, origin).toString();
   }
 
   // An absolute URL is honoured only when it lands on a configured front end.
   try {
     const target = new URL(raw);
-    for (const origin of [authConfig.frontends.shop, authConfig.frontends.admin]) {
-      if (target.origin === new URL(origin).origin) return target.toString();
-    }
+    if (allowedFrontendOrigins().includes(target.origin)) return target.toString();
   } catch {
     /* not a URL — fall through */
   }
 
-  return new URL(fallback, base).toString();
+  return new URL(fallback, origin).toString();
 }

@@ -343,22 +343,23 @@
   /*
    * Footer type.
    *
-   * The footer sits on charcoal, so it cannot borrow `.eyebrow` — that one is
-   * `text-clay-deep`, which is tuned for cream and measures about 2.6:1 the
-   * other way round. Gold-soft on charcoal is 8.4:1, so the 10px headings clear
-   * AA with room to spare, and it keeps the heading colour a brand one rather
-   * than a grey.
+   * The footer sits on cream, so its column headings are the same clay-deep as
+   * `.eyebrow` — the tone tuned for that ground. It stays its own class rather
+   * than an alias because the footer's headings are also the accordion
+   * summaries on a phone, and they pick up spacing from `FooterSection`.
    *
-   * `.footer-link` sets no size on purpose: the columns run at 13px and the
-   * bottom bar at 12px, and leaving the size to the caller means neither has to
-   * out-specify this rule.
+   * The links are plum rather than charcoal: at 13px on cream that measures
+   * about 8:1, well past AA, and it keeps the footer a brand colour instead of
+   * a grey. `.footer-link` sets no size on purpose — the columns run at 13px,
+   * the utility row at 12px and the policy row at 11px, and leaving the size to
+   * the caller means none of them has to out-specify this rule.
    */
   .footer-eyebrow {
-    @apply font-sans text-[10px] sm:text-[11px] font-medium uppercase tracking-widest3 text-gold-soft;
+    @apply font-sans text-[10px] sm:text-[11px] font-medium uppercase tracking-widest3 text-clay-deep;
   }
 
   .footer-link {
-    @apply text-cream/70 transition-colors duration-200 hover:text-cream;
+    @apply text-plum transition-colors duration-200 hover:text-plum-deep;
   }
 
   /*
@@ -383,6 +384,93 @@
     .footer-section > *:not(summary) {
       display: block;
     }
+
+    /*
+     * And the half the children's `display` cannot reach.
+     *
+     * Chrome 131 moved the closed state of <details> onto a pseudo-element:
+     * the UA sheet now sets `content-visibility: hidden` and `block-size: 0`
+     * on `::details-content`, instead of hiding the children themselves. A
+     * subtree hidden that way keeps its layout boxes and still computes
+     * `visibility: visible` and `opacity: 1` on every child — it simply never
+     * paints and never hit-tests. So the rule above kept reporting healthy
+     * 13px plum links at real coordinates while the desktop footer rendered
+     * three bare headings.
+     *
+     * Its own block on purpose. Firefox and older Safari do not know this
+     * selector and would drop the whole rule if it were grouped with the one
+     * above — and they are precisely the browsers where that one still works.
+     */
+    .footer-section::details-content {
+      content-visibility: visible;
+      block-size: auto;
+    }
+  }
+
+  /*
+   * Social rail (home page, lg and up).
+   *
+   * The hover colour is a custom property rather than a class per channel:
+   * `SOCIAL_LINKS` carries the hex, the component sets `--rail` inline, and
+   * this file never has to learn the names of the networks. Adding a fifth
+   * channel is a line of data, not a line of CSS.
+   *
+   * The pill's transform is written out rather than composed from Tailwind's
+   * translate utilities. Those write into `--tw-translate-*` and are then
+   * assembled by a single `transform`, which the vertical centring here would
+   * have to fight; one hand-written declaration is both shorter and immune to
+   * that.
+   */
+  .rail-link {
+    @apply relative flex h-11 w-11 items-center justify-center text-clay;
+    transition: color 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .rail-link:hover,
+  .rail-link:focus-visible {
+    color: var(--rail);
+  }
+
+  /* The icon itself lifts, not the tile — a 44px target that moves is a 44px
+     target that is harder to hit. */
+  .rail-link > svg {
+    transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .rail-link:hover > svg,
+  .rail-link:focus-visible > svg {
+    transform: scale(1.15);
+  }
+
+  .rail-pill {
+    @apply pointer-events-none absolute left-full top-1/2 ml-3 whitespace-nowrap
+           rounded-sm px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest2
+           text-cream opacity-0 shadow-sm;
+    transform: translate(-6px, -50%);
+    transition:
+      opacity 300ms cubic-bezier(0.22, 1, 0.36, 1),
+      transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* `focus-within` as well as `hover`, so the label a mouse gets is the label
+     a keyboard gets. */
+  .rail-link:hover .rail-pill,
+  .rail-link:focus-within .rail-pill {
+    opacity: 1;
+    transform: translate(0, -50%);
+  }
+
+  /* The little caret. `background: inherit` keeps it on the pill's own brand
+     colour without the component having to set the hex twice. */
+  .rail-pill::before {
+    content: '';
+    position: absolute;
+    left: -3px;
+    top: 50%;
+    width: 7px;
+    height: 7px;
+    background: inherit;
+    border-radius: 1px;
+    transform: translateY(-50%) rotate(45deg);
   }
 
   /* --- Links ------------------------------------------------------------- */

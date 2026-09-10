@@ -6,10 +6,10 @@ export const settings: Settings = {
     legalName: 'SOPII Handcrafted Retail Pvt. Ltd.',
     logo: '/media/other/sopii-logo.svg',
     supportEmail: 'care@sopii.in',
-    phone: '+91 22 4890 1200',
+    phone: '+91 8105292614',
     address: {
       name: 'SOPII Studio & Warehouse',
-      phone: '+91 22 4890 1200',
+      phone: '+91 8105292614',
       line1: 'Unit 4, Kamala Mills Compound',
       line2: 'Lower Parel West',
       city: 'Mumbai',

@@ -1,8 +1,18 @@
 /**
  * Header navigation + mega menu structure.
  * `columns` renders a mega panel; omit it for a plain link.
- * `feature` renders the promotional image tile on the right of the panel.
  */
+
+/**
+ * The artwork in the right third of every mega panel.
+ *
+ * One image for all of them, set here rather than per nav item: it is brand
+ * furniture, not a promotion, so there is nothing to keep in step with a
+ * collection. Set it to an empty string to close the panel back up to links
+ * only.
+ */
+export const MEGA_MENU_BANNER =
+  'https://res.cloudinary.com/w2brnx9l/image/upload/v1788955282/images_1.jpg';
 
 export const NAV_ITEMS = [
   {
@@ -41,13 +51,6 @@ export const NAV_ITEMS = [
         ],
       },
     ],
-    feature: {
-      eyebrow: 'The Handloom Edit',
-      title: 'Woven slowly, worn forever',
-      to: '/collections/handloom-edit',
-      seed: 601,
-      tags: 'saree',
-    },
   },
   {
     label: 'Blouses',
@@ -72,13 +75,6 @@ export const NAV_ITEMS = [
         ],
       },
     ],
-    feature: {
-      eyebrow: 'Blouse Bar',
-      title: 'The finishing touch',
-      to: '/blouses',
-      seed: 602,
-      tags: 'blouse',
-    },
   },
   {
     label: 'Women',
@@ -103,13 +99,6 @@ export const NAV_ITEMS = [
         ],
       },
     ],
-    feature: {
-      eyebrow: 'Ready to Wear',
-      title: 'Easy silhouettes for long days',
-      to: '/shop?category=Dresses',
-      seed: 603,
-      tags: 'dress',
-    },
   },
   {
     label: 'Collections',
@@ -147,13 +136,6 @@ export const NAV_ITEMS = [
         ],
       },
     ],
-    feature: {
-      eyebrow: 'Finishing Notes',
-      title: 'Oxidised silver & hand-strung beads',
-      to: '/shop?category=Jewellery',
-      seed: 604,
-      tags: 'jewellery',
-    },
   },
 ];
 

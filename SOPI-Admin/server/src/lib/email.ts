@@ -56,7 +56,12 @@ import { fileURLToPath } from 'node:url';
 import { env } from '../env.js';
 import { recordDelivery } from './emailLog.js';
 import { logger } from './logger.js';
-import { isConfigured, send as deliver, type EmailDelivery } from './mailtrap.js';
+import {
+  isConfigured,
+  send as deliver,
+  TransientEmailError,
+  type EmailDelivery,
+} from './mailtrap.js';
 
 export { TransientEmailError, type EmailDelivery, type EmailStatus } from './mailtrap.js';
 export { isConfigured } from './mailtrap.js';
@@ -654,22 +659,43 @@ export interface PasswordResetInput {
   /** How long the link is good for, already in words: "1 hour". */
   expiresIn?: string;
   source?: string;
+  /** Which try this is. Recorded against the delivery log, nothing more. */
+  attempt?: number;
+  /**
+   * Rethrow a transient fault instead of reporting it.
+   *
+   * The route must never see a throw (§4), so it leaves this unset. The queue
+   * handler sets it, because a throw is exactly how a job asks to be retried.
+   */
+  rethrowTransient?: boolean;
+}
+
+export interface PasswordResetResult extends EmailResult {
+  /**
+   * Set on a failure the relay might not repeat — a timeout, a 4xx, a
+   * throttle. It is the difference between "worth queueing" and "queueing
+   * this five times will fail it five times", which is the same call
+   * `mailtrap.classify` makes for order mail.
+   */
+  transient?: boolean;
 }
 
 /**
  * The password reset link, by email.
  *
- * Unlike order mail this is awaited by the request that triggered it, because
- * a reset the customer never receives is a flow they cannot finish — and
+ * Attempted inline by the request that triggered it, because a reset that
+ * arrives seconds after the click is the flow working as intended — and
  * unlike checkout, nothing irreversible has already happened, so there is no
  * "must not fail" constraint to protect. It still cannot throw into the route:
  * a transient failure is caught and reported as a failed send, because §4's
- * constant answer must not vary with whether the relay was up.
+ * constant answer must not vary with whether the relay was up. What the route
+ * does with that failure — hand it to the queue — is its business, not this
+ * function's.
  *
  * NOTHING ABOUT THE ACCOUNT IS LOGGED. The URL carries the token; the address
  * is a personal identifier. Only the kind and the outcome reach the log.
  */
-async function sendPasswordReset(input: PasswordResetInput): Promise<EmailResult> {
+async function sendPasswordReset(input: PasswordResetInput): Promise<PasswordResetResult> {
   const to = String(input.to ?? '').trim();
   if (!to) return { status: 'failed', recipient: '', error: 'no recipient address' };
 
@@ -724,7 +750,7 @@ async function sendPasswordReset(input: PasswordResetInput): Promise<EmailResult
       subject,
       messageId: result.messageId,
       error: result.error,
-      attempt: 1,
+      attempt: input.attempt ?? 1,
       idempotencyKey: idempotencyKeyFor('password_reset', subject, to),
       durationMs: Date.now() - startedAt,
       source: input.source ?? 'auth',
@@ -733,11 +759,13 @@ async function sendPasswordReset(input: PasswordResetInput): Promise<EmailResult
     return result;
   } catch (error) {
     /*
-     * Caught rather than rethrown. This one is not queued, so a throw would
-     * reach the route — and §4 requires that endpoint to answer identically
-     * whether or not the account exists and whether or not the relay is up.
+     * Caught rather than rethrown by default. §4 requires `/forgot-password`
+     * to answer identically whether or not the account exists and whether or
+     * not the relay is up, so the route gets a value. The queue handler asks
+     * for the throw instead, because that is how it schedules a retry.
      */
     const message = error instanceof Error ? error.message : String(error);
+    const transient = error instanceof TransientEmailError;
 
     void recordDelivery({
       kind: 'password_reset',
@@ -745,14 +773,16 @@ async function sendPasswordReset(input: PasswordResetInput): Promise<EmailResult
       recipient: to,
       subject,
       error: message,
-      attempt: 1,
+      attempt: input.attempt ?? 1,
       idempotencyKey: idempotencyKeyFor('password_reset', subject, to),
       durationMs: Date.now() - startedAt,
       source: input.source ?? 'auth',
     });
 
     logger.warn('email.password_reset_failed', { detail: message });
-    return { status: 'failed', recipient: to, error: message };
+
+    if (transient && input.rethrowTransient) throw error;
+    return { status: 'failed', recipient: to, error: message, transient };
   }
 }
 

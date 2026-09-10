@@ -22,6 +22,7 @@
 import { Router } from 'express';
 import { EmailService } from '../../lib/email.js';
 import { ah, badRequest, HttpError } from '../../lib/http.js';
+import { enqueue, JOB } from '../../lib/queue.js';
 import { audit } from '../audit.js';
 import { authConfig } from '../config.js';
 import { checkPasswordStrength, hashPassword, id, randomToken, tokenDigest, verifyPassword } from '../crypto.js';
@@ -378,7 +379,7 @@ passwordRoutes.post(
           createdAt: new Date(),
         });
 
-        await deliverResetLink(email, token, user.firstName);
+        await deliverResetLink(email, token, user.firstName, Date.now() + ttlMs);
       }
 
       await audit(req, {
@@ -396,38 +397,69 @@ passwordRoutes.post(
 );
 
 /**
- * The reset link, delivered through Mailtrap.
+ * The reset link, delivered through Mailtrap — inline first, then queued.
  *
- * Awaited by the request, unlike order mail — a reset the customer never
- * receives is a flow they cannot finish, and unlike checkout nothing
- * irreversible has already happened, so there is no "must not fail"
- * constraint to protect here.
+ * Attempted inline, unlike order mail, because a link that arrives while the
+ * shopper is still looking at the confirmation is the flow working; and unlike
+ * checkout nothing irreversible has already happened, so there is no "must not
+ * fail" constraint to protect here.
  *
- * It still cannot throw into the route. §4 requires `/forgot-password` to
- * answer with the same sentence whether or not the account exists; that
- * promise would be broken by an endpoint that also answers differently when
- * the relay is down, so `EmailService.sendPasswordReset` reports a failure as
- * a value and this function only logs it.
+ * It cannot throw into the route. §4 requires `/forgot-password` to answer
+ * with the same sentence whether or not the account exists; that promise would
+ * be broken by an endpoint that also answers differently when the relay is
+ * down, so `EmailService.sendPasswordReset` reports a failure as a value.
+ *
+ * **A transient failure is handed to the queue rather than dropped.** One
+ * inline attempt is one SMTP round trip, and an SMTP round trip is allowed to
+ * time out — but the shopper has already been told their instructions are on
+ * the way, and there is no second chance to tell them otherwise. So a timeout,
+ * a throttle or a 4xx becomes `auth.password_reset`, retried with the queue's
+ * backoff well inside the hour the token lives; a permanent rejection is
+ * logged and left alone, because five more attempts will be rejected too.
  *
  * With Mailtrap unconfigured the send comes back `skipped`, and development
  * falls back to printing the link — the same trade `sms.ts` makes, and for the
  * same reason: a flow nobody can finish is a flow nobody can test. It refuses
  * to print in production.
  */
-async function deliverResetLink(email: string, token: string, name?: string) {
+async function deliverResetLink(
+  email: string,
+  token: string,
+  name: string | undefined,
+  expiresAt: number,
+) {
   const url = new URL('/reset-password', authConfig.frontends.shop);
   url.searchParams.set('token', token);
   url.searchParams.set('email', email);
+
+  const expiresIn = humanDuration(authConfig.passwordReset.ttlMs);
 
   const result = await EmailService.sendPasswordReset({
     to: email,
     resetUrl: url.toString(),
     name,
-    expiresIn: humanDuration(authConfig.passwordReset.ttlMs),
+    expiresIn,
     source: 'auth',
   });
 
   if (result.status === 'sent') return;
+
+  /*
+   * Worth another go. The payload carries the link, which carries the token —
+   * it stays inside the same database the token's own hash lives in, is never
+   * logged, and goes out with the job when it completes. `dedupeKey` is
+   * derived from that hash so a replayed request cannot queue the same link
+   * twice.
+   */
+  if (result.status === 'failed' && result.transient) {
+    await enqueue(
+      JOB.passwordResetSend,
+      { to: email, resetUrl: url.toString(), name, expiresIn, expiresAt, attempt: 2 },
+      { dedupeKey: `pwreset:${tokenDigest(token)}` },
+    );
+    console.warn('[auth] reset email deferred to the queue:', result.error ?? 'transient failure');
+    return;
+  }
 
   /*
    * Nothing about the account and nothing about the link reaches the log. The

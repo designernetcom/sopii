@@ -127,7 +127,7 @@ function adaptBootstrap(payload, editorial) {
     products: adaptProducts(payload.products, payload.categories),
     categories,
     collections,
-    navigation: buildNavigation(categories, collections),
+    navigation: buildNavigation(categories),
 
     /* Banners are the only home page imagery the panel controls. If none are
        live, the bundled editorial slides stand in rather than leaving a hole

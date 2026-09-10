@@ -14,13 +14,13 @@ import { cn } from '../../utils/cn';
  * forced open by CSS, and the heading loses its button affordance — so what
  * ships to a laptop is the same stacked list of links it always was.
  *
- * The colours are the dark footer's: a hairline in white/10 rather than beige,
- * and a chevron in cream. It is only ever rendered inside `<Footer>`, so it
+ * The colours are the footer's: a beige hairline between the collapsed rows
+ * and a chevron in clay. It is only ever rendered inside `<Footer>`, so it
  * carries that palette directly instead of a `tone` prop with one caller.
  */
 export function FooterSection({ title, children, className }) {
   return (
-    <details className={cn('footer-section border-b border-white/10 sm:border-0', className)}>
+    <details className={cn('footer-section border-b border-beige sm:border-0', className)}>
       <summary
         className={cn(
           'flex min-h-[52px] cursor-pointer list-none items-center justify-between py-3',
@@ -32,7 +32,7 @@ export function FooterSection({ title, children, className }) {
         <ChevronDown
           size={16}
           aria-hidden="true"
-          className="footer-chevron shrink-0 text-cream/50 transition-transform duration-300 sm:hidden"
+          className="footer-chevron shrink-0 text-clay transition-transform duration-300 sm:hidden"
         />
       </summary>
 

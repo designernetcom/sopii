@@ -295,6 +295,10 @@ export const JOB = {
   orderPlaced: 'order.placed',
   orderNotification: 'order.notification',
   emailSend: 'email.send',
+  /* Only ever enqueued as a *fallback*: `/forgot-password` sends inline and
+     hands the message here when the relay answers with something a retry
+     might clear. See `deliverResetLink` in auth/routes/password.ts. */
+  passwordResetSend: 'auth.password_reset',
   whatsappSend: 'whatsapp.send',
   smsSend: 'sms.send',
   exportGenerate: 'export.generate',

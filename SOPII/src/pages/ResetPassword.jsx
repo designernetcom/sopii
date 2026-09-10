@@ -31,7 +31,7 @@ export default function ResetPassword() {
      than showing a form that will always fail. */
   if (!token) {
     return (
-      <AuthLayout eyebrow="Account" title="That link is incomplete" seed={803}>
+      <AuthLayout eyebrow="Account" title="That link is incomplete">
         <div className="space-y-5">
           <AuthError>
             This password reset link is missing its token. Please request a new one.
@@ -46,7 +46,7 @@ export default function ResetPassword() {
 
   if (done) {
     return (
-      <AuthLayout eyebrow="Account" title="Password updated" seed={803}>
+      <AuthLayout eyebrow="Account" title="Password updated">
         <div className="border border-beige bg-sand/50 p-6 text-center">
           <CheckCircle2
             size={26}

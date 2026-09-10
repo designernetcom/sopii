@@ -5,6 +5,7 @@ import { CollectionBanner } from '../components/CollectionBanner/CollectionBanne
 import { OccasionGrid } from '../components/OccasionGrid/OccasionGrid';
 import { FeaturedCollection } from '../components/FeaturedCollection/FeaturedCollection';
 import { InstagramSection } from '../components/InstagramSection/InstagramSection';
+import { SocialRail } from '../components/SocialRail/SocialRail';
 import { ReviewSection } from '../components/ReviewSection/ReviewSection';
 import { TrustSection } from '../components/TrustSection/TrustSection';
 import { useRecentlyViewed } from '../context/RecentlyViewedContext';
@@ -114,22 +115,22 @@ export default function Home() {
           </>
         );
 
-      case 'reviews':
-        return (
-          <>
-            {recentlyViewed.length >= 3 ? (
-              <ProductCarousel
-                eyebrow="Pick Up Where You Left Off"
-                title="Recently viewed"
-                products={recentlyViewed}
-              />
-            ) : null}
-            <ReviewSection limit={limit} />
-          </>
-        );
+      // case 'reviews':
+      //   return (
+      //     <>
+      //       {recentlyViewed.length >= 3 ? (
+      //         <ProductCarousel
+      //           eyebrow="Pick Up Where You Left Off"
+      //           title="Recently viewed"
+      //           products={recentlyViewed}
+      //         />
+      //       ) : null}
+      //       <ReviewSection limit={limit} />
+      //     </>
+      //   );
 
-      case 'instagram':
-        return <InstagramSection limit={limit} />;
+      // case 'instagram':
+      //   return <InstagramSection limit={limit} />;
 
       /* The newsletter block is site-wide — the footer renders it on every
          page, so the home page does not repeat it. */
@@ -157,6 +158,10 @@ export default function Home() {
       <h1 className="sr-only">
         {BRAND.name} — {BRAND.tagline}
       </h1>
+
+      {/* Fixed to the left edge, so it is mounted here rather than inside a
+          section — it belongs to the page, not to any band of it. */}
+      <SocialRail />
 
       {homeSections.map((section) => (
         <Fragment key={section.key}>{render(section)}</Fragment>

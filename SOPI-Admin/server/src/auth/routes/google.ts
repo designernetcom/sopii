@@ -47,7 +47,15 @@ import {
   toPublicUserById,
   unlinkIdentity,
 } from '../users.js';
-import { completeLogin, MESSAGES, readSurface, safeRedirect, text, type Surface } from './shared.js';
+import {
+  completeLogin,
+  MESSAGES,
+  readSurface,
+  returnOrigin,
+  safeRedirect,
+  text,
+  type Surface,
+} from './shared.js';
 
 export const googleRoutes = Router();
 
@@ -103,6 +111,12 @@ googleRoutes.get(
       nonce,
       surface,
       redirectTo: text(req.query.next, 300) || (surface === 'admin' ? '/admin/dashboard' : '/account'),
+      /*
+       * Where to come back to. Captured here rather than read from config in
+       * the callback, because by then the browser is arriving from
+       * accounts.google.com and has forgotten which of our front ends it left.
+       */
+      returnOrigin: returnOrigin(req, surface),
       // Set when an already-signed-in person is connecting Google from
       // /account/security rather than logging in with it (§26).
       linkUserId: req.authUser?.user._id,
@@ -173,15 +187,18 @@ googleRoutes.get(
     if (!state) return fail(res, 'shop', 'expired');
 
     const surface = state.surface as Surface;
+    // Recorded when the flow started; the Referer here is accounts.google.com,
+    // which tells us nothing about which of our front ends to go back to.
+    const origin = state.returnOrigin;
 
     if (req.query.error) {
       // The person pressed Cancel on Google's consent screen. Not an error
       // worth a stack trace — send them back to where they started.
-      return fail(res, surface, 'cancelled', state.redirectTo);
+      return fail(res, surface, 'cancelled', state.redirectTo, origin);
     }
 
     const code = text(req.query.code, 512);
-    if (!code) return fail(res, surface, 'no_code', state.redirectTo);
+    if (!code) return fail(res, surface, 'no_code', state.redirectTo, origin);
 
     let profile: GoogleProfile;
     try {
@@ -196,13 +213,13 @@ googleRoutes.get(
         surface,
         reason: error instanceof GoogleAuthError ? error.message : 'verification failed',
       });
-      return fail(res, surface, 'verification_failed', state.redirectTo);
+      return fail(res, surface, 'verification_failed', state.redirectTo, origin);
     }
 
     /* ---- linking an account that is already signed in (§26) ---- */
     if (state.linkUserId) {
       const outcome = await attachGoogle(state.linkUserId, profile);
-      if (!outcome.ok) return fail(res, surface, outcome.reason, state.redirectTo);
+      if (!outcome.ok) return fail(res, surface, outcome.reason, state.redirectTo, origin);
 
       await audit(req, {
         action: 'google_linked',
@@ -211,7 +228,7 @@ googleRoutes.get(
         provider: 'google',
         surface,
       });
-      return done(res, surface, state.redirectTo, 'linked');
+      return done(res, surface, state.redirectTo, 'linked', origin);
     }
 
     /* ---- signing in ---- */
@@ -225,7 +242,7 @@ googleRoutes.get(
         surface,
         reason: resolved.reason,
       });
-      return fail(res, surface, resolved.reason, state.redirectTo);
+      return fail(res, surface, resolved.reason, state.redirectTo, origin);
     }
 
     const user = resolved.user;
@@ -240,7 +257,7 @@ googleRoutes.get(
         surface,
         reason: 'not an admin role',
       });
-      return fail(res, surface, 'no_admin_access', state.redirectTo);
+      return fail(res, surface, 'no_admin_access', state.redirectTo, origin);
     }
 
     const payload = await completeLogin(req, res, { user, method: 'google', surface });
@@ -251,26 +268,50 @@ googleRoutes.get(
      */
     void payload;
 
-    return done(res, surface, state.redirectTo, 'ok');
+    return done(res, surface, state.redirectTo, 'ok', origin);
   }),
 );
 
+/**
+ * The origin this flow is owed a return trip to.
+ *
+ * `state.returnOrigin` is the one the browser actually started from — which in
+ * development is the Vite dev server, not the public domain that `SHOP_URL`
+ * names for the benefit of emailed links. Falls back to the configured front
+ * end for states written before this field existed.
+ */
+function landing(surface: Surface, origin?: string) {
+  return origin || (surface === 'admin' ? authConfig.frontends.admin : authConfig.frontends.shop);
+}
+
 /** Back to the SPA's callback route, which finishes by calling /auth/refresh. */
-function done(res: import('express').Response, surface: Surface, next: string, status: string) {
-  const base = surface === 'admin' ? authConfig.frontends.admin : authConfig.frontends.shop;
+function done(
+  res: import('express').Response,
+  surface: Surface,
+  next: string,
+  status: string,
+  origin?: string,
+) {
+  const base = landing(surface, origin);
   const url = new URL(surface === 'admin' ? '/admin/auth/callback' : '/auth/callback', base);
   url.searchParams.set('status', status);
-  url.searchParams.set('next', new URL(safeRedirect(next, surface)).pathname);
+  url.searchParams.set('next', new URL(safeRedirect(next, surface, base)).pathname);
   res.redirect(url.toString());
 }
 
 /** Same landing page, with a reason code the SPA turns into a message. */
-function fail(res: import('express').Response, surface: Surface, reason: string, next = '/') {
-  const base = surface === 'admin' ? authConfig.frontends.admin : authConfig.frontends.shop;
+function fail(
+  res: import('express').Response,
+  surface: Surface,
+  reason: string,
+  next = '/',
+  origin?: string,
+) {
+  const base = landing(surface, origin);
   const url = new URL(surface === 'admin' ? '/admin/auth/callback' : '/auth/callback', base);
   url.searchParams.set('status', 'error');
   url.searchParams.set('reason', reason);
-  url.searchParams.set('next', new URL(safeRedirect(next, surface)).pathname);
+  url.searchParams.set('next', new URL(safeRedirect(next, surface, base)).pathname);
   res.redirect(url.toString());
 }
 
@@ -548,6 +589,7 @@ googleRoutes.post(
       nonce,
       surface,
       redirectTo: text((req.body as Record<string, unknown>).next, 300) || '/account/security',
+      returnOrigin: returnOrigin(req, surface),
       linkUserId: user._id,
       ip: clientIp(req),
       expiresAt: new Date(Date.now() + authConfig.oauth.stateTtlMs),
