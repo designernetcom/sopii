@@ -16,7 +16,7 @@ export function SectionHeading({ eyebrow, title, subtitle, action, align = 'left
     >
       <div className={cn(centered && 'max-w-2xl')}>
         {eyebrow ? <p className="eyebrow mb-3 text-[#692D58]">{eyebrow}</p> : null}
-        <h2 className="section-title tracking-[-0.04em] text-[#6B2E5A]">{title}</h2>
+        <h2 className="section-title tracking-[-0.04em] text-brand">{title}</h2>
         {subtitle ? (
           <p className={cn('section-sub max-w-lg text-charcoal-muted', centered && 'mx-auto')}>{subtitle}</p>
         ) : null}

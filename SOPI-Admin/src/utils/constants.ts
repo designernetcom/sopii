@@ -304,7 +304,7 @@ export const RANGE_OPTIONS: { key: RangeKey; label: string }[] = [
   { key: '1y', label: '1 Year' },
 ];
 
-export const CHART_COLORS = ['#6d4ae4', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6'];
+export const CHART_COLORS = ['#7E1F20', '#0ea5e9', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6'];
 
 export const INDIAN_STATES = [
   'Andhra Pradesh',

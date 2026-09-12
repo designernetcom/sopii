@@ -36,7 +36,7 @@ export function Footer() {
 
   return (
     <footer className="mt-auto bg-cream text-charcoal">
-      <Newsletter tone="dark" />
+      {/* <Newsletter tone="dark" /> */}
 
       {/* The seam between the page and the footer: a gold hairline that fades
           out at both ends, rather than a border ruled edge to edge. */}
@@ -63,7 +63,7 @@ export function Footer() {
           <div className="sm:col-span-2 lg:col-span-1">
             <Link to="/" className="inline-block" aria-label={`${BRAND.name} home`}>
               {/* The footer sits on cream now, so this is the logo artwork
-                  itself — plum with its gold rule — rather than the wordmark
+                  itself — oxblood with its gold rule — rather than the wordmark
                   set in type, which is what the old charcoal panel forced. */}
               <BrandLogo name={BRAND.name} className="max-h-16 sm:max-h-20 lg:max-h-[104px]" />
             </Link>
@@ -79,7 +79,7 @@ export function Footer() {
                 phone without changing how they read on a desktop. */}
             <ul className="mt-6 space-y-1 sm:mt-7 sm:space-y-3.5">
               <li className="flex items-start gap-3 text-[13px] leading-relaxed text-charcoal-soft">
-                <MapPin size={16} className="mt-0.5 shrink-0 text-clay" aria-hidden="true" />
+                <MapPin size={16} className="mt-0.5 shrink-0 text-brand-soft" aria-hidden="true" />
                 <span className="max-w-sm">{BRAND.address}</span>
               </li>
               <li>
@@ -87,7 +87,7 @@ export function Footer() {
                   href={`mailto:${BRAND.email}`}
                   className="footer-link tap-target flex items-center gap-3 break-all text-[13px]"
                 >
-                  <Mail size={16} className="shrink-0 text-clay" aria-hidden="true" />
+                  <Mail size={16} className="shrink-0 text-brand-soft" aria-hidden="true" />
                   {BRAND.email}
                 </a>
               </li>
@@ -96,7 +96,7 @@ export function Footer() {
                   href={`tel:${BRAND.phone.replace(/\s/g, '')}`}
                   className="footer-link tap-target flex items-center gap-3 text-[13px]"
                 >
-                  <Phone size={16} className="shrink-0 text-clay" aria-hidden="true" />
+                  <Phone size={16} className="shrink-0 text-brand-soft" aria-hidden="true" />
                   {BRAND.phone}
                 </a>
               </li>
@@ -147,7 +147,7 @@ export function Footer() {
                     to={link.to}
                     className="footer-link tap-target inline-flex items-center gap-2 text-[12px]"
                   >
-                    <Icon size={14} className="text-clay" aria-hidden="true" />
+                    <Icon size={14} className="text-brand-soft" aria-hidden="true" />
                     {link.label}
                   </Link>
                 </li>
@@ -164,7 +164,7 @@ export function Footer() {
 
           <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-2">
             <span className="inline-flex items-center gap-1.5 text-[10px] uppercase tracking-widest2 text-charcoal-faint">
-              <ShieldCheck size={14} className="text-clay" aria-hidden="true" />
+              <ShieldCheck size={14} className="text-brand-soft" aria-hidden="true" />
               We Accept
             </span>
             <ul className="flex flex-wrap items-center justify-center gap-1.5">
@@ -208,11 +208,19 @@ export function Footer() {
           gets its own hairline and the faintest ink on the page. Same 11px as
           the copyright it echoes.
         */}
-        <div className="border-t border-beige/70">
-          <p className="container-site py-2.5 text-center text-[11px] text-charcoal-faint sm:py-3">
-            Designed and Developed by {BUILT_BY}
-          </p>
-        </div>
+  <div className="border-t border-beige/70">
+  <p className="container-site py-2.5 text-center text-[11px] text-charcoal-faint sm:py-3">
+    Designed and Developed by{" "}
+    <a
+      href="https://netcom-india.com/"
+      target="_blank"
+      rel="noopener noreferrer"
+      className="hover:underline"
+    >
+      {BUILT_BY}
+    </a>
+  </p>
+</div>
       </div>
 
       {/* Clears the fixed mobile bottom nav, home indicator included. */}

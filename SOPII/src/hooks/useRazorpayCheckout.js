@@ -51,8 +51,11 @@ const GENERIC_FAILURE = 'Payment failed. Your order has not been placed.';
  * sends no theme. Both are fallbacks — whatever the server sends always wins,
  * because that is where a rebrand happens.
  */
-const SHOP_LOGO = '/final_logo-240.png';
-const FALLBACK_THEME_COLOR = '#7D2B69';
+const SHOP_LOGO = '/sopii-240.png';
+/* Razorpay paints its own iframe, so this is the one place the brand
+   oxblood has to be written as a literal rather than read from
+   `--c-brand`. Keep the two in step. */
+const FALLBACK_THEME_COLOR = '#540000';
 
 /** The shop's mark as an absolute URL — Razorpay resolves it from its own iframe. */
 function shopLogo() {

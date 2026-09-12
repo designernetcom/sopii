@@ -1,15 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { ArrowLeft, Download, History } from 'lucide-react';
+import { ArrowLeft, Download, History, Trash2 } from 'lucide-react';
 import { cn } from '@/utils/cn';
-import { useDocumentTitle, useListQuery } from '@/hooks';
-import { useGetStockHistoryQuery } from '@/store/api/commerceApi';
+import { useDocumentTitle, useListQuery, usePermissions } from '@/hooks';
+import { useClearStockHistoryMutation, useGetStockHistoryQuery } from '@/store/api/commerceApi';
+import { errorMessage } from '@/store/api/baseQuery';
 import { PageHeader } from '@/components/common/PageHeader';
 import { Button } from '@/components/common/Button';
 import { StatusBadge } from '@/components/common/Badge';
 import { SearchInput, FilterChip } from '@/components/common/SearchInput';
-import { Input } from '@/components/common/Field';
+import { Field, Input, Select } from '@/components/common/Field';
 import { DataTable, type Column } from '@/components/tables/DataTable';
+import { ConfirmModal } from '@/components/modals/ConfirmModal';
 import { useToast } from '@/components/common/Toast';
 import { MOVEMENT_TYPE } from '@/utils/constants';
 import { formatDate, formatNumber } from '@/utils/format';
@@ -30,8 +32,13 @@ export default function InventoryHistoryPage() {
   useDocumentTitle('Stock history');
 
   const toast = useToast();
+  const { can } = usePermissions();
   const [searchParams, setSearchParams] = useSearchParams();
   const productId = searchParams.get('productId') ?? undefined;
+
+  const [clearOpen, setClearOpen] = useState(false);
+  const [clearMode, setClearMode] = useState<'before' | 'all'>('before');
+  const [cutoff, setCutoff] = useState(() => new Date().toISOString().slice(0, 10));
 
   const query = useListQuery({ pageSize: 12, sortBy: 'at', sortDir: 'desc' });
   const { setFilter } = query;
@@ -42,6 +49,41 @@ export default function InventoryHistoryPage() {
   }, [productId, setFilter]);
 
   const { data, isLoading, isError, refetch } = useGetStockHistoryQuery(query.params);
+  const [clearHistory, { isLoading: clearing }] = useClearStockHistoryMutation();
+
+  /*
+   * Clearing ignores the filters above on purpose.
+   *
+   * A search box and a type chip narrow what you are *looking* at, and it
+   * would be very easy to read "Clear history" as "clear what I can see" when
+   * it had in fact deleted the whole log. So the modal asks for the range in
+   * its own words, and this sends exactly what was asked for and nothing the
+   * page happened to be filtered by.
+   */
+  const handleClear = async () => {
+    if (clearMode === 'before' && !cutoff) {
+      toast.warning('Pick a date', 'Choose the date to delete movements before.');
+      return;
+    }
+
+    try {
+      const { deleted } = await clearHistory(
+        clearMode === 'all' ? { all: true } : { before: cutoff },
+      ).unwrap();
+
+      setClearOpen(false);
+      if (deleted) {
+        toast.success(
+          `${formatNumber(deleted)} movement(s) deleted.`,
+          'Stock levels are unchanged.',
+        );
+      } else {
+        toast.info('Nothing to delete', 'No movements fall in that range.');
+      }
+    } catch (error) {
+      toast.error('Could not clear stock history', errorMessage(error));
+    }
+  };
 
   const exportHistory = () => {
     const rows = data?.items ?? [];
@@ -174,9 +216,20 @@ export default function InventoryHistoryPage() {
         title="Stock history"
         description="Every stock movement, with who made it and why."
         actions={
-          <Button variant="secondary" icon={<Download className="h-4 w-4" />} onClick={exportHistory}>
-            Export
-          </Button>
+          <>
+            <Button variant="secondary" icon={<Download className="h-4 w-4" />} onClick={exportHistory}>
+              Export
+            </Button>
+            {can('inventory', 'delete') && (
+              <Button
+                variant="danger"
+                icon={<Trash2 className="h-4 w-4" />}
+                onClick={() => setClearOpen(true)}
+              >
+                Clear history
+              </Button>
+            )}
+          </>
         }
       />
 
@@ -261,6 +314,46 @@ export default function InventoryHistoryPage() {
           label: 'movements',
         }}
       />
+
+      <ConfirmModal
+        open={clearOpen}
+        onClose={() => setClearOpen(false)}
+        onConfirm={handleClear}
+        tone="danger"
+        loading={clearing}
+        size="md"
+        title="Clear stock history?"
+        description="Stock levels are not affected — every product keeps the quantity it has now. What goes is the record of how it got there, and it cannot be recovered."
+        confirmLabel={clearing ? 'Clearing…' : 'Clear history'}
+      >
+        <div className="space-y-3">
+          <Field label="What to delete">
+            <Select
+              value={clearMode}
+              onChange={(event) => setClearMode(event.target.value as 'before' | 'all')}
+              options={[
+                { value: 'before', label: 'Movements older than a date' },
+                { value: 'all', label: 'Every movement ever recorded' },
+              ]}
+            />
+          </Field>
+
+          {clearMode === 'before' ? (
+            <Field label="Delete movements before" hint="The date itself is kept.">
+              <Input
+                type="date"
+                value={cutoff}
+                onChange={(event) => setCutoff(event.target.value)}
+              />
+            </Field>
+          ) : (
+            <p className="rounded-lg bg-rose-50 px-3 py-2 text-xs text-rose-800 ring-1 ring-rose-600/20 dark:bg-rose-500/10 dark:text-rose-300">
+              This deletes the entire audit trail, including movements written by live orders. There
+              is no undo and no export of what was removed — use Export first if you need a copy.
+            </p>
+          )}
+        </div>
+      </ConfirmModal>
     </div>
   );
 }

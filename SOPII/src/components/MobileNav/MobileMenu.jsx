@@ -106,7 +106,7 @@ export function MobileMenu() {
                         <button
                           type="button"
                           onClick={() => go(item.to)}
-                          className="mb-3 flex min-h-[44px] items-center text-[11px] font-medium uppercase tracking-widest2 text-clay underline underline-offset-4"
+                          className="mb-3 flex min-h-[44px] items-center text-[11px] font-medium uppercase tracking-widest2 text-brand-soft underline underline-offset-4"
                         >
                           Shop all {item.label}
                         </button>

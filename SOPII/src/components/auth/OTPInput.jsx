@@ -137,9 +137,9 @@ export function OTPInput({
             onFocus={(event) => event.target.select()}
             className={cn(
               'h-13 w-full min-w-0 border bg-cream text-center font-display text-xl text-charcoal',
-              'transition-colors duration-200 focus:border-clay focus:outline-none focus:ring-0',
+              'transition-colors duration-200 focus:border-brand-soft focus:outline-none focus:ring-0',
               'disabled:cursor-not-allowed disabled:opacity-50',
-              error ? 'border-sale' : digit ? 'border-clay' : 'border-beige',
+              error ? 'border-danger' : digit ? 'border-brand-soft' : 'border-beige',
             )}
             style={{ height: '3.25rem' }}
           />
@@ -147,7 +147,7 @@ export function OTPInput({
       </div>
 
       {error ? (
-        <p id={`${generated}-error`} role="alert" className="mt-2 text-[11px] text-sale">
+        <p id={`${generated}-error`} role="alert" className="mt-2 text-[11px] text-danger">
           {error}
         </p>
       ) : null}

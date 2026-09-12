@@ -129,7 +129,14 @@ const PRODUCT_ANALYTICS_FIELDS = {
   categoryId: 1,
   price: 1,
   stock: 1,
+  /* `trackInventory` decides whether a product counts towards the low-stock
+     KPI and `images` supplies the thumbnail on the top-products table. Both
+     were missing here, which is the trouble with a projection described as
+     "only the fields the builders read": it is a claim that has to be kept
+     true by hand, and a field left out does not fail — it arrives undefined. */
+  trackInventory: 1,
   lowStockThreshold: 1,
+  images: 1,
   unitsSold: 1,
   revenue: 1,
   status: 1,

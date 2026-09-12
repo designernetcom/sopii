@@ -1,8 +1,13 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Download, Eye, MoreHorizontal, ShoppingCart, Truck, XCircle } from 'lucide-react';
+import { Download, Eye, MoreHorizontal, ShoppingCart, Trash2, Truck, XCircle } from 'lucide-react';
 import { useDocumentTitle, useListQuery, usePermissions } from '@/hooks';
-import { useGetOrderCountsQuery, useGetOrdersQuery, useUpdateOrderStatusMutation } from '@/store/api/commerceApi';
+import {
+  useDeleteOrderMutation,
+  useGetOrderCountsQuery,
+  useGetOrdersQuery,
+  useUpdateOrderStatusMutation,
+} from '@/store/api/commerceApi';
 import { errorMessage } from '@/store/api/baseQuery';
 import { PageHeader, Tabs } from '@/components/common/PageHeader';
 import { Button, IconButton } from '@/components/common/Button';
@@ -12,7 +17,7 @@ import { SearchInput } from '@/components/common/SearchInput';
 import { Input, Select } from '@/components/common/Field';
 import { Dropdown, DropdownDivider, DropdownItem, DropdownLabel } from '@/components/common/Dropdown';
 import { DataTable, type Column } from '@/components/tables/DataTable';
-import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { ConfirmModal, DeleteModal } from '@/components/modals/ConfirmModal';
 import { useToast } from '@/components/common/Toast';
 import {
   FULFILLMENT_STATUS,
@@ -55,8 +60,10 @@ export default function OrderListPage() {
   const { data, isLoading, isError, refetch } = useGetOrdersQuery(query.params);
   const { data: counts } = useGetOrderCountsQuery();
   const [updateStatus, { isLoading: updating }] = useUpdateOrderStatusMutation();
+  const [deleteOrder, { isLoading: deleting }] = useDeleteOrderMutation();
 
   const [cancelTarget, setCancelTarget] = useState<Order | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Order | null>(null);
 
   const activeTab = (query.state.status as string) || 'all';
 
@@ -66,6 +73,17 @@ export default function OrderListPage() {
       toast.success('Order status updated.', `#${order.code} → ${ORDER_STATUS[status].label}`);
     } catch (error) {
       toast.error('Could not update the order', errorMessage(error));
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteOrder(deleteTarget.id).unwrap();
+      toast.success('Order deleted.', `#${deleteTarget.code}`);
+      setDeleteTarget(null);
+    } catch (error) {
+      toast.error('Could not delete the order', errorMessage(error));
     }
   };
 
@@ -223,6 +241,14 @@ export default function OrderListPage() {
                     </DropdownItem>
                   </>
                 )}
+              {can('orders', 'delete') && (
+                <>
+                  <DropdownDivider />
+                  <DropdownItem icon={<Trash2 />} danger onClick={() => setDeleteTarget(order)}>
+                    Delete order
+                  </DropdownItem>
+                </>
+              )}
             </Dropdown>
           </div>
         );
@@ -356,6 +382,23 @@ export default function OrderListPage() {
         description="The customer will be notified and any reserved stock is returned to inventory. Paid orders will need a refund."
         confirmLabel="Cancel order"
         cancelLabel="Keep order"
+      />
+
+      <DeleteModal
+        open={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        entity="order"
+        name={deleteTarget ? `#${deleteTarget.code}` : undefined}
+        loading={deleting}
+        extra={
+          deleteTarget && deleteTarget.status !== 'cancelled' && deleteTarget.status !== 'returned' ? (
+            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-300">
+              Deleting is not cancelling — the items on this order are not returned to stock, and the
+              customer is not notified. Cancel it first if the goods should go back on the shelf.
+            </p>
+          ) : undefined
+        }
       />
     </div>
   );

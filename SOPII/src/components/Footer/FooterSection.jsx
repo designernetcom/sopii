@@ -15,7 +15,7 @@ import { cn } from '../../utils/cn';
  * ships to a laptop is the same stacked list of links it always was.
  *
  * The colours are the footer's: a beige hairline between the collapsed rows
- * and a chevron in clay. It is only ever rendered inside `<Footer>`, so it
+ * and a chevron in brand-soft. It is only ever rendered inside `<Footer>`, so it
  * carries that palette directly instead of a `tone` prop with one caller.
  */
 export function FooterSection({ title, children, className }) {
@@ -32,7 +32,7 @@ export function FooterSection({ title, children, className }) {
         <ChevronDown
           size={16}
           aria-hidden="true"
-          className="footer-chevron shrink-0 text-clay transition-transform duration-300 sm:hidden"
+          className="footer-chevron shrink-0 text-brand-soft transition-transform duration-300 sm:hidden"
         />
       </summary>
 

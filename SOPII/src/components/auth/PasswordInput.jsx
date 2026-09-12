@@ -35,7 +35,7 @@ export const PasswordInput = forwardRef(function PasswordInput(
           autoComplete={autoComplete}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? `${inputId}-error` : undefined}
-          className={cn('field pr-11', error && 'border-sale')}
+          className={cn('field pr-11', error && 'border-danger')}
           {...rest}
         />
         <button
@@ -52,7 +52,7 @@ export const PasswordInput = forwardRef(function PasswordInput(
       </div>
 
       {error ? (
-        <p id={`${inputId}-error`} role="alert" className="mt-1.5 text-[11px] text-sale">
+        <p id={`${inputId}-error`} role="alert" className="mt-1.5 text-[11px] text-danger">
           {error}
         </p>
       ) : null}
@@ -82,10 +82,10 @@ export function PasswordStrength({ value = '', className }) {
               'h-0.5 flex-1 transition-colors duration-300',
               index < score
                 ? score <= 2
-                  ? 'bg-sale'
+                  ? 'bg-danger'
                   : score <= 4
                     ? 'bg-gold'
-                    : 'bg-plum'
+                    : 'bg-brand'
                 : 'bg-beige',
             )}
           />
@@ -104,7 +104,7 @@ export function PasswordStrength({ value = '', className }) {
               )}
             >
               {met ? (
-                <Check size={11} className="shrink-0 text-plum" strokeWidth={2.5} />
+                <Check size={11} className="shrink-0 text-brand" strokeWidth={2.5} />
               ) : (
                 <X size={11} className="shrink-0 text-charcoal-faint" strokeWidth={2} />
               )}

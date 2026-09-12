@@ -59,7 +59,7 @@ export function placeholderDataUri(seed: string, label?: string) {
 <rect width="400" height="400" fill="url(#g)"/>
 <circle cx="330" cy="72" r="120" fill="#ffffff" opacity="0.16"/>
 <circle cx="70" cy="340" r="90" fill="#ffffff" opacity="0.12"/>
-<text x="50%" y="50%" dy="0.36em" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="112" font-weight="600" fill="#1c2129" opacity="0.32">${text}</text>
+<text x="50%" y="50%" dy="0.36em" text-anchor="middle" font-family="Inter, system-ui, sans-serif" font-size="112" font-weight="600" fill="#24201d" opacity="0.32">${text}</text>
 </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }
@@ -77,7 +77,7 @@ export function placeholderBanner(seed: string, label: string) {
 <rect width="1200" height="420" fill="url(#g)"/>
 <circle cx="1020" cy="90" r="200" fill="#ffffff" opacity="0.16"/>
 <circle cx="180" cy="380" r="150" fill="#ffffff" opacity="0.10"/>
-<text x="60" y="220" font-family="Inter, system-ui, sans-serif" font-size="52" font-weight="600" fill="#1c2129" opacity="0.45">${label.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>
+<text x="60" y="220" font-family="Inter, system-ui, sans-serif" font-size="52" font-weight="600" fill="#24201d" opacity="0.45">${label.replace(/&/g, '&amp;').replace(/</g, '&lt;')}</text>
 </svg>`;
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
 }

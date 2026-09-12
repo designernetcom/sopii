@@ -124,7 +124,7 @@ export default function Login() {
         {greeting ? (
           <p
             role="status"
-            className="border-l-2 border-plum bg-plum-pale/50 px-3 py-2.5 text-[12px] text-plum-deep"
+            className="border-l-2 border-brand bg-brand-pale/50 px-3 py-2.5 text-[12px] text-brand-deep"
           >
             {greeting}
           </p>

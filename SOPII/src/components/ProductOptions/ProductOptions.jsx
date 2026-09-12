@@ -20,7 +20,7 @@ export function SizeSelector({ sizes = [], value, onChange, onSizeGuide, classNa
           <button
             type="button"
             onClick={onSizeGuide}
-            className="text-[11px] text-clay underline underline-offset-4 hover:text-charcoal"
+            className="text-[11px] text-brand-soft underline underline-offset-4 hover:text-charcoal"
           >
             Size Guide
           </button>

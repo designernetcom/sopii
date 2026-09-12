@@ -307,7 +307,7 @@ export function buildTopProducts(
       return {
         id,
         name: product?.name ?? 'Unknown product',
-        image: product?.images[0]?.url,
+        image: product?.images?.[0]?.url,
         category: product ? (categoryById.get(product.categoryId)?.name ?? '—') : '—',
         sold: t.sold,
         revenue: t.revenue,

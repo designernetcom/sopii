@@ -21,7 +21,7 @@ import { ChartTooltip } from './ChartTooltip';
 export type SalesMetric = 'revenue' | 'orders' | 'aov';
 
 const METRICS: { key: SalesMetric; label: string; color: string }[] = [
-  { key: 'revenue', label: 'Revenue', color: '#6d4ae4' },
+  { key: 'revenue', label: 'Revenue', color: '#7E1F20' },
   { key: 'orders', label: 'Orders', color: '#0ea5e9' },
   { key: 'aov', label: 'Avg Order Value', color: '#10b981' },
 ];
@@ -139,7 +139,7 @@ export function RevenueChart({
 }
 
 /** Compact inline trend used inside KPI cards. */
-export function Sparkline({ data, color = '#6d4ae4' }: { data: number[]; color?: string }) {
+export function Sparkline({ data, color = '#7E1F20' }: { data: number[]; color?: string }) {
   const points = data.map((value, index) => ({ index, value }));
   const id = useState(() => `spark-${Math.random().toString(36).slice(2, 8)}`)[0];
 

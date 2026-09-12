@@ -133,7 +133,7 @@ export default function ProductDetails() {
               <Rating value={product.rating} reviews={product.reviews} showValue size={14} />
               <a
                 href="#reviews"
-                className="text-[11px] text-clay underline underline-offset-4 hover:text-charcoal"
+                className="text-[11px] text-brand-soft underline underline-offset-4 hover:text-charcoal"
               >
                 Read reviews
               </a>
@@ -175,7 +175,7 @@ export default function ProductDetails() {
             </div>
 
             {error ? (
-              <p role="alert" className="mt-4 text-[12px] text-sale">
+              <p role="alert" className="mt-4 text-[12px] text-danger">
                 {error}
               </p>
             ) : null}
@@ -213,7 +213,7 @@ export default function ProductDetails() {
                 { icon: PackageCheck, label: 'Ships in 24h', text: 'Dispatched from Pune' },
               ].map((item) => (
                 <li key={item.label} className="flex items-center gap-2.5">
-                  <item.icon size={16} className="shrink-0 text-clay" strokeWidth={1.4} aria-hidden="true" />
+                  <item.icon size={16} className="shrink-0 text-brand-soft" strokeWidth={1.4} aria-hidden="true" />
                   <span>
                     <span className="block text-[11px] font-medium uppercase tracking-widest2">
                       {item.label}
@@ -236,7 +236,7 @@ export default function ProductDetails() {
                     <ul className="space-y-1.5">
                       {product.details.map((d) => (
                         <li key={d} className="flex gap-2">
-                          <Check size={14} className="mt-0.5 shrink-0 text-clay" aria-hidden="true" />
+                          <Check size={14} className="mt-0.5 shrink-0 text-brand-soft" aria-hidden="true" />
                           {d}
                         </li>
                       ))}
@@ -254,7 +254,7 @@ export default function ProductDetails() {
                       <ul className="space-y-1.5">
                         {product.care.map((c) => (
                           <li key={c} className="flex gap-2">
-                            <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-clay" />
+                            <span aria-hidden="true" className="mt-2 h-1 w-1 shrink-0 rounded-full bg-brand-soft" />
                             {c}
                           </li>
                         ))}
@@ -330,7 +330,7 @@ export default function ProductDetails() {
                     <Rating value={review.rating} size={12} />
                     <h3 className="text-[13px] font-medium">{review.title}</h3>
                     {review.verified ? (
-                      <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest2 text-clay">
+                      <span className="inline-flex items-center gap-1 text-[10px] uppercase tracking-widest2 text-brand-soft">
                         <Check size={11} aria-hidden="true" /> Verified
                       </span>
                     ) : null}
@@ -422,7 +422,7 @@ export default function ProductDetails() {
           <Link
             to="/pages/size-guide"
             onClick={() => setSizeGuideOpen(false)}
-            className="mt-5 inline-block text-[11px] font-medium uppercase tracking-widest2 text-clay link-underline"
+            className="mt-5 inline-block text-[11px] font-medium uppercase tracking-widest2 text-brand-soft link-underline"
           >
             Full measuring guide
           </Link>

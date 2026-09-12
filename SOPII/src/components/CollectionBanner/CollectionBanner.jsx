@@ -39,7 +39,7 @@ export function CollectionBanner({ banner }) {
           <Reveal
             delay={140}
             className={cn(
-              'relative z-10 -mt-10 mx-4 border border-[#eadcc8] bg-[#fffdfb] p-7 shadow-[0_24px_52px_-32px_rgba(28,26,23,0.5)]',
+              'relative z-10 -mt-10 mx-4 border border-beige bg-cream p-7 shadow-[0_24px_52px_-32px_rgb(var(--c-ink)/0.5)]',
               'sm:mx-8 sm:p-10',
               'lg:col-span-5 lg:mx-0 lg:mt-0 lg:p-12',
               alignRight ? 'lg:col-start-1 lg:row-start-1' : 'lg:col-start-8 lg:row-start-1',
@@ -47,7 +47,7 @@ export function CollectionBanner({ banner }) {
           >
             <p className="eyebrow">{banner.eyebrow}</p>
 
-            <h2 className="mt-4 whitespace-pre-line font-display text-[26px] leading-[1.08] tracking-[-0.03em] text-[#6B2E5A] sm:text-[34px] lg:text-[40px]">
+            <h2 className="mt-4 whitespace-pre-line font-display text-[26px] leading-[1.08] tracking-[-0.03em] text-brand sm:text-[34px] lg:text-[40px]">
               {banner.title}
             </h2>
 

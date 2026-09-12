@@ -57,7 +57,7 @@ export function QuickViewModal() {
           <Link
             to={productPath(product)}
             onClick={closeQuickView}
-            className="mt-3 inline-block text-[11px] font-medium uppercase tracking-widest2 text-clay link-underline"
+            className="mt-3 inline-block text-[11px] font-medium uppercase tracking-widest2 text-brand-soft link-underline"
           >
             View full details
           </Link>
@@ -105,7 +105,7 @@ export function QuickViewModal() {
           </div>
 
           {error ? (
-            <p role="alert" className="mt-3 text-[12px] text-sale">
+            <p role="alert" className="mt-3 text-[12px] text-danger">
               {error}
             </p>
           ) : null}

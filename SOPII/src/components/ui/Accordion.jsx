@@ -28,11 +28,11 @@ export function Accordion({ items = [], defaultOpen, allowMultiple = false, clas
                 aria-expanded={isOpen}
                 aria-controls={`panel-${item.id}`}
                 id={`accordion-${item.id}`}
-                className="flex w-full items-center justify-between gap-4 py-4 text-left text-[12px] font-medium uppercase tracking-widest2 text-charcoal transition-colors hover:text-clay"
+                className="flex w-full items-center justify-between gap-4 py-4 text-left text-[12px] font-medium uppercase tracking-widest2 text-charcoal transition-colors hover:text-brand-soft"
               >
                 {item.title}
                 {isOpen ? (
-                  <Minus size={15} className="shrink-0 text-clay" aria-hidden="true" />
+                  <Minus size={15} className="shrink-0 text-brand-soft" aria-hidden="true" />
                 ) : (
                   <Plus size={15} className="shrink-0 text-charcoal-faint" aria-hidden="true" />
                 )}

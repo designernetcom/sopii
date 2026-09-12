@@ -106,7 +106,7 @@ export function SearchOverlay() {
               Search products
             </label>
             <div className="flex items-center gap-3 border-b-2 border-charcoal pb-3">
-              <Search size={20} className="shrink-0 text-clay" aria-hidden="true" strokeWidth={1.5} />
+              <Search size={20} className="shrink-0 text-brand-soft" aria-hidden="true" strokeWidth={1.5} />
               <input
                 ref={inputRef}
                 id="site-search"
@@ -154,7 +154,7 @@ export function SearchOverlay() {
                         <button
                           type="button"
                           onClick={() => commit(term)}
-                          className="flex w-full items-center gap-2.5 py-1.5 text-left text-sm text-charcoal-soft transition-colors hover:text-clay"
+                          className="flex w-full items-center gap-2.5 py-1.5 text-left text-sm text-charcoal-soft transition-colors hover:text-brand-soft"
                         >
                           <Clock size={13} className="text-charcoal-faint" aria-hidden="true" />
                           {term}
@@ -226,7 +226,7 @@ export function SearchOverlay() {
                           <p className="mt-2 text-[10px] uppercase tracking-widest2 text-charcoal-faint">
                             {p.category}
                           </p>
-                          <p className="text-[13px] leading-snug transition-colors group-hover:text-clay">
+                          <p className="text-[13px] leading-snug transition-colors group-hover:text-brand-soft">
                             {p.name}
                           </p>
                           <p className="mt-0.5 text-[13px] font-medium">{formatPrice(p.price)}</p>

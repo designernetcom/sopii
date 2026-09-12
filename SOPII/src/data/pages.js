@@ -129,54 +129,154 @@ export const STATIC_PAGES = {
     ],
   },
 
-  shipping: {
-    title: 'Shipping Policy',
-    eyebrow: 'Customer Care',
-    intro: 'Where we ship, how long it takes and what it costs.',
-    seed: 906,
-    tags: 'fashion',
-    sections: [
-      {
-        heading: 'Dispatch',
-        body: 'Orders placed before 2pm IST on a working day are dispatched the same day. Everything else goes out the next working day from our Pune studio.',
-      },
-      {
-        heading: 'Delivery times',
-        body: 'Metro cities: 2–4 working days. Rest of India: 4–7 working days. Express delivery (2–3 working days) is available at checkout for ₹149.',
-      },
-      {
-        heading: 'Shipping charges',
-        body: 'Free standard shipping on orders above ₹9,999. Below that, standard shipping is ₹99. Cash on delivery is available across serviceable pin codes at no extra charge.',
-      },
 
-    ],
-  },
-
- returns: {
-  title: 'Return Policy',
+shipping: {
+  title: 'Shipping & Delivery Policy',
   eyebrow: 'Customer Care',
-  intro: 'All sales are final. We do not accept returns or exchanges.',
+  intro: 'We are committed to delivering your order within the promised time frame through reputed courier agencies.',
+  seed: 906,
+  tags: 'fashion',
+  sections: [
+    {
+      heading: 'Shipping & Delivery',
+      body: 'We are committed to deliver your order within the promised time frame. We ship through reputed courier agencies only. If there is no courier service available in your area, contact us on the details provided on the Contact Us page.',
+    },
+    {
+      heading: 'Damaged or Tampered Packages',
+      body: 'If the product you received appears to be in a bad condition or if the packaging is tampered with or damaged before delivery, please refuse to accept the package and return the package to the delivery person. Please contact us on the details provided on the Contact Us page.',
+    },
+    {
+      heading: 'Delivery Schedule',
+      body: 'Within Pune: 4–5 working days. Within Maharashtra: 5–6 working days. All Over India: 8–10 working days.',
+    },
+    {
+      heading: 'International Shipping',
+      body: 'International Shipping is available to select countries. International orders may require 3–5 additional working days in terms of processing and delivery time. Any import taxes, duties, or fees payable upon delivery are the sole responsibility of the receiving customer.',
+    },
+    {
+      heading: 'International Order Charges',
+      body: 'The price reflected on the website is exclusive of transaction fee, conversion fee, and shipping charges. The final price paid by the customer, which will reflect in the Invoice, will be the price after adding a 10% transaction fee and conversion fee and shipping charges depending on the order value and dimensions of your order.',
+    },
+    {
+      heading: 'Order Delivery Timeline',
+      body: 'Orders are delivered within 12 to 15 working days, unless otherwise specifically mentioned in the product details.',
+    },
+    {
+      heading: 'Delivery Address & Modifications',
+      body: 'Delivery of all orders will be duly done to the address as mentioned by you at the time of placing the order. In case of modifications, kindly drop us a mail at supportsopii@gmail.com within 2 hours of placing the order. For placing an International order, contact us on the details provided on the Contact Us page.',
+    },
+    {
+      heading: 'USA Shipping Policy – Additional Tariff Charges',
+      body: 'For USA orders only: As per the recent tariff regulations imposed by the US Government, all shipments to the United States will incur an additional cost. The cost may vary from 40% to 100% of the final shipping amount.',
+    },
+    {
+      heading: 'USA Import Taxes',
+      body: 'Whatever the total value of the shipment, an extra 40%–100% may be levied as taxes at the time of import. Customers are requested to kindly take this into consideration while placing their orders.',
+    },
+    {
+      heading: 'Shipping Partners & Delivery Delays',
+      body: 'We have partnered with reputed shipping companies like FedEx, Blue Dart, and DHL in order to maintain the safety and timely delivery of your product. However, we are not accountable for any delay in delivery of your product by the shipping companies.',
+    },
+  ],
+},
+
+
+
+
+returns: {
+  title: 'Return and Exchange',
+  eyebrow: 'Customer Care',
+  intro: 'Our products are thoroughly checked before dispatch and are of the highest quality standards. Products cannot be returned after purchase for a refund.',
   seed: 907,
   tags: 'fashion',
   sections: [
     {
-      heading: 'Final Sale Policy',
-      body: 'To maintain strict quality control and offer the best possible pricing, every purchase is final sale. Once an order is processed, it cannot be returned, cancelled, or exchanged.',
+      heading: 'Return and Exchange',
+      body: 'All our products are thoroughly checked before dispatch and are of the highest quality standards. Due to the nature of our business and the uniqueness of the products we sell, our products cannot be returned after purchase for a refund.',
     },
     {
-      heading: 'Damaged or Wrong Items',
-      body: 'If your item arrives damaged, defective, or incorrect, email care@sopiistore.com within 48 hours of delivery with photo proof and your order number. We will gladly arrange a replacement or refund for verified issues.',
+      heading: 'Defective Products',
+      body: 'If you receive a defective product, you can contact us for an exchange. You can raise an exchange request at supportsopii@gmail.com within 48 hours of receiving the product.',
     },
     {
-      heading: 'Sizing & Selection',
-      body: 'Because we do not offer size exchanges, we highly recommend checking our detailed size charts or contacting our team before purchasing to ensure the perfect fit.',
+      heading: 'How to Raise an Exchange Request',
+      body: 'Please mention your order number and attach an image of the product when raising the exchange request. You will receive an approval email from us if your exchange request is accepted.',
     },
     {
-      heading: 'Refund Exceptions',
-      body: 'Refunds are strictly limited to instances of damaged goods or inventory errors where a replacement is unavailable. Approved refunds take 5 working days to process back to your original payment method.',
+      heading: 'Exchange Request Timeline',
+      body: 'No exchange request will be accepted if the exchange request is raised after 48 hours of receiving the shipment.',
+    },
+    {
+      heading: 'Product Condition',
+      body: 'The products you wish to exchange should be unused and unwashed for hygiene reasons.',
+    },
+    {
+      heading: 'Saree Exchange Policy',
+      body: 'In case of sarees with fall and/or pico done, exchange requests will not be accepted.',
+    },
+    {
+      heading: 'Original Packaging and Tags',
+      body: 'Make sure that the original packaging is not tampered with and that the price tags are in place.',
+    },
+    {
+      heading: 'Exchange Availability',
+      body: 'An exchange will be carried out depending on the stock availability.',
+    },
+    {
+      heading: 'Contact Us',
+      body: 'If you need more clarity or have any more questions, please feel free to get in touch with us at supportsopii@gmail.com.',
     },
   ],
 },
+
+
+refund: {
+  title: 'Refund Policy',
+  eyebrow: 'Customer Care',
+  intro: 'All our products are thoroughly checked before dispatch. Due to the nature and uniqueness of our products, purchases cannot be returned for a refund.',
+  seed: 908,
+  tags: 'fashion',
+  sections: [
+    {
+      heading: 'Refund Policy',
+      body: 'All our products are thoroughly checked before dispatch and are of the highest quality standards. Due to the nature of our business and the uniqueness of the products we sell, our products cannot be returned after purchase for a refund.',
+    },
+    {
+      heading: 'Defective Products',
+      body: 'If you receive a defective product, you can contact us for an exchange. You can raise an exchange request at supportsopii@gmail.com within 48 hours of receiving the product.',
+    },
+    {
+      heading: 'How to Raise an Exchange Request',
+      body: 'Please mention your order number and attach an image of the product when raising the exchange request. You will receive an approval email from us if your exchange request is accepted.',
+    },
+    {
+      heading: 'Exchange Request Timeline',
+      body: 'No exchange request will be accepted if the exchange request is raised after 48 hours of receiving the shipment.',
+    },
+    {
+      heading: 'Product Condition',
+      body: 'The products you wish to exchange should be unused and unwashed for hygiene reasons.',
+    },
+    {
+      heading: 'Saree Exchange Policy',
+      body: 'In case of sarees with fall and/or pico done, exchange requests will not be accepted.',
+    },
+    {
+      heading: 'Original Packaging and Tags',
+      body: 'Make sure that the original packaging is not tampered with and that the price tags are in place.',
+    },
+    {
+      heading: 'Exchange Availability',
+      body: 'An exchange will be carried out depending on the stock availability.',
+    },
+    {
+      heading: 'Contact Us',
+      body: 'If you need more clarity or have any more questions, please feel free to get in touch with us at supportsopii@gmail.com.',
+    },
+  ],
+},
+
+
 
 
   'size-guide': {

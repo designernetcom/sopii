@@ -73,7 +73,7 @@ export default function Wishlist() {
         <button
           type="button"
           onClick={clear}
-          className="text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-sale"
+          className="text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-danger"
         >
           Clear wishlist
         </button>
@@ -111,14 +111,14 @@ export default function Wishlist() {
                   type="button"
                   onClick={() => remove(product.id)}
                   aria-label={`Remove ${product.name} from wishlist`}
-                  className="-mr-1 -mt-1 p-1 text-charcoal-faint transition-colors hover:text-sale"
+                  className="-mr-1 -mt-1 p-1 text-charcoal-faint transition-colors hover:text-danger"
                 >
                   <Trash2 size={14} aria-hidden="true" />
                 </button>
               </div>
 
               <h2 className="mt-1 text-[13px] leading-snug">
-                <Link to={`/product/${product.id}`} className="transition-colors hover:text-clay">
+                <Link to={`/product/${product.id}`} className="transition-colors hover:text-brand-soft">
                   {product.name}
                 </Link>
               </h2>

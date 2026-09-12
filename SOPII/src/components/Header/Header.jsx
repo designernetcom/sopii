@@ -144,7 +144,7 @@ export function Header() {
             type="button"
             onClick={openSearch}
             aria-label="Search"
-            className="tap-square grid h-11 w-11 place-items-center text-charcoal transition-colors hover:text-clay"
+            className="tap-square grid h-11 w-11 place-items-center text-charcoal transition-colors hover:text-brand-soft"
           >
             <Search size={20} aria-hidden="true" strokeWidth={1.5} />
           </button>
@@ -152,7 +152,7 @@ export function Header() {
           <Link
             to={isAuthenticated ? '/account' : '/login'}
             aria-label={isAuthenticated ? 'My account' : 'Log in'}
-            className="hidden h-11 w-11 place-items-center text-charcoal transition-colors hover:text-clay sm:grid"
+            className="hidden h-11 w-11 place-items-center text-charcoal transition-colors hover:text-brand-soft sm:grid"
           >
             <User size={20} aria-hidden="true" strokeWidth={1.5} />
           </Link>
@@ -160,7 +160,7 @@ export function Header() {
           <Link
             to="/wishlist"
             aria-label={`Wishlist, ${wishlistCount} ${wishlistCount === 1 ? 'item' : 'items'}`}
-            className="tap-square relative grid h-11 w-11 place-items-center text-charcoal transition-colors hover:text-clay"
+            className="tap-square relative grid h-11 w-11 place-items-center text-charcoal transition-colors hover:text-brand-soft"
           >
             <Heart size={20} aria-hidden="true" strokeWidth={1.5} />
             {wishlistCount > 0 ? <CountDot value={wishlistCount} /> : null}
@@ -170,7 +170,7 @@ export function Header() {
             type="button"
             onClick={openCart}
             aria-label={`Shopping bag, ${itemCount} ${itemCount === 1 ? 'item' : 'items'}`}
-            className="tap-square relative -mr-2 grid h-11 w-11 place-items-center text-charcoal transition-colors hover:text-clay"
+            className="tap-square relative -mr-2 grid h-11 w-11 place-items-center text-charcoal transition-colors hover:text-brand-soft"
           >
             <ShoppingBag size={20} aria-hidden="true" strokeWidth={1.5} />
             {itemCount > 0 ? <CountDot value={itemCount} /> : null}

@@ -158,6 +158,14 @@ const ROWS: SeedRow[] = [
     metaDescription: 'How SOPII handles returns and exchanges, and what is covered.',
   },
   {
+    path: '/pages/refund',
+    label: 'Refund Policy',
+    pageType: 'static',
+    title: 'Refund Policy',
+    metaDescription:
+      'SOPII’s refund policy: why purchases are not refundable, and how to raise an exchange for a defective product.',
+  },
+  {
     path: '/pages/size-guide',
     label: 'Size Guide',
     pageType: 'static',

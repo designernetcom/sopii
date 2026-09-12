@@ -18,7 +18,7 @@ export function Spinner({ size = 18, className }) {
 export function PageLoader() {
   return (
     <div className="flex min-h-[60vh] items-center justify-center" aria-busy="true">
-      <Spinner size={26} className="text-clay" />
+      <Spinner size={26} className="text-brand-soft" />
     </div>
   );
 }

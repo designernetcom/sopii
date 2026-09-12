@@ -11,56 +11,56 @@ export const CATEGORIES = [
     image:
       'https://suta.in/cdn/shop/files/saree_9656048d-67a5-4c6b-93b9-5fe16f6ef69d.jpg?format=webp&v=1752903494&width=1200',
   },
-  {
-    name: 'Blouses',
-    slug: 'blouses',
-    to: '/blouses',
-    blurb: 'The piece that finishes the drape',
-    seed: 302,
-    tags: 'blouse',
-    image:
-      'https://suta.in/cdn/shop/files/Blouse_246f00ce-a14f-48bc-ab1f-97bd4f2bd429.jpg?format=webp&v=1752903535&width=1200',
-  },
-  {
-    name: 'Dresses',
-    slug: 'dresses',
-    to: '/shop?category=Dresses',
-    blurb: 'Easy shapes, considered details',
-    seed: 303,
-    tags: 'dress',
-    image:
-      'https://suta.in/cdn/shop/files/Dress_9b943c2b-cc46-436c-abd2-7f9fa1081829.jpg?format=webp&v=1752903598&width=1200',
-  },
-  {
-    name: 'Kurta Sets',
-    slug: 'kurta-sets',
-    to: '/shop?category=Kurta+Sets',
-    blurb: 'Cotton comfort, festive polish',
-    seed: 304,
-    tags: 'kurta',
-    image:
-      'https://suta.in/cdn/shop/files/Women_Kurta_48b4326a-29bd-46bb-b479-1782742c8203.jpg?format=webp&v=1752903557&width=1200',
-  },
-  {
-    name: 'Jewellery',
-    slug: 'jewellery',
-    to: '/shop?category=Jewellery',
-    blurb: 'Oxidised silver and pearl',
-    seed: 305,
-    tags: 'jewellery',
-    image:
-      'https://suta.in/cdn/shop/files/saree_9656048d-67a5-4c6b-93b9-5fe16f6ef69d.jpg?format=webp&v=1752903494&width=1200',
-  },
-  {
-    name: 'Accessories',
-    slug: 'accessories',
-    to: '/shop?category=Accessories',
-    blurb: 'Bags, stoles and small joys',
-    seed: 306,
-    tags: 'handbag',
-    image:
-      'https://suta.in/cdn/shop/files/men_shirt_a94b3669-cf37-4e2c-b6fc-f20ee013e9f7.jpg?format=webp&v=1752903744&width=1200',
-  },
+  // {
+  //   name: 'Blouses',
+  //   slug: 'blouses',
+  //   to: '/blouses',
+  //   blurb: 'The piece that finishes the drape',
+  //   seed: 302,
+  //   tags: 'blouse',
+  //   image:
+  //     'https://suta.in/cdn/shop/files/Blouse_246f00ce-a14f-48bc-ab1f-97bd4f2bd429.jpg?format=webp&v=1752903535&width=1200',
+  // },
+  // {
+  //   name: 'Dresses',
+  //   slug: 'dresses',
+  //   to: '/shop?category=Dresses',
+  //   blurb: 'Easy shapes, considered details',
+  //   seed: 303,
+  //   tags: 'dress',
+  //   image:
+  //     'https://suta.in/cdn/shop/files/Dress_9b943c2b-cc46-436c-abd2-7f9fa1081829.jpg?format=webp&v=1752903598&width=1200',
+  // },
+  // {
+  //   name: 'Kurta Sets',
+  //   slug: 'kurta-sets',
+  //   to: '/shop?category=Kurta+Sets',
+  //   blurb: 'Cotton comfort, festive polish',
+  //   seed: 304,
+  //   tags: 'kurta',
+  //   image:
+  //     'https://suta.in/cdn/shop/files/Women_Kurta_48b4326a-29bd-46bb-b479-1782742c8203.jpg?format=webp&v=1752903557&width=1200',
+  // },
+  // {
+  //   name: 'Jewellery',
+  //   slug: 'jewellery',
+  //   to: '/shop?category=Jewellery',
+  //   blurb: 'Oxidised silver and pearl',
+  //   seed: 305,
+  //   tags: 'jewellery',
+  //   image:
+  //     'https://suta.in/cdn/shop/files/saree_9656048d-67a5-4c6b-93b9-5fe16f6ef69d.jpg?format=webp&v=1752903494&width=1200',
+  // },
+  // {
+  //   name: 'Accessories',
+  //   slug: 'accessories',
+  //   to: '/shop?category=Accessories',
+  //   blurb: 'Bags, stoles and small joys',
+  //   seed: 306,
+  //   tags: 'handbag',
+  //   image:
+  //     'https://suta.in/cdn/shop/files/men_shirt_a94b3669-cf37-4e2c-b6fc-f20ee013e9f7.jpg?format=webp&v=1752903744&width=1200',
+  // },
 ];
 
 /** Canonical product categories used by filters and routing. */

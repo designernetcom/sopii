@@ -43,7 +43,7 @@ export function BottomNav() {
                   aria-label="Search"
                   className={cn(
                     'flex h-[60px] w-full flex-col items-center justify-center gap-1 whitespace-nowrap text-[9px] uppercase tracking-[0.1em] transition-colors min-[360px]:tracking-widest2',
-                    isSearchOpen ? 'text-clay' : 'text-charcoal-muted',
+                    isSearchOpen ? 'text-brand-soft' : 'text-charcoal-muted',
                   )}
                 >
                   <Icon size={19} aria-hidden="true" strokeWidth={1.5} />

@@ -191,7 +191,7 @@ function ProductSelector({
                     {index + 1}
                   </span>
                   <AppImage
-                    src={product?.images[0]?.url}
+                    src={product?.images?.[0]?.url}
                     alt={product?.name ?? productId}
                     seed={productId}
                     wrapperClassName="h-8 w-8 shrink-0"

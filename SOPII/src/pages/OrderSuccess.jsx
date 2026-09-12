@@ -96,7 +96,7 @@ export default function OrderSuccess() {
       <div className="container-site py-12 lg:py-20">
         <div className="mx-auto max-w-md text-center">
           <span className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-sand">
-            <Package size={24} className="text-clay" strokeWidth={1.5} aria-hidden="true" />
+            <Package size={24} className="text-brand-soft" strokeWidth={1.5} aria-hidden="true" />
           </span>
 
           <h1 className="mt-6 font-display text-3xl">Find order #{id}</h1>
@@ -122,7 +122,7 @@ export default function OrderSuccess() {
             </div>
 
             {error ? (
-              <p role="alert" className="text-[12px] text-sale">
+              <p role="alert" className="text-[12px] text-danger">
                 {error}
               </p>
             ) : null}
@@ -211,7 +211,7 @@ export default function OrderSuccess() {
         <div className="mx-auto mt-14 max-w-3xl border border-beige bg-cream">
           <div className="flex flex-wrap items-baseline justify-between gap-3 border-b border-beige px-6 py-4">
             <h2 className="text-[12px] font-medium uppercase tracking-widest2">Order Details</h2>
-            <span className="border border-clay/40 bg-sand/60 px-3 py-1 text-[10px] uppercase tracking-widest2 text-clay">
+            <span className="border border-brand-soft/40 bg-sand/60 px-3 py-1 text-[10px] uppercase tracking-widest2 text-brand-soft">
               {order.status}
             </span>
           </div>
@@ -244,13 +244,13 @@ export default function OrderSuccess() {
               <Row
                 label={`Discount${order.coupon ? ` (${order.coupon})` : ''}`}
                 value={`-${formatPrice(order.totals.discount)}`}
-                valueClass="text-clay"
+                valueClass="text-brand-soft"
               />
             ) : null}
             <Row
               label="Shipping"
               value={order.totals.shipping === 0 ? 'Free' : formatPrice(order.totals.shipping)}
-              valueClass={order.totals.shipping === 0 ? 'text-clay' : undefined}
+              valueClass={order.totals.shipping === 0 ? 'text-brand-soft' : undefined}
             />
             {order.totals.codCharge > 0 ? (
               <Row label="Cash on delivery fee" value={formatPrice(order.totals.codCharge)} />
@@ -337,7 +337,7 @@ function InfoBlock({ icon: Icon, title, children }) {
   return (
     <div>
       <h3 className="mb-2 flex items-center gap-2 text-[10px] uppercase tracking-widest2 text-charcoal-faint">
-        <Icon size={13} className="text-clay" aria-hidden="true" />
+        <Icon size={13} className="text-brand-soft" aria-hidden="true" />
         {title}
       </h3>
       <p className="text-[12px] leading-relaxed text-charcoal-muted">{children}</p>

@@ -50,7 +50,7 @@ export default function ResetPassword() {
         <div className="border border-beige bg-sand/50 p-6 text-center">
           <CheckCircle2
             size={26}
-            className="mx-auto text-plum"
+            className="mx-auto text-brand"
             strokeWidth={1.4}
             aria-hidden="true"
           />

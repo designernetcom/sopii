@@ -12,12 +12,17 @@ import {
   Phone,
   ShoppingBag,
   Star,
+  Trash2,
   UserCheck,
 } from 'lucide-react';
 import { cn } from '@/utils/cn';
 import { useDocumentTitle, usePermissions } from '@/hooks';
 import { useBreadcrumbLabel } from '@/components/layout/BreadcrumbContext';
-import { useGetCustomerQuery, useUpdateCustomerMutation } from '@/store/api/commerceApi';
+import {
+  useDeleteCustomerMutation,
+  useGetCustomerQuery,
+  useUpdateCustomerMutation,
+} from '@/store/api/commerceApi';
 import { errorMessage } from '@/store/api/baseQuery';
 import { PageHeader, Tabs } from '@/components/common/PageHeader';
 import { Card, CardBody, DetailRow } from '@/components/common/Card';
@@ -26,7 +31,7 @@ import { Badge, StatusBadge } from '@/components/common/Badge';
 import { AppImage, Avatar } from '@/components/common/AppImage';
 import { Field, Textarea } from '@/components/common/Field';
 import { EmptyState, ErrorState, PageLoader } from '@/components/common/States';
-import { ConfirmModal } from '@/components/modals/ConfirmModal';
+import { ConfirmModal, DeleteModal } from '@/components/modals/ConfirmModal';
 import { FormModal } from '@/components/modals/FormModal';
 import { useToast } from '@/components/common/Toast';
 import { CUSTOMER_TIER, ORDER_STATUS, REVIEW_STATUS } from '@/utils/constants';
@@ -40,11 +45,13 @@ export default function CustomerDetailPage() {
 
   const [tab, setTab] = useState('profile');
   const [blockOpen, setBlockOpen] = useState(false);
+  const [deleteOpen, setDeleteOpen] = useState(false);
   const [noteOpen, setNoteOpen] = useState(false);
   const [note, setNote] = useState('');
 
   const { data, isLoading, isError, refetch } = useGetCustomerQuery(id!);
   const [updateCustomer, { isLoading: updating }] = useUpdateCustomerMutation();
+  const [deleteCustomer, { isLoading: deleting }] = useDeleteCustomerMutation();
 
   useDocumentTitle(data?.customer.name ?? 'Customer');
   useBreadcrumbLabel(data?.customer.name);
@@ -78,6 +85,16 @@ export default function CustomerDetailPage() {
       setBlockOpen(false);
     } catch (error) {
       toast.error('Could not update the customer', errorMessage(error));
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteCustomer(customer.id).unwrap();
+      toast.success('Customer deleted.', customer.name);
+      navigate('/admin/customers');
+    } catch (error) {
+      toast.error('Could not delete customer', errorMessage(error));
     }
   };
 
@@ -184,6 +201,15 @@ export default function CustomerDetailPage() {
                   {customer.status === 'active' ? 'Block' : 'Unblock'}
                 </Button>
               </>
+            )}
+            {can('customers', 'delete') && (
+              <Button
+                variant="danger"
+                icon={<Trash2 className="h-4 w-4" />}
+                onClick={() => setDeleteOpen(true)}
+              >
+                Delete
+              </Button>
             )}
           </>
         }
@@ -481,6 +507,23 @@ export default function CustomerDetailPage() {
             : 'They will be able to sign in and place orders again.'
         }
         confirmLabel={customer.status === 'active' ? 'Block customer' : 'Unblock customer'}
+      />
+
+      <DeleteModal
+        open={deleteOpen}
+        onClose={() => setDeleteOpen(false)}
+        onConfirm={handleDelete}
+        entity="customer"
+        name={customer.name}
+        loading={deleting}
+        extra={
+          stats.totalOrders > 0 ? (
+            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-300">
+              {formatNumber(stats.totalOrders)} order(s) stay in the system — each one keeps its own
+              copy of the name, email and address it was placed with.
+            </p>
+          ) : undefined
+        }
       />
 
       <FormModal

@@ -110,12 +110,12 @@ export function SessionManager() {
               key={session.id}
               className={cn(
                 'flex flex-wrap items-start justify-between gap-4 border p-4 sm:p-5',
-                session.current ? 'border-plum bg-plum-pale/30' : 'border-beige bg-cream',
+                session.current ? 'border-brand bg-brand-pale/30' : 'border-beige bg-cream',
               )}
             >
               <div className="flex min-w-0 gap-3.5">
                 <span className="mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full border border-beige bg-cream">
-                  <Icon size={15} className="text-clay" strokeWidth={1.5} aria-hidden="true" />
+                  <Icon size={15} className="text-brand-soft" strokeWidth={1.5} aria-hidden="true" />
                 </span>
 
                 <div className="min-w-0">
@@ -125,7 +125,7 @@ export function SessionManager() {
 
                   <p className="mt-0.5 text-[11px] text-charcoal-muted">
                     {session.current ? (
-                      <span className="font-medium text-plum">Current session</span>
+                      <span className="font-medium text-brand">Current session</span>
                     ) : (
                       <>Last active: {formatRelativeTime(session.lastActiveAt)}</>
                     )}
@@ -147,7 +147,7 @@ export function SessionManager() {
                 type="button"
                 onClick={() => endOne(session)}
                 disabled={busyId === session.id}
-                className="shrink-0 text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-sale disabled:opacity-50"
+                className="shrink-0 text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-danger disabled:opacity-50"
               >
                 {busyId === session.id
                   ? 'Signing out…'

@@ -46,7 +46,7 @@ export default function AccountSecurity() {
         <div className="space-y-10">
           <section aria-labelledby="methods-heading">
             <div className="flex items-center gap-2.5">
-              <ShieldCheck size={17} className="text-clay" strokeWidth={1.5} aria-hidden="true" />
+              <ShieldCheck size={17} className="text-brand-soft" strokeWidth={1.5} aria-hidden="true" />
               <h2 id="methods-heading" className="font-display text-2xl">
                 Login Methods
               </h2>
@@ -69,7 +69,7 @@ export default function AccountSecurity() {
             <div className="flex items-center gap-2.5">
               <MonitorSmartphone
                 size={16}
-                className="text-clay"
+                className="text-brand-soft"
                 strokeWidth={1.5}
                 aria-hidden="true"
               />
@@ -154,7 +154,7 @@ function RecentActivity() {
   return (
     <section aria-labelledby="activity-heading">
       <div className="flex items-center gap-2.5">
-        <Activity size={17} className="text-clay" strokeWidth={1.5} aria-hidden="true" />
+        <Activity size={17} className="text-brand-soft" strokeWidth={1.5} aria-hidden="true" />
         <h2 id="activity-heading" className="font-display text-2xl">
           Recent Activity
         </h2>
@@ -163,7 +163,7 @@ function RecentActivity() {
         Anything here you do not recognise is worth changing your password over.
       </p>
 
-      {error ? <p className="mt-6 text-[12px] text-sale">{error}</p> : null}
+      {error ? <p className="mt-6 text-[12px] text-danger">{error}</p> : null}
 
       {!items && !error ? <ActivityListSkeleton className="mt-6" /> : null}
 
@@ -179,7 +179,7 @@ function RecentActivity() {
                 <p className="text-[13px] text-charcoal">
                   {LABELS[entry.action] || entry.action}
                   {entry.status === 'failure' ? (
-                    <span className="ml-2 text-[11px] uppercase tracking-widest2 text-sale">
+                    <span className="ml-2 text-[11px] uppercase tracking-widest2 text-danger">
                       Failed
                     </span>
                   ) : null}

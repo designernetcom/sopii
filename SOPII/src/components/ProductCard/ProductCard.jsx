@@ -135,7 +135,7 @@ function ProductCardBase({
             <button
               type="button"
               onClick={handleQuickAdd}
-              className="flex min-h-[40px] flex-1 items-center justify-center gap-1.5 bg-[#fffdfb]/95 px-1 py-2.5 text-[10px] font-medium uppercase tracking-[0.1em] text-charcoal backdrop-blur-sm transition-all duration-300 hover:bg-charcoal hover:text-cream sm:min-h-0 sm:gap-2 sm:tracking-[0.16em]"
+              className="flex min-h-[40px] flex-1 items-center justify-center gap-1.5 bg-cream/95 px-1 py-2.5 text-[10px] font-medium uppercase tracking-[0.1em] text-charcoal backdrop-blur-sm transition-all duration-300 hover:bg-charcoal hover:text-cream sm:min-h-0 sm:gap-2 sm:tracking-[0.16em]"
             >
               <ShoppingBag size={13} aria-hidden="true" className="shrink-0" />
               <span className="truncate">
@@ -167,7 +167,7 @@ function ProductCardBase({
         </p>
 
         <h3 className="text-[13px] font-normal leading-snug text-charcoal sm:text-sm">
-          <Link to={to} className="transition-colors hover:text-clay">
+          <Link to={to} className="transition-colors hover:text-brand-soft">
             {product.name}
           </Link>
         </h3>

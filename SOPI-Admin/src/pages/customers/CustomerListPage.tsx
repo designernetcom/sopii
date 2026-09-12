@@ -1,14 +1,18 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Download, Mail, Users } from 'lucide-react';
-import { useDocumentTitle, useListQuery } from '@/hooks';
-import { useGetCustomersQuery } from '@/store/api/commerceApi';
+import { Download, Eye, Mail, MoreHorizontal, Trash2, Users } from 'lucide-react';
+import { useDocumentTitle, useListQuery, usePermissions } from '@/hooks';
+import { useDeleteCustomerMutation, useGetCustomersQuery } from '@/store/api/commerceApi';
+import { errorMessage } from '@/store/api/baseQuery';
 import { PageHeader } from '@/components/common/PageHeader';
-import { Button } from '@/components/common/Button';
+import { Button, IconButton } from '@/components/common/Button';
 import { Badge, StatusBadge } from '@/components/common/Badge';
 import { Avatar } from '@/components/common/AppImage';
 import { SearchInput, FilterChip } from '@/components/common/SearchInput';
 import { Select } from '@/components/common/Field';
+import { Dropdown, DropdownDivider, DropdownItem } from '@/components/common/Dropdown';
 import { DataTable, type Column } from '@/components/tables/DataTable';
+import { ConfirmModal, DeleteModal } from '@/components/modals/ConfirmModal';
 import { useToast } from '@/components/common/Toast';
 import { CUSTOMER_TIER } from '@/utils/constants';
 import { formatCurrency, formatDate, formatNumber, formatRelativeTime } from '@/utils/format';
@@ -29,9 +33,54 @@ export default function CustomerListPage() {
 
   const navigate = useNavigate();
   const toast = useToast();
+  const { can } = usePermissions();
 
   const query = useListQuery({ pageSize: 10, sortBy: 'totalSpent', sortDir: 'desc' });
+  const [selected, setSelected] = useState<string[]>([]);
+  const [deleteTarget, setDeleteTarget] = useState<Customer | null>(null);
+  const [bulkDelete, setBulkDelete] = useState(false);
+
   const { data, isLoading, isError, refetch } = useGetCustomersQuery(query.params);
+  const [deleteCustomer, { isLoading: deleting }] = useDeleteCustomerMutation();
+
+  const handleDelete = async () => {
+    if (!deleteTarget) return;
+    try {
+      await deleteCustomer(deleteTarget.id).unwrap();
+      toast.success('Customer deleted.', deleteTarget.name);
+      setDeleteTarget(null);
+      setSelected((current) => current.filter((id) => id !== deleteTarget.id));
+    } catch (error) {
+      toast.error('Could not delete customer', errorMessage(error));
+    }
+  };
+
+  /*
+   * Bulk delete, one request per customer.
+   *
+   * There is no `/customers/bulk` on the API the way there is for products, and
+   * a selection is one page of the table at most — so this issues the deletes
+   * it already has an endpoint for rather than inventing a second way to do the
+   * same thing. `allSettled` because a partial failure (a customer another
+   * admin removed a moment ago) should still leave the rest deleted, and should
+   * say so.
+   */
+  const handleBulkDelete = async () => {
+    const results = await Promise.allSettled(
+      selected.map((id) => deleteCustomer(id).unwrap()),
+    );
+    const failed = results.filter((result) => result.status === 'rejected').length;
+    const done = results.length - failed;
+
+    if (done) toast.success(`${done} customer(s) deleted.`);
+    if (failed) {
+      const reason = results.find((r) => r.status === 'rejected') as PromiseRejectedResult;
+      toast.error(`${failed} could not be deleted`, errorMessage(reason.reason));
+    }
+
+    setBulkDelete(false);
+    setSelected([]);
+  };
 
   const exportCustomers = () => {
     const rows = data?.items ?? [];
@@ -147,6 +196,39 @@ export default function CustomerListPage() {
           </Badge>
         ),
     },
+    {
+      key: 'actions',
+      header: '',
+      hideable: false,
+      align: 'right',
+      width: '3rem',
+      render: (customer) => (
+        <div onClick={(event) => event.stopPropagation()}>
+          <Dropdown
+            trigger={({ toggle }) => (
+              <IconButton label={`Actions for ${customer.name}`} size="sm" onClick={toggle}>
+                <MoreHorizontal className="h-4 w-4" />
+              </IconButton>
+            )}
+          >
+            <DropdownItem icon={<Eye />} to={`/admin/customers/${customer.id}`}>
+              View
+            </DropdownItem>
+            <DropdownItem icon={<Mail />} onClick={() => window.open(`mailto:${customer.email}`)}>
+              Email
+            </DropdownItem>
+            {can('customers', 'delete') && (
+              <>
+                <DropdownDivider />
+                <DropdownItem icon={<Trash2 />} danger onClick={() => setDeleteTarget(customer)}>
+                  Delete
+                </DropdownItem>
+              </>
+            )}
+          </Dropdown>
+        </div>
+      ),
+    },
   ];
 
   const activeTier = (query.state.tier as string) || 'all';
@@ -185,6 +267,20 @@ export default function CustomerListPage() {
         sort={query.sort}
         onSortChange={query.setSort}
         onRowClick={(customer) => navigate(`/admin/customers/${customer.id}`)}
+        selectable={can('customers', 'delete')}
+        selected={selected}
+        onSelectedChange={setSelected}
+        bulkActions={(ids) => (
+          <Button
+            size="xs"
+            variant="danger"
+            icon={<Trash2 className="h-3 w-3" />}
+            onClick={() => setBulkDelete(true)}
+            disabled={deleting}
+          >
+            Delete ({ids.length})
+          </Button>
+        )}
         emptyIcon={Users}
         emptyTitle="No customers found."
         emptyDescription="Try a different search or tier filter."
@@ -264,6 +360,34 @@ export default function CustomerListPage() {
           onPageSizeChange: query.setPageSize,
           label: 'customers',
         }}
+      />
+
+      <DeleteModal
+        open={Boolean(deleteTarget)}
+        onClose={() => setDeleteTarget(null)}
+        onConfirm={handleDelete}
+        entity="customer"
+        name={deleteTarget?.name}
+        loading={deleting}
+        extra={
+          deleteTarget && deleteTarget.ordersCount > 0 ? (
+            <p className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800 ring-1 ring-amber-600/20 dark:bg-amber-500/10 dark:text-amber-300">
+              {formatNumber(deleteTarget.ordersCount)} order(s) stay in the system — each one keeps
+              its own copy of the name, email and address it was placed with.
+            </p>
+          ) : undefined
+        }
+      />
+
+      <ConfirmModal
+        open={bulkDelete}
+        onClose={() => setBulkDelete(false)}
+        onConfirm={handleBulkDelete}
+        tone="danger"
+        loading={deleting}
+        title={`Delete ${selected.length} customers?`}
+        description="These accounts will be permanently removed. Their past orders stay in the system. This action cannot be undone."
+        confirmLabel="Delete customers"
       />
     </div>
   );

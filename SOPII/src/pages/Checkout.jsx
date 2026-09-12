@@ -113,7 +113,24 @@ export default function Checkout() {
    * every keystroke in the address form and re-renders the whole payment
    * section with it. The memo was quietly doing nothing.
    */
-  const paymentMethods = useMemo(() => settings.paymentMethods ?? [], [settings.paymentMethods]);
+  /*
+   * COD is switched off at the storefront for now — hidden here rather than in
+   * the panel so the store's own setting is left untouched.
+   *
+   * This is the only place worth filtering: the `methods` memo below, the
+   * "prefer a method that can actually be used" fallback, `isOnline` and the
+   * submit path all read from this list, so dropping the key here removes the
+   * option from every one of them at once.
+   *
+   * To put COD back: delete the filtered version and restore the commented
+   * line below it. Nothing else needs changing — the panel still decides
+   * whether COD is on, and the server still owns the eligibility rule.
+   */
+  const paymentMethods = useMemo(
+    () => (settings.paymentMethods ?? []).filter((method) => method.key !== 'cod'),
+    [settings.paymentMethods],
+  );
+  // const paymentMethods = useMemo(() => settings.paymentMethods ?? [], [settings.paymentMethods]);
 
   /* --------------------------- the order summary --------------------------- */
 
@@ -451,7 +468,7 @@ export default function Checkout() {
             {!isAuthenticated ? (
               <p className="mb-4 text-[12px] text-charcoal-muted">
                 Already have an account?{' '}
-                <Link to="/login" className="text-clay underline underline-offset-4">
+                <Link to="/login" className="text-brand-soft underline underline-offset-4">
                   Log in
                 </Link>{' '}
                 for a faster checkout.
@@ -560,7 +577,7 @@ export default function Checkout() {
             {/* The rate comes from the store's shipping zones, so it follows the
                 delivery state as it is typed. */}
             <div className="flex items-center gap-4 border border-charcoal bg-sand/50 p-4">
-              <Truck size={18} className="shrink-0 text-clay" strokeWidth={1.4} aria-hidden="true" />
+              <Truck size={18} className="shrink-0 text-brand-soft" strokeWidth={1.4} aria-hidden="true" />
               <span className="min-w-0 flex-1">
                 <span className="block text-[13px] font-medium">{summary.shippingLabel}</span>
                 <span className="block text-[11px] text-charcoal-muted">
@@ -667,7 +684,7 @@ export default function Checkout() {
                         {line.color ? ` · ${line.color}` : ''}
                       </p>
                       {gone ? (
-                        <p className="mt-0.5 text-[11px] text-sale">No longer available</p>
+                        <p className="mt-0.5 text-[11px] text-danger">No longer available</p>
                       ) : null}
                     </div>
                     <span className="shrink-0 text-[12px] font-medium">
@@ -683,8 +700,8 @@ export default function Checkout() {
                 fixes it. Without this the summary quietly disagrees with the
                 items above it and Pay Now fails on every attempt. */}
             {goneLines.length ? (
-              <div role="alert" className="mt-5 border border-sale/40 bg-sale/5 p-4">
-                <p className="flex items-start gap-2 text-[12px] leading-relaxed text-sale">
+              <div role="alert" className="mt-5 border border-danger/40 bg-danger/5 p-4">
+                <p className="flex items-start gap-2 text-[12px] leading-relaxed text-danger">
                   <AlertTriangle size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
                   <span>
                     {goneLines.length === 1
@@ -709,13 +726,13 @@ export default function Checkout() {
                 <SummaryRow
                   label={`Discount${summary.couponCode ? ` (${summary.couponCode})` : ''}`}
                   value={`-${formatPrice(summary.discount)}`}
-                  valueClass="text-clay"
+                  valueClass="text-brand-soft"
                 />
               ) : null}
               <SummaryRow
                 label="Shipping"
                 value={summary.shipping === 0 ? 'Free' : formatPrice(summary.shipping)}
-                valueClass={summary.shipping === 0 ? 'text-clay' : undefined}
+                valueClass={summary.shipping === 0 ? 'text-brand-soft' : undefined}
               />
               {summary.codCharge > 0 ? (
                 <SummaryRow
@@ -740,7 +757,7 @@ export default function Checkout() {
             ) : null}
 
             {submitError ? (
-              <p role="alert" className="mt-4 border border-sale/40 bg-sale/5 p-3 text-[12px] text-sale">
+              <p role="alert" className="mt-4 border border-danger/40 bg-danger/5 p-3 text-[12px] text-danger">
                 {submitError}
               </p>
             ) : null}
@@ -748,8 +765,8 @@ export default function Checkout() {
             {/* §6. A failed or cancelled payment says so plainly, insists the
                 order was not placed, and offers the two ways forward. */}
             {paymentBlocked ? (
-              <div role="alert" className="mt-4 border border-sale/40 bg-sale/5 p-4">
-                <p className="flex items-start gap-2 text-[12px] leading-relaxed text-sale">
+              <div role="alert" className="mt-4 border border-danger/40 bg-danger/5 p-4">
+                <p className="flex items-start gap-2 text-[12px] leading-relaxed text-danger">
                   <AlertTriangle size={13} className="mt-0.5 shrink-0" aria-hidden="true" />
                   <span>{payment.error}</span>
                 </p>
@@ -867,11 +884,11 @@ function Field({ id, label, value, onChange, error, className, type = 'text', ..
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={error ? 'true' : undefined}
         aria-describedby={error ? `${id}-error` : undefined}
-        className={cn('field', error && 'border-sale')}
+        className={cn('field', error && 'border-danger')}
         {...rest}
       />
       {error ? (
-        <p id={`${id}-error`} role="alert" className="mt-1 text-[11px] text-sale">
+        <p id={`${id}-error`} role="alert" className="mt-1 text-[11px] text-danger">
           {error}
         </p>
       ) : null}
@@ -912,7 +929,7 @@ function OptionCard({ name, checked, onChange, icon: Icon, title, text, aside, d
         {checked ? <span className="h-2 w-2 rounded-full bg-charcoal" /> : null}
       </span>
 
-      <Icon size={18} className="shrink-0 text-clay" strokeWidth={1.4} aria-hidden="true" />
+      <Icon size={18} className="shrink-0 text-brand-soft" strokeWidth={1.4} aria-hidden="true" />
 
       <span className="min-w-0 flex-1">
         <span className="block text-[13px] font-medium">{title}</span>

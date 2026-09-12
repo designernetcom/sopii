@@ -118,7 +118,7 @@ export function LoginMethods() {
   if (!methods) {
     return (
       <div className="flex justify-center py-12">
-        <Spinner size={18} className="text-clay" />
+        <Spinner size={18} className="text-brand-soft" />
       </div>
     );
   }
@@ -141,7 +141,7 @@ export function LoginMethods() {
                 className={cn(
                   'grid h-7 w-7 shrink-0 place-items-center rounded-full border',
                   method.connected
-                    ? 'border-plum bg-plum text-cream'
+                    ? 'border-brand bg-brand text-cream'
                     : 'border-beige bg-sand text-charcoal-faint',
                 )}
                 aria-hidden="true"
@@ -235,7 +235,7 @@ function MethodAction({
         onClick={onRemoveGoogle}
         disabled={working || !method.canRemove}
         title={method.canRemove ? undefined : 'Set another sign-in method first'}
-        className="text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-sale disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-charcoal-muted"
+        className="text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-danger disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-charcoal-muted"
       >
         {working ? 'Disconnecting…' : 'Disconnect'}
       </button>
@@ -249,7 +249,7 @@ function MethodAction({
         onClick={onRemoveWhatsApp}
         disabled={working || !method.canRemove}
         title={method.canRemove ? undefined : 'Set another sign-in method first'}
-        className="text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-sale disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-charcoal-muted"
+        className="text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-danger disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-charcoal-muted"
       >
         {working ? 'Removing…' : 'Remove'}
       </button>
@@ -263,7 +263,7 @@ function MethodAction({
         onClick={onRemoveMobile}
         disabled={working || !method.canRemove}
         title={method.canRemove ? undefined : 'Set another sign-in method first'}
-        className="text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-sale disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-charcoal-muted"
+        className="text-[11px] uppercase tracking-widest2 text-charcoal-muted underline underline-offset-4 transition-colors hover:text-danger disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:text-charcoal-muted"
       >
         {working ? 'Removing…' : 'Remove'}
       </button>
@@ -330,7 +330,7 @@ function PasswordSection({ hasPassword, onDone }) {
     <section className="border border-beige bg-cream p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <KeyRound size={15} className="text-clay" strokeWidth={1.6} aria-hidden="true" />
+          <KeyRound size={15} className="text-brand-soft" strokeWidth={1.6} aria-hidden="true" />
           <h3 className="text-sm font-medium text-charcoal">
             {hasPassword ? 'Change your password' : 'Set a password'}
           </h3>
@@ -459,7 +459,7 @@ function MobileSection({ connected, onDone }) {
     <section className="border border-beige bg-cream p-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <Smartphone size={15} className="text-clay" strokeWidth={1.6} aria-hidden="true" />
+          <Smartphone size={15} className="text-brand-soft" strokeWidth={1.6} aria-hidden="true" />
           <h3 className="text-sm font-medium text-charcoal">
             {connected ? 'Change your mobile number' : 'Verify a mobile number'}
           </h3>

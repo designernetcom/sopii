@@ -67,7 +67,7 @@ export function CartDrawer() {
         {items.length === 0 ? (
           <div className="flex flex-1 flex-col items-center justify-center px-8 text-center">
             <span className="mb-5 grid h-16 w-16 place-items-center rounded-full border border-beige">
-              <ShoppingBag size={22} className="text-clay" strokeWidth={1.25} aria-hidden="true" />
+              <ShoppingBag size={22} className="text-brand-soft" strokeWidth={1.25} aria-hidden="true" />
             </span>
             <h3 className="font-display text-xl">Your bag is empty</h3>
             <p className="mt-2 text-sm text-charcoal-muted">
@@ -82,7 +82,7 @@ export function CartDrawer() {
             {/* Free shipping meter */}
             <div className="border-b border-beige bg-sand/50 px-5 py-3.5 sm:px-6">
               <p className="flex items-center gap-2 text-[11px] text-charcoal-soft">
-                <Truck size={14} className="shrink-0 text-clay" aria-hidden="true" />
+                <Truck size={14} className="shrink-0 text-brand-soft" aria-hidden="true" />
                 {totals.qualifiesForFreeShipping ? (
                   <span className="font-medium">You have unlocked free shipping.</span>
                 ) : (
@@ -101,7 +101,7 @@ export function CartDrawer() {
                 aria-label="Progress towards free shipping"
               >
                 <div
-                  className="h-full bg-clay transition-[width] duration-500 ease-silk"
+                  className="h-full bg-brand-soft transition-[width] duration-500 ease-silk"
                   style={{ width: `${progress}%` }}
                 />
               </div>
@@ -124,7 +124,7 @@ export function CartDrawer() {
                       <Link
                         to={`/product/${line.productId}`}
                         onClick={close}
-                        className="text-[13px] leading-snug transition-colors hover:text-clay"
+                        className="text-[13px] leading-snug transition-colors hover:text-brand-soft"
                       >
                         {line.name}
                       </Link>
@@ -132,7 +132,7 @@ export function CartDrawer() {
                         type="button"
                         onClick={() => removeItem(line.id)}
                         aria-label={`Remove ${line.name} from bag`}
-                        className="-mt-1 shrink-0 p-1 text-charcoal-faint transition-colors hover:text-sale"
+                        className="-mt-1 shrink-0 p-1 text-charcoal-faint transition-colors hover:text-danger"
                       >
                         <Trash2 size={14} aria-hidden="true" />
                       </button>

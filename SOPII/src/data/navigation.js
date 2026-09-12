@@ -14,6 +14,18 @@
 export const MEGA_MENU_BANNER =
   'https://res.cloudinary.com/w2brnx9l/image/upload/v1788955282/images_1.jpg';
 
+/**
+ * The categories the header is allowed to carry.
+ *
+ * The live nav is built from whatever categories the admin panel publishes
+ * (`buildNavigation` in `services/adapters`), and the panel holds more of them
+ * than the header should show — Blouses, Women, Accessories and Jewellery are
+ * all shoppable, they are simply not top-level nav. A name listed here opts
+ * that category in, matched case-insensitively; an empty list means "show every
+ * published category", which is the old behaviour.
+ */
+export const HEADER_CATEGORIES = ['Sarees'];
+
 export const NAV_ITEMS = [
   {
     label: 'New Arrivals',
@@ -52,54 +64,54 @@ export const NAV_ITEMS = [
       },
     ],
   },
-  {
-    label: 'Blouses',
-    to: '/blouses',
-    columns: [
-      {
-        title: 'Shop Blouses',
-        links: [
-          { label: 'All Blouses', to: '/blouses' },
-          { label: 'New Arrivals', to: '/blouses?badge=New' },
-          { label: 'Bestsellers', to: '/blouses?badge=Bestseller' },
-          { label: 'Under ₹1500', to: '/blouses?maxPrice=1500' },
-        ],
-      },
-      {
-        title: 'By Style',
-        links: [
-          { label: 'Puff Sleeve', to: '/blouses?q=puff' },
-          { label: 'Embroidered', to: '/blouses?q=embroidered' },
-          { label: 'Sleeveless', to: '/blouses?q=sleeveless' },
-          { label: 'Corset', to: '/blouses?q=corset' },
-        ],
-      },
-    ],
-  },
-  {
-    label: 'Women',
-    to: '/women',
-    columns: [
-      {
-        title: 'Apparel',
-        links: [
-          { label: 'Dresses', to: '/shop?category=Dresses' },
-          { label: 'Kurta Sets', to: '/shop?category=Kurta+Sets' },
-          { label: 'Co-ords', to: '/shop?category=Co-ords' },
-          { label: 'Tops', to: '/shop?category=Blouses' },
-        ],
-      },
-      {
-        title: 'More',
-        links: [
-          { label: 'Trousers', to: '/shop?category=Co-ords' },
-          { label: 'Dupattas', to: '/shop?category=Accessories&q=dupatta' },
-          { label: 'Jackets', to: '/shop?category=Co-ords' },
-          { label: 'Shop All Women', to: '/women' },
-        ],
-      },
-    ],
-  },
+  // {
+  //   label: 'Blouses',
+  //   to: '/blouses',
+  //   columns: [
+  //     {
+  //       title: 'Shop Blouses',
+  //       links: [
+  //         { label: 'All Blouses', to: '/blouses' },
+  //         { label: 'New Arrivals', to: '/blouses?badge=New' },
+  //         { label: 'Bestsellers', to: '/blouses?badge=Bestseller' },
+  //         { label: 'Under ₹1500', to: '/blouses?maxPrice=1500' },
+  //       ],
+  //     },
+  //     {
+  //       title: 'By Style',
+  //       links: [
+  //         { label: 'Puff Sleeve', to: '/blouses?q=puff' },
+  //         { label: 'Embroidered', to: '/blouses?q=embroidered' },
+  //         { label: 'Sleeveless', to: '/blouses?q=sleeveless' },
+  //         { label: 'Corset', to: '/blouses?q=corset' },
+  //       ],
+  //     },
+  //   ],
+  // },
+  // {
+  //   label: 'Women',
+  //   to: '/women',
+  //   columns: [
+  //     {
+  //       title: 'Apparel',
+  //       links: [
+  //         { label: 'Dresses', to: '/shop?category=Dresses' },
+  //         { label: 'Kurta Sets', to: '/shop?category=Kurta+Sets' },
+  //         { label: 'Co-ords', to: '/shop?category=Co-ords' },
+  //         { label: 'Tops', to: '/shop?category=Blouses' },
+  //       ],
+  //     },
+  //     {
+  //       title: 'More',
+  //       links: [
+  //         { label: 'Trousers', to: '/shop?category=Co-ords' },
+  //         { label: 'Dupattas', to: '/shop?category=Accessories&q=dupatta' },
+  //         { label: 'Jackets', to: '/shop?category=Co-ords' },
+  //         { label: 'Shop All Women', to: '/women' },
+  //       ],
+  //     },
+  //   ],
+  // },
   {
     label: 'Collections',
     to: '/collections',
@@ -113,30 +125,30 @@ export const NAV_ITEMS = [
     to: '/sale',
     accent: true,
   },
-  {
-    label: 'Accessories',
-    to: '/shop?category=Accessories',
-    columns: [
-      {
-        title: 'Accessories',
-        links: [
-          { label: 'Bags', to: '/shop?category=Accessories&q=bag' },
-          { label: 'Hair Accessories', to: '/shop?category=Accessories&q=hair' },
-          { label: 'Belts', to: '/shop?category=Accessories&q=belt' },
-          { label: 'Gift Items', to: '/shop?category=Accessories&q=gift' },
-        ],
-      },
-      {
-        title: 'Jewellery',
-        links: [
-          { label: 'All Jewellery', to: '/shop?category=Jewellery' },
-          { label: 'Earrings', to: '/shop?category=Jewellery&q=earring' },
-          { label: 'Necklaces', to: '/shop?category=Jewellery&q=necklace' },
-          { label: 'Bangles & Rings', to: '/shop?category=Jewellery&q=bangle' },
-        ],
-      },
-    ],
-  },
+  // {
+  //   label: 'Accessories',
+  //   to: '/shop?category=Accessories',
+  //   columns: [
+  //     {
+  //       title: 'Accessories',
+  //       links: [
+  //         { label: 'Bags', to: '/shop?category=Accessories&q=bag' },
+  //         { label: 'Hair Accessories', to: '/shop?category=Accessories&q=hair' },
+  //         { label: 'Belts', to: '/shop?category=Accessories&q=belt' },
+  //         { label: 'Gift Items', to: '/shop?category=Accessories&q=gift' },
+  //       ],
+  //     },
+  //     {
+  //       title: 'Jewellery',
+  //       links: [
+  //         { label: 'All Jewellery', to: '/shop?category=Jewellery' },
+  //         { label: 'Earrings', to: '/shop?category=Jewellery&q=earring' },
+  //         { label: 'Necklaces', to: '/shop?category=Jewellery&q=necklace' },
+  //         { label: 'Bangles & Rings', to: '/shop?category=Jewellery&q=bangle' },
+  //       ],
+  //     },
+  //   ],
+  // },
 ];
 
 /** Bottom tab bar on mobile. */

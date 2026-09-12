@@ -157,12 +157,12 @@ export const INSTAGRAM_POSTS = [
 /**
  * `color` is the channel's own brand hue, used by the home page's social rail
  * for the hover state and the label pill — nowhere else. The footer ignores it
- * and stays plum, because a column of four different brand colours reads as a
+ * and stays oxblood, because a column of four different brand colours reads as a
  * ransom note; a single icon lighting up under the cursor does not.
  */
 export const SOCIAL_LINKS = [
-  { name: 'Instagram', icon: 'Instagram', href: 'https://instagram.com', color: '#E1306C' },
-  { name: 'Facebook', icon: 'Facebook', href: 'https://facebook.com', color: '#1877F2' },
+  { name: 'Instagram', icon: 'Instagram', href: 'https://www.instagram.com/sopiiofficial?stkn=MXQ1cXdodTc5d3M4&utm_source=qr', color: '#E1306C' },
+  // { name: 'Facebook', icon: 'Facebook', href: 'https://facebook.com', color: '#1877F2' },
   { name: 'YouTube', icon: 'Youtube', href: 'https://youtube.com', color: '#FF0000' },
 ];
 
@@ -172,8 +172,8 @@ export const FOOTER_COLUMNS = [
     links: [
       { label: 'New Arrivals', to: '/new-arrivals' },
       { label: 'Sarees', to: '/sarees' },
-      { label: 'Blouses', to: '/blouses' },
-      { label: 'Dresses', to: '/shop?category=Dresses' },
+      // { label: 'Blouses', to: '/blouses' },
+      // { label: 'Dresses', to: '/shop?category=Dresses' },
       { label: 'Bestsellers', to: '/bestsellers' },
       { label: 'Sale', to: '/sale' },
     ],
@@ -186,16 +186,16 @@ export const FOOTER_COLUMNS = [
       { label: 'Returns', to: '/pages/returns' },
       { label: 'FAQ', to: '/pages/faq' },
       { label: 'Track Order', to: '/orders' },
-      { label: 'Size Guide', to: '/pages/size-guide' },
+      // { label: 'Size Guide', to: '/pages/size-guide' },
     ],
   },
   {
     title: 'About SOPII',
     links: [
       { label: 'Our Story', to: '/pages/our-story' },
-      { label: 'Our Craft', to: '/pages/our-craft' },
-      { label: 'Sustainability', to: '/pages/sustainability' },
-      { label: 'Careers', to: '/pages/careers' },
+      // { label: 'Our Craft', to: '/pages/our-craft' },
+      // { label: 'Sustainability', to: '/pages/sustainability' },
+      // { label: 'Careers', to: '/pages/careers' },
     ],
   },
 ];
@@ -208,8 +208,8 @@ export const FOOTER_COLUMNS = [
 export const FOOTER_UTILITY_LINKS = [
   { label: 'Track Order', to: '/orders', icon: 'Package' },
   { label: 'Help Centre', to: '/pages/faq', icon: 'LifeBuoy' },
-  { label: 'Our Craft', to: '/pages/our-craft', icon: 'Scissors' },
-  { label: 'Careers', to: '/pages/careers', icon: 'Briefcase' },
+  // { label: 'Our Craft', to: '/pages/our-craft', icon: 'Scissors' },
+  // { label: 'Careers', to: '/pages/careers', icon: 'Briefcase' },
 ];
 
 /**
@@ -230,6 +230,7 @@ export const LEGAL_LINKS = [
   { label: 'Terms & Conditions', to: '/pages/terms' },
   { label: 'Shipping Policy', to: '/pages/shipping' },
   { label: 'Return Policy', to: '/pages/returns' },
+  { label: 'Refund Policy', to: '/pages/refund' },
 ];
 
 /**

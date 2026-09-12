@@ -31,11 +31,11 @@ export default function Collections() {
       <Breadcrumbs items={CRUMBS} />
 
       <header className="mt-5 border-b border-beige pb-6 lg:pb-8">
-        <h1 className="font-display text-3xl sm:text-4xl lg:text-[46px] text-[#6B2E5A]">Collections</h1>
-        <p className="mt-3 max-w-2xl text-sm text-charcoal-muted sm:text-base">
+        <h1 className="font-display text-3xl sm:text-4xl lg:text-[46px] text-brand">Collections</h1>
+        {/* <p className="mt-3 max-w-2xl text-sm text-charcoal-muted sm:text-base">
           {collections.length} edits, each built around a fabric, an occasion or a way of
           dressing.
-        </p>
+        </p> */}
       </header>
 
       <ul className="grid gap-4 py-8 sm:grid-cols-2 lg:gap-6">
@@ -62,17 +62,17 @@ export default function Collections() {
                   <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/25 to-transparent" />
 
                   <div className="absolute inset-x-0 bottom-0 p-6 text-cream sm:p-8">
-                    <p className="text-[10px] uppercase tracking-widest2 text-cream/70">
+                    {/* <p className="text-[10px] uppercase tracking-widest2 text-cream/70">
                       {collection.eyebrow} · {count} pieces
-                    </p>
+                    </p> */}
 
                     <h2 className="mt-2 font-display text-2xl leading-tight sm:text-3xl">
                       {collection.name}
                     </h2>
 
-                    <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-cream/75">
+                    {/* <p className="mt-2 max-w-sm text-[13px] leading-relaxed text-cream/75">
                       {collection.blurb}
-                    </p>
+                    </p> */}
 
                     <span className="mt-4 inline-flex items-center gap-2 text-[10px] font-medium uppercase tracking-widest2">
                       Explore

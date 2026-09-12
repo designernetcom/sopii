@@ -22,7 +22,7 @@ export function FeaturedCollection() {
             <div className="relative">
               <div className="absolute -left-4 top-6 hidden h-20 w-20 border border-gold/70 lg:block" aria-hidden="true" />
               <Image
-                src="/media/products/saree-04.jpg"
+                src="https://res.cloudinary.com/w2brnx9l/image/upload/v1789042968/sopii/banners/ban_0002/sfps5uernbnw54py0cw3.jpg"
                 alt="A model wearing a piece from the SOPII Signature collection"
                 ratio="aspect-[4/5]"
                 sizes="(min-width: 1024px) 50vw, 100vw"
@@ -38,7 +38,7 @@ export function FeaturedCollection() {
           <Reveal delay={120} className="lg:pl-4">
             <p className="eyebrow">SOPII Signature</p>
 
-            <h2 id="signature-heading" className="mt-4 max-w-xl font-display text-[30px] leading-[1.04] tracking-[-0.04em] text-[#6B2E5A] sm:text-4xl lg:text-[46px]">
+            <h2 id="signature-heading" className="mt-4 max-w-xl font-display text-[30px] leading-[1.04] tracking-[-0.04em] text-brand sm:text-4xl lg:text-[46px]">
               Timeless silhouettes.
               <br />
               Contemporary craftsmanship.

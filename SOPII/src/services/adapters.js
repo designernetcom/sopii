@@ -24,6 +24,7 @@
 import { cdn, cdnMedia, mediaUrl, productImage, photo } from '../utils/images';
 import { discountPercent, slugify } from '../utils/format';
 import { COLOR_SWATCHES, SIZE_ORDER } from '../data/categories';
+import { HEADER_CATEGORIES } from '../data/navigation';
 
 /* --------------------------------- helpers --------------------------------- */
 
@@ -782,11 +783,21 @@ export const adaptOrders = (raw = []) => raw.map(adaptOrder);
  * a flat item for a plain link, `columns` for a mega panel. Renaming a category
  * or adding a subcategory in the admin panel therefore changes the menu, with
  * no navigation file to keep in sync.
+ *
+ * Which categories reach the header is a separate decision from which ones
+ * exist: `HEADER_CATEGORIES` in `data/navigation` is the allowlist, so the
+ * panel can publish as many categories as it likes without every one of them
+ * landing in the top bar.
  */
 export function buildNavigation(categories = []) {
   const items = [{ label: 'New Arrivals', to: '/new-arrivals' }];
 
-  categories.forEach((category) => {
+  const allowed = HEADER_CATEGORIES.map((name) => name.toLowerCase());
+  const headerCategories = allowed.length
+    ? categories.filter((category) => allowed.includes(String(category.name).toLowerCase()))
+    : categories;
+
+  headerCategories.forEach((category) => {
     const shopColumn = {
       title: `Shop ${category.name}`,
       links: [

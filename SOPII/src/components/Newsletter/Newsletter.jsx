@@ -25,7 +25,7 @@ import { ApiError, subscribeToNewsletter } from '../../services/api';
  * against a customer marked as accepting marketing — so a subscriber shows up
  * in the admin panel rather than vanishing into a success state.
  *
- * `tone="dark"` is the footer's deep-plum panel; the default sits on the
+ * `tone="dark"` is the footer's deep-oxblood panel; the default sits on the
  * light page background.
  */
 export function Newsletter({ tone = 'light' }) {
@@ -100,7 +100,7 @@ export function Newsletter({ tone = 'light' }) {
           <p
             className={cn(
               'mt-3 text-sm sm:text-base',
-              dark ? 'mt-5 text-plum-pale/70' : 'text-charcoal-muted',
+              dark ? 'mt-5 text-brand-pale/70' : 'text-charcoal-muted',
             )}
           >
             Be the first to discover new collections, exclusive offers and stories from the
@@ -163,11 +163,11 @@ export function Newsletter({ tone = 'light' }) {
                   'mt-3 text-[12px]',
                   state === 'error'
                     ? dark
-                      ? 'text-sale-soft'
-                      : 'text-sale'
+                      ? 'text-danger-pale'
+                      : 'text-danger'
                     : dark
                       ? 'text-gold-soft'
-                      : 'text-clay',
+                      : 'text-success',
                 )}
               >
                 {message}
@@ -178,7 +178,7 @@ export function Newsletter({ tone = 'light' }) {
           <p
             className={cn(
               'mt-4 text-[11px]',
-              dark ? 'text-plum-pale/60' : 'text-charcoal-faint',
+              dark ? 'text-brand-pale/60' : 'text-charcoal-faint',
             )}
           >
             No spam. Unsubscribe whenever you like.

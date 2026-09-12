@@ -80,7 +80,7 @@ export default function AuthCallback() {
         <div className="space-y-5">
           <p
             role="alert"
-            className="flex gap-2.5 border-l-2 border-sale bg-sale/5 px-3 py-3 text-[12px] leading-relaxed text-sale"
+            className="flex gap-2.5 border-l-2 border-danger bg-danger/5 px-3 py-3 text-[12px] leading-relaxed text-danger"
           >
             <AlertCircle size={15} className="mt-px shrink-0" strokeWidth={1.6} />
             {error}

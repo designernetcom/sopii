@@ -26,6 +26,12 @@ export function useIsDark() {
   return dark;
 }
 
+/*
+ * Recharts styles its grid, axes and tooltip through SVG attributes rather
+ * than classes, so these are literals where the rest of the admin uses tokens.
+ * They mirror the `--c-ink-*` and `--c-brand-*` values in index.css — when the
+ * palette there changes, change them here too.
+ */
 export interface ChartTheme {
   grid: string;
   axis: string;
@@ -40,19 +46,19 @@ export function useChartTheme(): ChartTheme {
 
   return dark
     ? {
-        grid: '#2b323b',
-        axis: '#6b7787',
-        tooltipBg: '#1c2129',
-        tooltipBorder: '#3f4854',
-        tooltipText: '#eef0f2',
-        cursor: 'rgba(129, 104, 241, 0.12)',
+        grid: '#36302e',
+        axis: '#7e746f',
+        tooltipBg: '#24201d',
+        tooltipBorder: '#4d4642',
+        tooltipText: '#f1efef',
+        cursor: 'rgba(201, 114, 112, 0.14)',
       }
     : {
-        grid: '#eef0f2',
-        axis: '#95a0ae',
+        grid: '#f1efef',
+        axis: '#a79d98',
         tooltipBg: '#ffffff',
-        tooltipBorder: '#dfe3e8',
-        tooltipText: '#1c2129',
-        cursor: 'rgba(109, 74, 228, 0.07)',
+        tooltipBorder: '#e5e2e0',
+        tooltipText: '#24201d',
+        cursor: 'rgba(126, 31, 32, 0.07)',
       };
 }

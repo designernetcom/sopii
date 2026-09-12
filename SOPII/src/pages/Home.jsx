@@ -109,7 +109,7 @@ export default function Home() {
       case 'collections':
         return (
           <>
-            <OccasionGrid />
+            {/* <OccasionGrid /> */}
             <FeaturedCollection />
             {banner(key)}
           </>

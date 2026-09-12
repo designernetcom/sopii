@@ -34,7 +34,7 @@ export function OccasionGrid() {
                       className="transition-transform duration-[900ms] ease-silk group-hover:scale-110"
                     />
                   </div>
-                  <p className="mt-3 text-[11px] font-medium uppercase tracking-widest2 text-charcoal transition-colors group-hover:text-clay">
+                  <p className="mt-3 text-[11px] font-medium uppercase tracking-widest2 text-charcoal transition-colors group-hover:text-brand-soft">
                     {occasion.name}
                   </p>
                 </Link>

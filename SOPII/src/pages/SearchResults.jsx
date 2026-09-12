@@ -48,7 +48,7 @@ export default function SearchResults() {
       {results.length === 0 ? (
         <div className="flex flex-col items-center px-4 py-16 text-center sm:py-24">
           <span className="mb-6 grid h-16 w-16 place-items-center rounded-full border border-beige bg-cream">
-            <SearchX size={24} className="text-clay" strokeWidth={1.25} aria-hidden="true" />
+            <SearchX size={24} className="text-brand-soft" strokeWidth={1.25} aria-hidden="true" />
           </span>
 
           <h2 className="font-display text-2xl sm:text-3xl">No products found</h2>

@@ -25,7 +25,7 @@ export function TrustSection({ bordered = true, className }) {
               <li key={item.title}>
                 <Reveal delay={i * 70} className="flex flex-col items-center text-center lg:flex-row lg:gap-4 lg:text-left">
                   <span className="mb-3 grid h-11 w-11 shrink-0 place-items-center rounded-full border border-beige lg:mb-0">
-                    <Icon size={18} className="text-clay" strokeWidth={1.4} aria-hidden="true" />
+                    <Icon size={18} className="text-brand-soft" strokeWidth={1.4} aria-hidden="true" />
                   </span>
                   <div>
                     <h3 className="text-[11px] font-medium uppercase tracking-widest2 text-charcoal">

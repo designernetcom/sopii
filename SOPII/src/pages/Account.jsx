@@ -216,7 +216,7 @@ export default function Account() {
                 </div>
 
                 {error ? (
-                  <p role="alert" className="text-[12px] text-sale">
+                  <p role="alert" className="text-[12px] text-danger">
                     {error}
                   </p>
                 ) : null}
@@ -264,7 +264,7 @@ export default function Account() {
                             {order.items.reduce((s, i) => s + i.quantity, 0)} items
                           </p>
                         </div>
-                        <span className="border border-clay/40 bg-sand/60 px-3 py-1 text-[10px] uppercase tracking-widest2 text-clay">
+                        <span className="border border-brand-soft/40 bg-sand/60 px-3 py-1 text-[10px] uppercase tracking-widest2 text-brand-soft">
                           {order.status}
                         </span>
                       </div>
@@ -273,7 +273,7 @@ export default function Account() {
                         <span className="font-medium">{formatPrice(order.totals.total)}</span>
                         <Link
                           to={`/order-success/${order.id}`}
-                          className="text-[11px] font-medium uppercase tracking-widest2 text-clay link-underline"
+                          className="text-[11px] font-medium uppercase tracking-widest2 text-brand-soft link-underline"
                         >
                           View details
                         </Link>
@@ -293,7 +293,7 @@ export default function Account() {
                   <button
                     type="button"
                     onClick={() => setAddressForm({ ...EMPTY_ADDRESS })}
-                    className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest2 text-clay"
+                    className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest2 text-brand-soft"
                   >
                     <Plus size={13} aria-hidden="true" /> Add new
                   </button>
@@ -341,7 +341,7 @@ export default function Account() {
                   </label>
 
                   {error ? (
-                    <p role="alert" className="text-[12px] text-sale sm:col-span-2">
+                    <p role="alert" className="text-[12px] text-danger sm:col-span-2">
                       {error}
                     </p>
                   ) : null}
@@ -382,7 +382,7 @@ export default function Account() {
                   {addresses.map((address) => (
                     <li key={address.id} className="relative border border-beige bg-cream p-5">
                       {address.isDefault ? (
-                        <span className="absolute right-4 top-4 border border-clay/40 px-2 py-0.5 text-[9px] uppercase tracking-widest2 text-clay">
+                        <span className="absolute right-4 top-4 border border-brand-soft/40 px-2 py-0.5 text-[9px] uppercase tracking-widest2 text-brand-soft">
                           Default
                         </span>
                       ) : null}
@@ -408,7 +408,7 @@ export default function Account() {
                         <button
                           type="button"
                           onClick={() => handleAddressRemove(address.id)}
-                          className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest2 text-charcoal-muted hover:text-sale"
+                          className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest2 text-charcoal-muted hover:text-danger"
                         >
                           <Trash2 size={12} aria-hidden="true" /> Remove
                         </button>

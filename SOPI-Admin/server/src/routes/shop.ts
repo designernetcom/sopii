@@ -54,6 +54,7 @@ import { loadSettings, quoteShipping, quoteTax } from '../lib/settings.js';
 import { codProblem, isOnlineGateway, resolveCodRules } from '../payments/config.js';
 import { CI_COLLATION } from '../db/indexes.js';
 import { claimStock, releaseStock, type StockClaim } from '../lib/inventory.js';
+import { tierFor } from '../lib/customers.js';
 import { idempotencyKey, withIdempotency } from '../lib/idempotency.js';
 import { nextSequence } from '../lib/ids.js';
 import { enqueue, JOB } from '../lib/queue.js';
@@ -871,15 +872,6 @@ export const ORDER_PAYMENT_METHOD: Record<string, PaymentMethod> = {
   cod: 'cod',
   stripe: 'card',
 };
-
-/** Tier ladder, matched to what the panel's customer segments expect. */
-function tierFor(totalSpent: number) {
-  if (totalSpent >= 150000) return 'platinum';
-  if (totalSpent >= 75000) return 'gold';
-  if (totalSpent >= 30000) return 'silver';
-  if (totalSpent > 0) return 'regular';
-  return 'new';
-}
 
 /**
  * What a payment proved, when one happened.

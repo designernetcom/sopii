@@ -31,7 +31,7 @@ export function WishlistButton({ product, variant = 'floating', className }) {
         aria-pressed={saved}
         className={cn(
           'inline-flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest2 transition-colors',
-          saved ? 'text-sale' : 'text-charcoal-muted hover:text-charcoal',
+          saved ? 'text-brand' : 'text-charcoal-muted hover:text-charcoal',
           className,
         )}
       >
@@ -54,7 +54,7 @@ export function WishlistButton({ product, variant = 'floating', className }) {
       aria-label={saved ? `Remove ${product.name} from wishlist` : `Save ${product.name} to wishlist`}
       className={cn(
         'grid h-9 w-9 place-items-center rounded-full bg-cream/90 backdrop-blur-sm transition-all duration-300 ease-silk hover:bg-cream',
-        saved ? 'text-sale' : 'text-charcoal-soft',
+        saved ? 'text-brand' : 'text-charcoal-soft',
         className,
       )}
     >

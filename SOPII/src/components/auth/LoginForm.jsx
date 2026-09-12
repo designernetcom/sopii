@@ -62,7 +62,7 @@ export function LoginForm({ onSuccess, defaultIdentifier = '' }) {
         placeholder="••••••••"
         error={errors.password?.message}
         hint={
-          <Link to="/forgot-password" className="text-[11px] text-clay underline underline-offset-4">
+          <Link to="/forgot-password" className="text-[11px] text-brand-soft underline underline-offset-4">
             Forgot Password?
           </Link>
         }

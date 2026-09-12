@@ -73,7 +73,7 @@ export default function StaticPage() {
             <div className="mt-10 space-y-9">
               {page.sections.map((section) => (
                 <section key={section.heading}>
-                  <h2 className="text-[12px] font-medium uppercase tracking-widest2 text-clay">
+                  <h2 className="text-[12px] font-medium uppercase tracking-widest2 text-brand-soft">
                     {section.heading}
                   </h2>
                   <p className="mt-3 text-[15px] leading-relaxed text-charcoal-muted">

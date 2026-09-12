@@ -3,6 +3,69 @@
 @tailwind utilities;
 
 @layer base {
+  /* ========================================================================
+     SOPII ADMIN PALETTE — the single source of truth.
+     ========================================================================
+     Same logo as the storefront: oxblood #540000 and antique gold #C7A745.
+     Editing this block rethemes the admin; no component names a colour.
+
+     Channels are space-separated RGB so Tailwind can compose them as
+     `rgb(var(--c-brand-600) / <alpha-value>)` and keep opacity modifiers.
+
+     The categorical status hues the order badges use (amber, sky, violet,
+     indigo, emerald, rose) are Tailwind's own and stay that way — seven order
+     states need seven separable hues, and that is a legibility requirement
+     rather than a branding one. The four that carry *meaning* are aliased at
+     the bottom.
+     ------------------------------------------------------------------------ */
+  :root {
+    /* --- Brand: the logo oxblood -----------------------------------------
+       `brand-700` is the logo exactly. `brand-600` is one step up so that a
+       primary button hovering 600 -> 700 lands on the mark.
+       White on 600 is 9.98:1; on 700, 15.25:1. */
+    --c-brand-50: 252 245 244;    /* #FCF5F4  tint ground, 22 uses */
+    --c-brand-100: 248 231 230;   /* #F8E7E6 */
+    --c-brand-200: 239 201 199;   /* #EFC9C7 */
+    --c-brand-300: 223 160 157;   /* #DFA09D  dark-mode text, 7.4:1 on ink-900 */
+    --c-brand-400: 201 114 112;   /* #C97270  dark-mode text, 4.7:1 on ink-900 */
+    --c-brand-500: 162 63 62;     /* #A23F3E  rings, accents */
+    --c-brand-600: 126 31 32;     /* #7E1F20  primary action */
+    --c-brand-700: 84 0 0;        /* #540000  THE LOGO */
+    --c-brand-800: 71 0 0;        /* #470000 */
+    --c-brand-900: 59 0 0;        /* #3B0000 */
+    --c-brand-950: 36 0 0;        /* #240000 */
+
+    /* --- Neutrals, warmed ------------------------------------------------
+       Hue rotated from a cold 215deg to a warm 20deg at 55% of the original
+       saturation. Relative luminance is preserved step for step, so every
+       contrast pair that held before still holds. */
+    --c-ink-50: 248 248 247;      /* #f8f8f7 */
+    --c-ink-100: 241 239 239;     /* #f1efef */
+    --c-ink-200: 229 226 224;     /* #e5e2e0  default border */
+    --c-ink-300: 208 202 200;     /* #d0cac8 */
+    --c-ink-400: 167 157 152;     /* #a79d98 */
+    --c-ink-500: 126 116 111;     /* #7e746f */
+    --c-ink-600: 98 90 85;        /* #625a55 */
+    --c-ink-700: 77 70 66;        /* #4d4642 */
+    --c-ink-800: 54 48 46;        /* #36302e  dark border */
+    --c-ink-900: 36 32 29;        /* #24201d  dark surface */
+    --c-ink-950: 25 21 19;        /* #191513  dark page */
+
+    /* --- Gold: the logo accent, decorative only -------------------------- */
+    --c-gold: 199 167 69;         /* #C7A745 */
+    --c-gold-deep: 138 109 24;    /* #8A6D18  4.8:1 on white — the one that may carry text */
+    --c-gold-soft: 220 197 131;   /* #DCC583 */
+    --c-gold-pale: 245 237 217;   /* #F5EDD9 */
+
+    /* --- Semantic status -------------------------------------------------
+       Aliases onto the families already in use, so meaning has a name.
+       emerald-600 / amber-600 / rose-600 / sky-600. */
+    --c-success: 5 150 105;       /* #059669 */
+    --c-warning: 217 119 6;       /* #D97706 */
+    --c-danger: 225 29 72;        /* #E11D48 */
+    --c-info: 2 132 199;          /* #0284C7 */
+  }
+
   :root {
     color-scheme: light;
   }

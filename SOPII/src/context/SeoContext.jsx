@@ -24,13 +24,13 @@ const FALLBACK_SETTINGS = {
   defaultTitle: `${BRAND.name} — ${BRAND.tagline}`,
   defaultMetaDescription:
     'Handwoven sarees, blouses and considered silhouettes, made with craftspeople across India.',
-  defaultOgImage: '/final_logo.png',
+  defaultOgImage: '/sopii.png',
   twitterCardType: 'summary_large_image',
   robotsIndex: true,
   robotsFollow: true,
   organization: {
     name: BRAND.name,
-    logo: '/final_logo.png',
+    logo: '/sopii.png',
     email: BRAND.email,
     phone: BRAND.phone,
     sameAs: [],

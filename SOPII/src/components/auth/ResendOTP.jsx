@@ -129,7 +129,7 @@ export function OTPExpiry({ expiresAt, className }) {
   if (remaining <= 0) {
     return (
       <p className={className}>
-        <span className="text-[11px] text-sale">
+        <span className="text-[11px] text-danger">
           This code has expired. Request a new one to continue.
         </span>
       </p>

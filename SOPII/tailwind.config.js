@@ -4,54 +4,93 @@ export default {
   theme: {
     extend: {
       colors: {
-        /* SOPII brand palette — plum, rose, and gold */
-        ivory: '#F9F5F2',
-        cream: '#FFFDFB',
-        sand: '#F4EAE3',
-        beige: '#E9D8BF',
-        /*
-       * `clay` is unchanged — it is the brand colour, and it is what icons,
-       * borders and anything at body size still use.
+      /*
+       * SOPII brand palette — derived from the logo.
        *
-       * `clay.deep` exists for *small* text only. At 10-11px, #A76D5E on cream
-       * measures 4.15:1, just under the 4.5:1 WCAG AA needs, and the eyebrow
-       * labels are set at exactly that size. #9F6657 is the same hue and
-       * saturation three points darker: 4.59:1, and indistinguishable from the
-       * original beside it.
+       * The wordmark is two colours and only two: an oxblood #540000 that is
+       * 79% of its opaque pixels, and an antique gold #C7A745 that is 12%.
+       * Everything below is those two plus the warm neutrals they need to sit
+       * on; nothing here is invented.
+       *
+       * Every value resolves through a CSS custom property declared in
+       * index.css (`--c-*`, space-separated RGB channels). That indirection is
+       * what makes the palette swappable: retheming the shop is editing one
+       * block of `:root`, not 89 component files. The `rgb(... / <alpha-value>)`
+       * form is required rather than cosmetic — it is what keeps Tailwind's
+       * opacity modifiers (`bg-brand/10`, `border-charcoal/10`) working, and
+       * the shop uses those in ~90 places.
        */
-      clay: {
-        DEFAULT: '#A76D5E',
-        deep: '#9F6657',
+      brand: {
+        DEFAULT: 'rgb(var(--c-brand) / <alpha-value>)',
+        deep: 'rgb(var(--c-brand-deep) / <alpha-value>)',
+        soft: 'rgb(var(--c-brand-soft) / <alpha-value>)',
+        pale: 'rgb(var(--c-brand-pale) / <alpha-value>)',
       },
-        plum: {
-          DEFAULT: '#7D2B69',
-          deep: '#4D123F',
-          soft: '#A6508A',
-          pale: '#F3E3F0',
-        },
-        charcoal: {
-          DEFAULT: '#2D1F2B',
-          soft: '#4F3C48',
-          muted: '#6B5868',
-          /*
-         * Darkened from #93818A to clear WCAG AA.
-         *
-         * This tint carries a lot of 11px text — captions, the footer legal
-         * row, "(24 reviews)" — and at that size #93818A measured 3.60:1 on
-         * cream, well under the 4.5:1 minimum. #816E78 is the same hue and
-         * saturation, ~7% darker in lightness, and measures 4.67:1. It is a
-         * functional grey rather than one of the brand hues (plum, clay,
-         * gold), all of which are untouched.
+      gold: {
+        DEFAULT: 'rgb(var(--c-gold) / <alpha-value>)',
+        /*
+         * `gold.deep` exists because `gold.DEFAULT` is decorative, not textual.
+         * #C7A745 on cream is 2.29:1 — it may draw a divider or a rule, but it
+         * must never carry a word. #8A6D18 is the same hue at 4.84:1, and it is
+         * what the eyebrow labels are set in.
          */
-        faint: '#816E78',
-        },
-        gold: {
-          DEFAULT: '#C9A867',
-          soft: '#DABF8C',
-          pale: '#F3E7C9',
-        },
-        sale: '#9A3D72',
+        deep: 'rgb(var(--c-gold-deep) / <alpha-value>)',
+        soft: 'rgb(var(--c-gold-soft) / <alpha-value>)',
+        pale: 'rgb(var(--c-gold-pale) / <alpha-value>)',
       },
+
+      /* Warm neutrals — the ground the oxblood sits on. */
+      ivory: 'rgb(var(--c-ivory) / <alpha-value>)',
+      cream: 'rgb(var(--c-cream) / <alpha-value>)',
+      sand: 'rgb(var(--c-sand) / <alpha-value>)',
+      beige: 'rgb(var(--c-beige) / <alpha-value>)',
+
+      /*
+       * Text. Warm-tinted rather than neutral grey so it belongs to the same
+       * family as the oxblood; `faint` is held at 4.7:1 on cream because it
+       * carries 11px captions, which is where AA is easiest to lose.
+       */
+      charcoal: {
+        DEFAULT: 'rgb(var(--c-ink) / <alpha-value>)',
+        soft: 'rgb(var(--c-ink-soft) / <alpha-value>)',
+        muted: 'rgb(var(--c-ink-muted) / <alpha-value>)',
+        faint: 'rgb(var(--c-ink-faint) / <alpha-value>)',
+      },
+
+      /*
+       * Status.
+       *
+       * These are the one part of the palette that is deliberately *not* drawn
+       * from the logo: an error has to read as an error before it reads as
+       * SOPII. They are tuned to the warm ground (desaturated, slightly
+       * darkened) so they sit in the same room as the brand without blending
+       * into it, and each clears 4.5:1 on cream, ivory and sand alike.
+       *
+       * `sale` is the brand oxblood on purpose. A markdown price is not an
+       * error, and giving it its own red put two near-identical reds in the
+       * palette — 13 degrees of hue apart — which is how a price ends up
+       * looking like a validation failure. Oxblood is also simply how a
+       * premium label marks a reduction.
+       */
+      success: {
+        DEFAULT: 'rgb(var(--c-success) / <alpha-value>)',
+        pale: 'rgb(var(--c-success-pale) / <alpha-value>)',
+      },
+      warning: {
+        DEFAULT: 'rgb(var(--c-warning) / <alpha-value>)',
+        pale: 'rgb(var(--c-warning-pale) / <alpha-value>)',
+      },
+      danger: {
+        DEFAULT: 'rgb(var(--c-danger) / <alpha-value>)',
+        pale: 'rgb(var(--c-danger-pale) / <alpha-value>)',
+      },
+      info: {
+        DEFAULT: 'rgb(var(--c-info) / <alpha-value>)',
+        pale: 'rgb(var(--c-info-pale) / <alpha-value>)',
+      },
+      sale: 'rgb(var(--c-sale) / <alpha-value>)',
+      },
+
       fontFamily: {
         display: ['"Playfair Display"', 'Georgia', 'serif'],
         sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],

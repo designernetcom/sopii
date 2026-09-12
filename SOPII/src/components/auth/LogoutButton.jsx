@@ -48,7 +48,7 @@ export function LogoutButton({
       className={cn(
         variant === 'button'
           ? 'btn-outline'
-          : 'inline-flex items-center gap-2 text-[11px] uppercase tracking-widest2 text-charcoal-muted transition-colors hover:text-sale disabled:opacity-50',
+          : 'inline-flex items-center gap-2 text-[11px] uppercase tracking-widest2 text-charcoal-muted transition-colors hover:text-danger disabled:opacity-50',
         className,
       )}
     >

@@ -40,7 +40,7 @@ export const AuthField = forwardRef(function AuthField(
             id={inputId}
             aria-invalid={error ? 'true' : undefined}
             aria-describedby={error ? `${inputId}-error` : undefined}
-            className={cn('field flex-1', error && 'border-sale')}
+            className={cn('field flex-1', error && 'border-danger')}
             {...rest}
           />
         </div>
@@ -50,13 +50,13 @@ export const AuthField = forwardRef(function AuthField(
           id={inputId}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? `${inputId}-error` : undefined}
-          className={cn('field', error && 'border-sale')}
+          className={cn('field', error && 'border-danger')}
           {...rest}
         />
       )}
 
       {error ? (
-        <p id={`${inputId}-error`} role="alert" className="mt-1.5 text-[11px] text-sale">
+        <p id={`${inputId}-error`} role="alert" className="mt-1.5 text-[11px] text-danger">
           {error}
         </p>
       ) : null}
@@ -77,7 +77,7 @@ export function AuthError({ children, className }) {
     <p
       role="alert"
       className={cn(
-        'border-l-2 border-sale bg-sale/5 px-3 py-2.5 text-[12px] leading-relaxed text-sale',
+        'border-l-2 border-danger bg-danger/5 px-3 py-2.5 text-[12px] leading-relaxed text-danger',
         className,
       )}
     >
@@ -93,7 +93,7 @@ export function AuthNotice({ children, className }) {
     <p
       role="status"
       className={cn(
-        'border-l-2 border-plum bg-plum-pale/50 px-3 py-2.5 text-[12px] leading-relaxed text-plum-deep',
+        'border-l-2 border-brand bg-brand-pale/50 px-3 py-2.5 text-[12px] leading-relaxed text-brand-deep',
         className,
       )}
     >
@@ -125,7 +125,7 @@ export const AuthCheckbox = forwardRef(function AuthCheckbox(
             type="checkbox"
             aria-invalid={error ? 'true' : undefined}
             aria-describedby={error ? `${inputId}-error` : undefined}
-            className="peer h-4 w-4 cursor-pointer appearance-none border border-beige bg-cream transition-colors checked:border-plum checked:bg-plum focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-clay"
+            className="peer h-4 w-4 cursor-pointer appearance-none border border-beige bg-cream transition-colors checked:border-brand checked:bg-brand focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-brand-soft"
             {...rest}
           />
           <Check
@@ -138,7 +138,7 @@ export const AuthCheckbox = forwardRef(function AuthCheckbox(
         <span className="text-[12px] leading-relaxed text-charcoal-muted">{label}</span>
       </label>
       {error ? (
-        <p id={`${inputId}-error`} role="alert" className="mt-1 text-[11px] text-sale">
+        <p id={`${inputId}-error`} role="alert" className="mt-1 text-[11px] text-danger">
           {error}
         </p>
       ) : null}

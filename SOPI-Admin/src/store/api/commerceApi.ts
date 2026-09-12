@@ -88,6 +88,22 @@ export const commerceApi = baseApi.injectEndpoints({
       ],
     }),
 
+    /**
+     * Removes an order record. Not a cancellation — see the route comment.
+     *
+     * `Customer` is invalidated alongside the order because the API recomputes
+     * the buyer's order count and lifetime spend on the way out, so a customer
+     * list left on screen would otherwise keep showing the old totals.
+     */
+    deleteOrder: builder.mutation<{ id: string }, string>({
+      query: (id) => ({ url: `/orders/${id}`, method: 'DELETE' }),
+      invalidatesTags: (_result, _error, id) => [
+        { type: 'Order', id },
+        { type: 'Order', id: 'LIST' },
+        { type: 'Customer', id: 'LIST' },
+      ],
+    }),
+
     addOrderNote: builder.mutation<Order, { id: string; note: string; by?: string }>({
       query: ({ id, ...body }) => ({ url: `/orders/${id}/note`, method: 'POST', body }),
       invalidatesTags: (_result, _error, { id }) => [{ type: 'Order', id }],
@@ -186,6 +202,21 @@ export const commerceApi = baseApi.injectEndpoints({
       query: (params) => ({ url: '/inventory/history', params: params ?? {} }),
       providesTags: ['StockMovement'],
     }),
+
+    /**
+     * Clears stock history — `before` for a cutoff, `all` for the whole log.
+     *
+     * Stock levels are not part of this: the API deletes the movement records
+     * and leaves every product exactly where it is, so nothing about the
+     * Inventory page changes when this runs.
+     */
+    clearStockHistory: builder.mutation<
+      { deleted: number },
+      { before?: string; all?: boolean; type?: StockMovementType | StockMovementType[] }
+    >({
+      query: (params) => ({ url: '/inventory/history', method: 'DELETE', params }),
+      invalidatesTags: ['StockMovement'],
+    }),
   }),
 });
 
@@ -195,6 +226,7 @@ export const {
   useGetOrderQuery,
   useUpdateOrderStatusMutation,
   useUpdateOrderMutation,
+  useDeleteOrderMutation,
   useAddOrderNoteMutation,
   useResendOrderEmailMutation,
   useGetCustomersQuery,
@@ -205,4 +237,5 @@ export const {
   useGetInventorySummaryQuery,
   useAdjustStockMutation,
   useGetStockHistoryQuery,
+  useClearStockHistoryMutation,
 } = commerceApi;

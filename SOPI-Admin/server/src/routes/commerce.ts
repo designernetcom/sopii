@@ -18,6 +18,7 @@ import {
   StockMovementModel,
 } from '../db/models.js';
 import { requirePermission } from '../lib/auth.js';
+import { recomputeCustomerRollups } from '../lib/customers.js';
 import { sendAndRecordOrderEmail, type OrderEmailKind } from '../lib/email.js';
 import { deliveryHistory } from '../lib/emailLog.js';
 import {
@@ -232,6 +233,43 @@ orderRoutes.put(
     );
     if (!updated) notFound('Order');
     res.json(updated.toJSON());
+  }),
+);
+
+/**
+ * Deletes an order.
+ *
+ * Deliberately not the same operation as cancelling. Cancelling is a business
+ * event — the customer is told, the goods go back on the shelf, the order
+ * stays on the books wearing a cancelled status. This removes the record
+ * altogether, which is housekeeping: clearing test orders off a store that is
+ * going live, mostly. So:
+ *
+ * - **Stock is not returned.** A deleted order is not a cancelled one, and
+ *   silently crediting stock here would make the quantity on a product
+ *   unexplainable — there would be no movement in the history to point at.
+ *   Cancel first, then delete, if the goods should go back.
+ * - **The customer's rollups are recomputed**, because `ordersCount` and
+ *   `totalSpent` are a cache of the order collection and would otherwise keep
+ *   counting an order that no longer exists.
+ * - **Product revenue and coupon usage are left alone.** Those are aggregate
+ *   counters rather than per-order facts — on a seeded catalogue they were
+ *   never built from these orders in the first place — so unwinding them per
+ *   deletion would corrupt more than it corrected.
+ */
+orderRoutes.delete(
+  '/:id',
+  requirePermission('orders', 'delete'),
+  ah(async (req, res) => {
+    const removed = await OrderModel.findByIdAndDelete(req.params.id).lean<{
+      _id: string;
+      customerId?: string;
+    } | null>();
+    if (!removed) notFound('Order');
+
+    if (removed.customerId) await recomputeCustomerRollups(removed.customerId);
+
+    res.json({ id: removed._id });
   }),
 );
 
@@ -586,6 +624,49 @@ inventoryRoutes.get(
     ]);
 
     res.json(paginated(serializeMany(items), total, page, pageSize));
+  }),
+);
+
+/**
+ * Clears stock history.
+ *
+ * The only destructive operation this API offers on an audit log, so it is
+ * deliberately narrow.
+ *
+ * - It never touches stock. The numbers on the products stay exactly as they
+ *   are; what goes is the record of how they got there. Nothing downstream
+ *   recalculates a level from these rows.
+ * - It will not run on an empty query. Clearing everything takes `all=true`
+ *   spelled out, so a `before` parameter that failed to serialise cannot
+ *   silently empty the whole log.
+ * - `before` is exclusive and compared as an ISO string, the same trick the
+ *   list route above relies on: `at` is stored as ISO text, so lexicographic
+ *   order is chronological order.
+ */
+inventoryRoutes.delete(
+  '/history',
+  requirePermission('inventory', 'delete'),
+  ah(async (req, res) => {
+    const before = str(req.query, 'before');
+    const all = str(req.query, 'all') === 'true';
+
+    if (!before && !all) {
+      badRequest('Pass `before` (a date) to clear older movements, or `all=true` to clear them all.');
+    }
+
+    const filter: Record<string, unknown> = {};
+
+    if (before) {
+      const cutoff = new Date(`${before}T00:00:00`);
+      if (Number.isNaN(cutoff.getTime())) badRequest(`\`before\` is not a date: ${before}`);
+      filter.at = { $lt: cutoff.toISOString() };
+    }
+
+    const types = list(req.query, 'type');
+    if (types.length) filter.type = { $in: types };
+
+    const result = await StockMovementModel.deleteMany(filter);
+    res.json({ deleted: result.deletedCount ?? 0 });
   }),
 );
 

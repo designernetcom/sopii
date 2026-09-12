@@ -45,7 +45,7 @@ export function ForgotPasswordForm({ footer }) {
   if (sentTo) {
     return (
       <div className="border border-beige bg-sand/50 p-6 text-center">
-        <MailCheck size={26} className="mx-auto text-clay" strokeWidth={1.4} aria-hidden="true" />
+        <MailCheck size={26} className="mx-auto text-brand-soft" strokeWidth={1.4} aria-hidden="true" />
         <p role="status" className="mt-4 text-sm leading-relaxed text-charcoal-soft">
           If an account exists for <span className="font-medium text-charcoal">{sentTo}</span>,
           password reset instructions have been sent.

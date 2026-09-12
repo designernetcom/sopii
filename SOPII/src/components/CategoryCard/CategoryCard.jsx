@@ -31,7 +31,7 @@ export function CategoryCard({ category, large = false, priority = false }) {
         className="transition-transform duration-[1100ms] ease-silk group-hover:scale-[1.06]"
       />
 
-      <div className="absolute inset-0 bg-gradient-to-t from-[#1f1418]/80 via-[#1f1418]/18 to-transparent transition-opacity duration-500 group-hover:from-[#1f1418]/85" />
+      <div className="absolute inset-0 bg-gradient-to-t from-charcoal/80 via-charcoal/18 to-transparent transition-opacity duration-500 group-hover:from-charcoal/85" />
 
       <div className="absolute inset-x-0 bottom-0 p-5 text-cream sm:p-6">
         <div className="mb-2 inline-flex items-center gap-2 border border-white/20 bg-white/5 px-2 py-1 text-[9px] font-medium uppercase tracking-[0.22em] text-cream/80 backdrop-blur-[2px]">

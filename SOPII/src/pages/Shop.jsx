@@ -54,14 +54,14 @@ const EMPTY_CONFIG = { title: '', blurb: '', crumb: '', scope: () => [] };
 
 const PRESET_CATEGORY_SLUGS = {
   sarees: 'sarees',
-  blouses: 'blouses',
-  women: 'women',
+  // blouses: 'blouses',
+  // women: 'women',
 };
 
 const PRESETS = {
   shop: {
     title: 'Shop All',
-    blurb: 'The full SOPII collection — sarees, blouses, ready-to-wear and accessories.',
+    blurb: 'The full SOPII collection — sarees',
     crumb: 'Shop',
     scope: ({ products }) => products,
   },
@@ -81,7 +81,7 @@ const PRESETS = {
   },
   sale: {
     title: 'Sale',
-    blurb: 'A curated markdown edit. Limited pieces, while stocks last.',
+    blurb: '',
     crumb: 'Sale',
     scope: ({ getOnSale }) => getOnSale(),
     defaultSort: 'discount',
@@ -240,7 +240,7 @@ export default function Shop({ preset = 'shop', categorySlug }) {
                 <button
                   type="button"
                   onClick={clearAll}
-                  className="text-[11px] text-clay underline underline-offset-4 hover:text-charcoal"
+                  className="text-[11px] text-brand-soft underline underline-offset-4 hover:text-charcoal"
                 >
                   Clear all
                 </button>
@@ -374,7 +374,7 @@ export default function Shop({ preset = 'shop', categorySlug }) {
                 <button
                   type="button"
                   onClick={clearAll}
-                  className="px-2 py-1.5 text-[11px] text-clay underline underline-offset-4"
+                  className="px-2 py-1.5 text-[11px] text-brand-soft underline underline-offset-4"
                 >
                   Clear all
                 </button>

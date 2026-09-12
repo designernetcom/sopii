@@ -24,7 +24,7 @@ const ICONS: Record<string, LucideIcon> = {
 };
 
 const TONES: Record<KpiStat['tone'], { bg: string; spark: string }> = {
-  brand: { bg: 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400', spark: '#6d4ae4' },
+  brand: { bg: 'bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-400', spark: '#7E1F20' },
   sky: { bg: 'bg-sky-50 text-sky-600 dark:bg-sky-500/10 dark:text-sky-400', spark: '#0ea5e9' },
   emerald: { bg: 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400', spark: '#10b981' },
   amber: { bg: 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400', spark: '#f59e0b' },

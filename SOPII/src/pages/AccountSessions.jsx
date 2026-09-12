@@ -32,7 +32,7 @@ export default function AccountSessions() {
         <div className="mt-2 flex items-center gap-3">
           <MonitorSmartphone
             size={22}
-            className="text-clay"
+            className="text-brand-soft"
             strokeWidth={1.4}
             aria-hidden="true"
           />

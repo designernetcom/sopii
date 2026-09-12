@@ -34,7 +34,7 @@ import { WhatsAppMark } from '../auth/WhatsAppMark';
  *   cannot be styled, waits a second to appear and never shows for a keyboard
  *   at all. It is positioned absolutely, so revealing it reflows nothing.
  *
- *   The **brand colour** is the hover state. At rest every icon is clay and
+ *   The **brand colour** is the hover state. At rest every icon is brand-soft and
  *   the rail reads as one object; under the cursor exactly one lights up in
  *   its network's own hue, which is the fastest confirmation available of what
  *   the thing under the pointer is.
@@ -47,7 +47,7 @@ import { WhatsAppMark } from '../auth/WhatsAppMark';
 const ICONS = { Instagram, Facebook, Sparkle, Youtube };
 
 /** Plum, for a channel that carries no brand colour of its own. */
-const FALLBACK = '#7D2B69';
+const FALLBACK = '#540000';
 
 const WHATSAPP_GREEN = '#25D366';
 
@@ -119,7 +119,7 @@ export function SocialRail() {
               rel="noreferrer noopener"
               className="rail-link animate-slide-in-left rounded-br-lg text-cream"
               style={{
-                '--rail': '#FFFDFB',
+                '--rail': '#FFFDFC',
                 backgroundColor: WHATSAPP_GREEN,
                 animationDelay: `${SOCIAL_LINKS.length * STAGGER_MS}ms`,
               }}

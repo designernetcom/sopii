@@ -7,6 +7,71 @@
    ========================================================================== */
 
 @layer base {
+  /* ========================================================================
+     SOPII PALETTE — the single source of truth.
+     ========================================================================
+     Read off the logo: oxblood #540000 (79% of the wordmark's opaque pixels)
+     and antique gold #C7A745 (12%). Everything else is the warm neutral ground
+     those two need, or a status colour that has to stay legible as a status.
+
+     Values are space-separated RGB channels rather than hex because Tailwind
+     composes them as `rgb(var(--c-brand) / <alpha-value>)`, which is what lets
+     `bg-brand/10` and `border-charcoal/10` keep working. Changing the shop's
+     colour scheme means editing this block and nothing else.
+
+     Every foreground below was measured against cream, ivory and sand; the
+     ratio in each comment is the worst of the three.
+     ------------------------------------------------------------------------ */
+  :root {
+    /* --- Brand: the logo oxblood ---------------------------------------- */
+    --c-brand: 84 0 0;            /* #540000  logo primary   12.8:1 on sand */
+    --c-brand-deep: 59 0 0;       /* #3B0000  pressed/hover  14.9:1 */
+    --c-brand-soft: 122 42 40;    /* #7A2A28  icons, rules    8.1:1 */
+    --c-brand-pale: 246 235 234;  /* #F6EBEA  tinted panels — a ground, not a text colour */
+
+    /* --- Accent: the logo gold ------------------------------------------ */
+    /* `--c-gold` is decorative only: 2.3:1 on cream. Words use `--c-gold-deep`. */
+    --c-gold: 199 167 69;         /* #C7A745  logo accent — rules, focus ring, on-dark text */
+    --c-gold-deep: 138 109 24;    /* #8A6D18  eyebrows, small caps   4.1:1 sand / 4.8:1 cream */
+    --c-gold-soft: 220 197 131;   /* #DCC583  on-dark text, 9.0:1 on oxblood */
+    --c-gold-pale: 245 237 217;   /* #F5EDD9  selection, tinted panels */
+
+    /* --- Warm neutral ground -------------------------------------------- */
+    --c-ivory: 250 246 243;       /* #FAF6F3  page */
+    --c-cream: 255 253 252;       /* #FFFDFC  raised cards, fields */
+    --c-sand: 242 234 229;        /* #F2EAE5  sunken panels, skeletons */
+    --c-beige: 228 216 208;       /* #E4D8D0  borders, hairlines */
+
+    /* --- Ink ------------------------------------------------------------- */
+    /* Warm-tinted rather than neutral grey, so body copy belongs to the same
+       family as the oxblood instead of sitting on top of it. */
+    --c-ink: 36 22 25;            /* #241619  body            14.7:1 */
+    --c-ink-soft: 69 48 52;       /* #453034  headings        10.2:1 */
+    --c-ink-muted: 106 85 89;     /* #6A5559  secondary        5.8:1 */
+    --c-ink-faint: 121 101 105;   /* #796569  11px captions    4.6:1 sand / 5.3:1 cream */
+
+    /* --- Status ----------------------------------------------------------
+       Deliberately not logo-derived: an error has to read as an error first.
+       Desaturated and darkened onto the warm ground so they belong to the
+       same room as the brand, but each is >=35 degrees of hue from its
+       neighbours and >=4.5:1 on every ground the shop uses. */
+    --c-success: 28 107 75;       /* #1C6B4B  5.4:1 */
+    --c-warning: 138 90 6;        /* #8A5A06  5.0:1 */
+    --c-danger: 179 38 30;        /* #B3261E  5.5:1 */
+    --c-info: 27 94 138;          /* #1B5E8A  5.9:1 */
+
+    /* The tints those four use as alert backgrounds. Grounds only — the
+       matching solid above is what carries the text on them. */
+    --c-success-pale: 230 242 236;
+    --c-warning-pale: 250 242 224;
+    --c-danger-pale: 252 235 233;
+    --c-info-pale: 231 241 248;
+
+    /* A markdown price is not an error. Oxblood is how a premium label marks
+       a reduction, and it keeps a second red out of the palette. */
+    --c-sale: 84 0 0;             /* #540000 */
+  }
+
   :root {
     --header-h: 56px;
     --bottom-nav-h: 60px;
@@ -80,7 +145,10 @@
 
   body {
     @apply bg-ivory text-charcoal font-sans antialiased;
-    background: linear-gradient(180deg, #f8f3ee 0%, #fffdfb 100%);
+    /* The page ground. A single near-flat wash from ivory to cream rather
+       than a visible gradient — it keeps the fold from banding on a tall
+       phone without reading as a coloured background. */
+    background: linear-gradient(180deg, rgb(var(--c-ivory)) 0%, rgb(var(--c-cream)) 100%);
     font-size: 15px;
     line-height: 1.6;
     letter-spacing: -0.01em;
@@ -114,18 +182,18 @@
   }
 
   /*
-   * Plum headings on the home and collection pages.
+   * Oxblood headings on the home and collection pages.
    *
    * `:not([class*='text-'])` is the important part. These selectors are more
    * specific than a Tailwind colour utility, so before this exclusion they also
    * repainted headings inside the *dark* sections — the customer-reviews block
    * sets `text-cream` on charcoal, and this rule was overriding it back to
-   * plum: #6B2E5A on #2D1F2B measures 1.66:1, which is illegible. Any heading
-   * that names its own colour is now left alone.
+   * brand: the oxblood on charcoal measures 1.4:1, which is illegible. Any
+   * heading that names its own colour is now left alone.
    */
   .home-page :is(h1, h2, h3, h4, .section-title):not([class*='text-']),
   .collection-page :is(h1, h2, h3, h4, .section-title, .eyebrow):not([class*='text-']) {
-    color: #6B2E5A;
+    color: rgb(var(--c-brand));
   }
 
   .brand-logo {
@@ -133,7 +201,7 @@
     width: auto;
     max-height: 72px;
     object-fit: contain;
-    filter: drop-shadow(0 6px 12px rgba(125, 43, 105, 0.08));
+    filter: drop-shadow(0 6px 12px rgb(var(--c-brand) / 0.08));
   }
 
   .brand-logo--compact {
@@ -151,8 +219,11 @@
   }
 
   /* Visible, on-brand focus ring for keyboard users only */
+  /* `gold.deep`, not `gold.DEFAULT`. A focus indicator is held to 3:1 against
+     its background (WCAG 1.4.11) and the decorative gold is 2.3:1 on cream —
+     the ring was there and effectively invisible. Same hue, 4.1:1 at worst. */
   :focus-visible {
-    outline: 2px solid theme('colors.gold.DEFAULT');
+    outline: 2px solid theme('colors.gold.deep');
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -249,11 +320,11 @@
   }
 
   /* --- Typography -------------------------------------------------------- */
-  /* `text-clay-deep`, not `text-clay`: see the palette note in
-     tailwind.config.js — this is the one place the brand clay is set small
-     enough to fall under the AA contrast threshold. */
+  /* `text-gold-deep`, not `text-gold`: at 10-11px this is the smallest type
+     in the shop, and the logo's #C7A745 is 2.3:1 on cream. The deep mix is the
+     same hue at 4.8:1 — see the note in tailwind.config.js. */
   .eyebrow {
-    @apply font-sans text-[10px] sm:text-[11px] font-medium uppercase tracking-widest3 text-clay-deep;
+    @apply font-sans text-[10px] sm:text-[11px] font-medium uppercase tracking-widest3 text-gold-deep;
   }
 
   .section-title {
@@ -279,13 +350,13 @@
   }
 
   .btn-primary {
-    @apply btn border-plum bg-plum text-cream
-           hover:bg-transparent hover:text-plum;
+    @apply btn border-brand bg-brand text-cream
+           hover:bg-transparent hover:text-brand;
   }
 
   .btn-outline {
-    @apply btn border-plum bg-transparent text-plum
-           hover:bg-plum hover:text-cream;
+    @apply btn border-brand bg-transparent text-brand
+           hover:bg-brand hover:text-cream;
   }
 
   .btn-light {
@@ -313,7 +384,7 @@
   .field {
     @apply w-full border border-beige bg-cream px-4 py-3 text-base text-charcoal
            placeholder:text-charcoal-faint
-           focus:border-clay focus:outline-none focus:ring-0
+           focus:border-brand focus:outline-none focus:ring-0
            transition-colors duration-200
            sm:text-sm;
   }
@@ -343,23 +414,23 @@
   /*
    * Footer type.
    *
-   * The footer sits on cream, so its column headings are the same clay-deep as
+   * The footer sits on cream, so its column headings are the same gold-deep as
    * `.eyebrow` — the tone tuned for that ground. It stays its own class rather
    * than an alias because the footer's headings are also the accordion
    * summaries on a phone, and they pick up spacing from `FooterSection`.
    *
-   * The links are plum rather than charcoal: at 13px on cream that measures
-   * about 8:1, well past AA, and it keeps the footer a brand colour instead of
+   * The links are oxblood rather than charcoal: at 13px on cream that measures
+   * 15:1, well past AA, and it keeps the footer a brand colour instead of
    * a grey. `.footer-link` sets no size on purpose — the columns run at 13px,
    * the utility row at 12px and the policy row at 11px, and leaving the size to
    * the caller means none of them has to out-specify this rule.
    */
   .footer-eyebrow {
-    @apply font-sans text-[10px] sm:text-[11px] font-medium uppercase tracking-widest3 text-clay-deep;
+    @apply font-sans text-[10px] sm:text-[11px] font-medium uppercase tracking-widest3 text-gold-deep;
   }
 
   .footer-link {
-    @apply text-plum transition-colors duration-200 hover:text-plum-deep;
+    @apply text-brand transition-colors duration-200 hover:text-brand-soft;
   }
 
   /*
@@ -394,7 +465,7 @@
      * subtree hidden that way keeps its layout boxes and still computes
      * `visibility: visible` and `opacity: 1` on every child — it simply never
      * paints and never hit-tests. So the rule above kept reporting healthy
-     * 13px plum links at real coordinates while the desktop footer rendered
+     * 13px oxblood links at real coordinates while the desktop footer rendered
      * three bare headings.
      *
      * Its own block on purpose. Firefox and older Safari do not know this
@@ -422,7 +493,7 @@
    * that.
    */
   .rail-link {
-    @apply relative flex h-11 w-11 items-center justify-center text-clay;
+    @apply relative flex h-11 w-11 items-center justify-center text-brand-soft;
     transition: color 300ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 

@@ -26,7 +26,7 @@ export function MegaMenu({ item, onNavigate }) {
                     <Link
                       to={link.to}
                       onClick={onNavigate}
-                      className="text-[13px] text-charcoal-soft transition-colors duration-200 hover:text-clay"
+                      className="text-[13px] text-charcoal-soft transition-colors duration-200 hover:text-brand-soft"
                     >
                       {link.label}
                     </Link>

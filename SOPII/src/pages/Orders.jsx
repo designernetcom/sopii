@@ -120,13 +120,13 @@ export default function Orders() {
             </div>
 
             {lookupError ? (
-              <p role="alert" className="mt-2 text-[12px] text-sale">
+              <p role="alert" className="mt-2 text-[12px] text-danger">
                 {lookupError}
               </p>
             ) : null}
 
             <p className="mt-2 text-[11px] text-charcoal-faint">
-              <Link to="/login" className="text-clay underline underline-offset-4">
+              <Link to="/login" className="text-brand-soft underline underline-offset-4">
                 Log in
               </Link>{' '}
               to see every order on your account.
@@ -184,7 +184,7 @@ export default function Orders() {
                 </div>
                 <Link
                   to={`/order-success/${order.id}`}
-                  className="text-[11px] font-medium uppercase tracking-widest2 text-clay link-underline"
+                  className="text-[11px] font-medium uppercase tracking-widest2 text-brand-soft link-underline"
                 >
                   View receipt
                 </Link>
@@ -205,10 +205,10 @@ export default function Orders() {
                       <li key={step} className="flex min-w-[92px] flex-1 flex-col items-center gap-2">
                         <div className="flex w-full items-center">
                           <span
-                            className={`h-px flex-1 ${i === 0 ? 'bg-transparent' : done ? 'bg-clay' : 'bg-beige'}`}
+                            className={`h-px flex-1 ${i === 0 ? 'bg-transparent' : done ? 'bg-brand-soft' : 'bg-beige'}`}
                           />
                           {done ? (
-                            <CheckCircle2 size={16} className="shrink-0 text-clay" aria-hidden="true" />
+                            <CheckCircle2 size={16} className="shrink-0 text-brand-soft" aria-hidden="true" />
                           ) : (
                             <Circle size={16} className="shrink-0 text-beige" aria-hidden="true" />
                           )}
@@ -217,7 +217,7 @@ export default function Orders() {
                               i === ORDER_STAGES.length - 1
                                 ? 'bg-transparent'
                                 : i < order.stage
-                                  ? 'bg-clay'
+                                  ? 'bg-brand-soft'
                                   : 'bg-beige'
                             }`}
                           />
@@ -252,7 +252,7 @@ export default function Orders() {
                       <p className="text-[13px] leading-snug">
                         <Link
                           to={`/product/${line.productId}`}
-                          className="transition-colors hover:text-clay"
+                          className="transition-colors hover:text-brand-soft"
                         >
                           {line.name}
                         </Link>

@@ -96,7 +96,7 @@ export default function Cart() {
                       <h2 className="mt-1 text-sm leading-snug">
                         <Link
                           to={`/product/${line.productId}`}
-                          className="transition-colors hover:text-clay"
+                          className="transition-colors hover:text-brand-soft"
                         >
                           {line.name}
                         </Link>
@@ -129,7 +129,7 @@ export default function Cart() {
                         <button
                           type="button"
                           onClick={() => removeItem(line.id)}
-                          className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest2 text-charcoal-muted transition-colors hover:text-sale"
+                          className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-widest2 text-charcoal-muted transition-colors hover:text-danger"
                         >
                           <Trash2 size={12} aria-hidden="true" /> Remove
                         </button>
@@ -172,7 +172,7 @@ export default function Cart() {
 
           <Link
             to="/shop"
-            className="mt-6 inline-block text-[11px] font-medium uppercase tracking-widest2 text-clay link-underline"
+            className="mt-6 inline-block text-[11px] font-medium uppercase tracking-widest2 text-brand-soft link-underline"
           >
             Continue shopping
           </Link>
@@ -190,9 +190,9 @@ export default function Cart() {
               </label>
 
               {coupon ? (
-                <div className="flex items-center justify-between gap-3 border border-clay/40 bg-sand/60 px-3.5 py-3">
+                <div className="flex items-center justify-between gap-3 border border-brand-soft/40 bg-sand/60 px-3.5 py-3">
                   <span className="flex min-w-0 items-center gap-2 text-[12px]">
-                    <Tag size={13} className="shrink-0 text-clay" aria-hidden="true" />
+                    <Tag size={13} className="shrink-0 text-brand-soft" aria-hidden="true" />
                     <span className="truncate">
                       <strong className="font-medium">{coupon.code}</strong> applied
                     </span>
@@ -204,7 +204,7 @@ export default function Cart() {
                       setCouponMessage(null);
                     }}
                     aria-label={`Remove coupon ${coupon.code}`}
-                    className="shrink-0 text-charcoal-muted hover:text-sale"
+                    className="shrink-0 text-charcoal-muted hover:text-danger"
                   >
                     <X size={14} aria-hidden="true" />
                   </button>
@@ -231,7 +231,7 @@ export default function Cart() {
               {couponMessage ? (
                 <p
                   role="status"
-                  className={`mt-2 text-[11px] ${couponMessage.ok ? 'text-clay' : 'text-sale'}`}
+                  className={`mt-2 text-[11px] ${couponMessage.ok ? 'text-success' : 'text-danger'}`}
                 >
                   {couponMessage.message}
                 </p>
@@ -246,7 +246,7 @@ export default function Cart() {
                         onClick={() => setCode(c.code)}
                         className="text-left text-[11px] text-charcoal-faint transition-colors hover:text-charcoal"
                       >
-                        <span className="font-medium text-clay">{c.code}</span> — {c.label}
+                        <span className="font-medium text-brand-soft">{c.code}</span> — {c.label}
                       </button>
                     </li>
                   ))}
@@ -262,21 +262,21 @@ export default function Cart() {
                 <Row
                   label="Savings on MRP"
                   value={`-${formatPrice(totals.savings)}`}
-                  valueClass="text-clay"
+                  valueClass="text-brand-soft"
                 />
               ) : null}
 
               <Row
                 label="Shipping"
                 value={totals.shipping === 0 ? 'Free' : formatPrice(totals.shipping)}
-                valueClass={totals.shipping === 0 ? 'text-clay' : undefined}
+                valueClass={totals.shipping === 0 ? 'text-brand-soft' : undefined}
               />
 
               {totals.couponDiscount > 0 ? (
                 <Row
                   label={`Discount (${coupon.code})`}
                   value={`-${formatPrice(totals.couponDiscount)}`}
-                  valueClass="text-clay"
+                  valueClass="text-brand-soft"
                 />
               ) : null}
             </dl>
