@@ -5,32 +5,81 @@
  */
 
 export const STATIC_PAGES = {
-  'our-story': {
-    title: 'Our Story',
-    eyebrow: 'About SOPII',
-    intro:
-      'SOPII began in 2021 with one saree, one weaver and a stubborn belief that Indian textiles deserve better than a novelty shelf in a department store.',
-    seed: 901,
-    tags: 'textile',
-    sections: [
-      {
-        heading: 'Where it started',
-        body: 'Our founder spent two years travelling between weaving clusters in Kutch, Maheshwar, Chanderi and Kanchipuram, buying directly from the families at the loom. The first collection was forty sarees, photographed on a friend’s terrace in Bandra, and it sold out in nine days.',
-      },
-      {
-        heading: 'What we make',
-        body: 'Sarees, blouses and ready-to-wear built around natural fibres — cotton, silk, linen and blends of the three. Nothing synthetic, nothing designed to last a single season. We would rather sell you one piece you wear for ten years than ten you wear once.',
-      },
-      {
-        heading: 'Who makes it',
-        body: 'We work with eleven weaving clusters across five states and two stitching units in Mumbai. Every weaver is paid a per-piece rate agreed in advance, and we publish the split between craft cost and retail price on request.',
-      },
-      {
-        heading: 'Where we are going',
-        body: 'Our next chapter is about scale without dilution: more looms, the same standards, and a repair service so a SOPII saree can be re-worn rather than replaced.',
-      },
-    ],
+
+'our-story': {
+  title: 'Our Story',
+  eyebrow: 'About SOPII',
+
+  intro:
+    'SOPII was born from a shared love for sarees, Indian craftsmanship and the timeless beauty of Indian textiles — created by Sonika and Priyanka after they chose to leave their corporate careers and take a leap into entrepreneurship.',
+
+  
+
+  seed: 901,
+  tags: 'textile',
+
+sections: [
+  {
+    heading: 'Our Tagline',
+    body: 'Elegance in Every Drape.',
   },
+
+  {
+    heading: 'Year Established',
+    body: '2026',
+  },
+
+
+  {
+    heading: 'From Corporate Careers to Entrepreneurship',
+    body:
+      'Sonika was a Manager at Citi Bank, and Priyanka was a SAP Consultant at IBM. After years of building their careers in the corporate world, they decided to leave their established careers and take a leap into entrepreneurship. Their decision was driven by a desire to build something of their own — something that reflected their passion, creativity and vision.',
+  },
+
+  {
+    heading: 'The Story Behind SOPII',
+    body:
+      'SOPII was born from a simple idea — to create something of their own around their shared love for sarees and the timeless beauty of Indian textiles. Their love for sarees, fabrics, colours, craftsmanship and Indian traditions inspired them to create a brand that celebrates the saree in all its beauty.',
+  },
+
+  {
+    heading: 'The Name SOPII',
+    body:
+      'The name SOPII was thoughtfully created from Sonika and Priyanka, giving the brand a personal identity and representing the beginning of their entrepreneurial journey.',
+  },
+
+  
+  {
+    heading: 'Brand Essence',
+    body:
+      'SOPII stands for Timeless elegance, Indian craftsmanship, Authentic textiles, Contemporary style, Individuality, and Quality and thoughtful curation.',
+  },
+
+  {
+    heading: 'More Than Just a Saree Store',
+    body:
+      'SOPII is more than just a saree store. It is a celebration of Indian craftsmanship, timeless traditions and contemporary elegance — bringing thoughtfully selected sarees to women who appreciate authenticity, beauty and individuality.',
+  },
+
+  {
+    heading: 'Our Mission',
+    body:
+      'To celebrate the timeless beauty of Indian sarees by bringing together traditional craftsmanship, quality textiles and contemporary elegance, while making sarees relevant and accessible to the modern woman.',
+  },
+
+  {
+    heading: 'Our Vision',
+    body:
+      "To build SOPII into a trusted and loved saree brand that celebrates India's rich textile heritage and inspires women to embrace the saree with confidence, elegance and individuality.",
+  },
+],
+
+
+},
+
+
+
+
 
   'our-craft': {
     title: 'Our Craft',
