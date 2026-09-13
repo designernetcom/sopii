@@ -596,6 +596,156 @@
     );
   }
 
+  /*
+   * Launch screen (components/WebsiteIntro).
+   *
+   * The veil paints the page's own ivory ground, so the hand-off from the
+   * empty pre-JavaScript document to the veil is invisible. Its warmth comes
+   * from a cream bloom behind the mark and a faint sand falloff at the edges —
+   * no colour the palette does not already have.
+   *
+   * The entrance keyframes run in `enter` *and* `exit`: keeping the same
+   * animation declared means leaving `enter` does not restart it or drop its
+   * end state. The exit is a separate animation on the parent, so the two
+   * compose instead of fighting over one `transform`.
+   *
+   * Timings the component waits on: the tagline, the last entrance to finish,
+   * ends at 450ms + 850ms = 1300ms, inside `INTRO_TIMING.full.hold`.
+   */
+  .site-intro {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-inline: 24px;
+    background-color: rgb(var(--c-ivory));
+    background-image: radial-gradient(
+      ellipse 70% 55% at 50% 47%,
+      rgb(var(--c-cream)) 0%,
+      rgb(var(--c-cream) / 0) 100%
+    );
+  }
+
+  .site-intro::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: radial-gradient(
+      ellipse 120% 95% at 50% 50%,
+      transparent 55%,
+      rgb(var(--c-sand) / 0.75) 100%
+    );
+    animation: intro-fade 1200ms ease-out both;
+  }
+
+  .site-intro[data-phase='exit'] {
+    pointer-events: none;
+    animation: intro-veil-out var(--intro-exit, 700ms) cubic-bezier(0.65, 0, 0.35, 1) both;
+  }
+
+  .site-intro__content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .site-intro[data-phase='exit'] .site-intro__content {
+    animation: intro-content-out var(--intro-exit, 700ms) cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
+  /*
+   * The wordmark, cropped to its ink.
+   *
+   * The artwork (3132x1818) carries ~200px of transparent margin top and
+   * bottom, and its own small "Elegance in Every drape" line. The frame trims
+   * the margins (rows 190-1680 are kept), and the mask hides that line so the
+   * tagline is not said twice: two rectangles unioned — everything above row
+   * 1518 (83.5%), plus the column left of x 1470 (46.9%) so the tail of the
+   * "p", which drops past that row, survives.
+   */
+  .site-intro__mark {
+    width: clamp(200px, 62vw, 340px);
+    aspect-ratio: 3132 / 1490;
+    overflow: hidden;
+    opacity: 0;
+  }
+
+  .site-intro__mark img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: -6.07%;
+    -webkit-mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000);
+    mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000);
+    -webkit-mask-size: 100% 83.5%, 46.9% 100%;
+    mask-size: 100% 83.5%, 46.9% 100%;
+    -webkit-mask-position: 0 0, 0 0;
+    mask-position: 0 0, 0 0;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+  }
+
+  .site-intro__rule {
+    display: block;
+    width: 56px;
+    height: 1px;
+    margin-block: clamp(18px, 3vh, 26px) clamp(12px, 2vh, 16px);
+    background: linear-gradient(
+      90deg,
+      rgb(var(--c-gold) / 0),
+      rgb(var(--c-gold)) 50%,
+      rgb(var(--c-gold) / 0)
+    );
+    transform: scaleX(0);
+  }
+
+  .site-intro__tagline {
+    font-family: theme('fontFamily.display');
+    font-size: clamp(15px, 0.85rem + 0.45vw, 20px);
+    line-height: 1.4;
+    letter-spacing: 0.06em;
+    color: rgb(var(--c-gold-deep));
+    opacity: 0;
+  }
+
+  /* The mark eases in from rest rather than on the shop's `silk` curve:
+     silk is 80% complete a quarter of the way through, which reads as a
+     pop, not a fade. */
+  .site-intro:is([data-phase='enter'], [data-phase='exit']) .site-intro__mark {
+    animation: intro-mark-in 1100ms cubic-bezier(0.33, 0, 0.2, 1) both;
+  }
+
+  .site-intro:is([data-phase='enter'], [data-phase='exit']) .site-intro__rule {
+    animation: intro-rule-in 800ms cubic-bezier(0.22, 1, 0.36, 1) 350ms both;
+  }
+
+  .site-intro:is([data-phase='enter'], [data-phase='exit']) .site-intro__tagline {
+    animation: intro-tagline-in 850ms cubic-bezier(0.33, 0, 0.2, 1) 450ms both;
+  }
+
+  /*
+   * Reduced motion.
+   *
+   * The global rule at the top of this file collapses every animation to
+   * 0.01ms, which already removes the scale and stagger: the mark is simply
+   * there. The one thing worth keeping is the veil's short opacity dissolve —
+   * a cross-fade is not motion, and without it the page would cut in with a
+   * jolt. This selector outranks the global `*` and restores just that.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .site-intro[data-phase='exit'] {
+      animation-duration: var(--intro-exit, 300ms) !important;
+    }
+    .site-intro[data-phase='exit'] .site-intro__content {
+      animation: none;
+    }
+  }
+
   /* Screen-reader-only text that becomes visible when focused (skip link) */
   .skip-link {
     @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]
@@ -645,5 +795,73 @@
   /* Staggered reveal helper used by scroll-in animations */
   .stagger > * {
     animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* Launch-screen keyframes. Outside any `@layer`, so Tailwind emits them
+   unconditionally rather than judging them unused. */
+@keyframes intro-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes intro-mark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+    filter: blur(3px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes intro-rule-in {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes intro-tagline-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    letter-spacing: 0.16em;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    letter-spacing: 0.06em;
+  }
+}
+
+/* Content leaves first; the veil holds until the mark is all but gone, then
+   dissolves onto the page. Overlap these much more and the wordmark ghosts
+   over the hero photograph as the veil thins. */
+@keyframes intro-content-out {
+  from {
+    opacity: 1;
+    transform: scale(1);
+  }
+  45%,
+  to {
+    opacity: 0;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes intro-veil-out {
+  0%,
+  40% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
   }
 }
