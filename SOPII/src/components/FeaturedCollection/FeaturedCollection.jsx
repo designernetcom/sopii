@@ -22,7 +22,7 @@ export function FeaturedCollection() {
             <div className="relative">
               <div className="absolute -left-4 top-6 hidden h-20 w-20 border border-gold/70 lg:block" aria-hidden="true" />
               <Image
-                src="https://res.cloudinary.com/w2brnx9l/image/upload/v1789042968/sopii/banners/ban_0002/sfps5uernbnw54py0cw3.jpg"
+                src="https://res.cloudinary.com/w2brnx9l/image/upload/v1789307325/sopii/banners/ban_0002/yy3olw4ut5n3wmxiwazb.jpg"
                 alt="A model wearing a piece from the SOPII Signature collection"
                 ratio="aspect-[4/5]"
                 sizes="(min-width: 1024px) 50vw, 100vw"
