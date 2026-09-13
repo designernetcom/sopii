@@ -1,9 +1,31 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { cn } from '../../utils/cn';
 import { photo } from '../../utils/images';
 import { useCatalog } from '../../context/CatalogContext';
 
-const INTERVAL = 6500;
+/*
+ * Autoplay cadence, and the two animations that have to fit inside it.
+ *
+ * At 2s the slide's whole visible life is INTERVAL + the outgoing fade, so both
+ * durations below are pinned to that budget. They are literal Tailwind
+ * arbitrary values rather than interpolations of this constant because the JIT
+ * scans source statically and never sees a template string — so if this number
+ * changes, `duration-[700ms]` (the cross-fade) and `duration-[2700ms]` (the Ken
+ * Burns drift) have to move with it.
+ *
+ * Why those two numbers:
+ *
+ * - The 700ms cross-fade is deliberately well under the 2s hold. A fade that
+ *   runs for most of a slide's turn never reads as a settled photograph, only
+ *   as a permanent dissolve between two; holding each slide still for ~1.3s
+ *   either side of it is what makes the sequence feel deliberate.
+ * - The drift was 9s against the old 6.5s cadence. Left at 9s it would now be
+ *   cut off about a fifth of the way in, reading as an unexplained jitter
+ *   rather than a drift, so it is retimed to 2700ms — the 2s hold plus the
+ *   700ms it spends fading out — and its travel cut from 5% to 1.5% so the
+ *   movement per second stays where it was (~0.55%/s).
+ */
+const INTERVAL = 2000;
 
 /*
  * NOTE: the slide caption block (heading, body copy, CTA link) below is
@@ -46,7 +68,6 @@ export function Hero() {
   const [mobileFailed, setMobileFailed] = useState(() => new Set());
   /** `"1.333 / 1"` etc., measured from the first slide once it decodes. */
   const [measuredRatio, setMeasuredRatio] = useState(null);
-  const timer = useRef(null);
 
   const count = HERO_SLIDES.length;
 
@@ -79,13 +100,24 @@ export function Hero() {
     setIndex((i) => (i >= count ? 0 : i));
   }, [count]);
 
+  /*
+   * Autoplay. `% count` is what wraps the last slide back to the first.
+   *
+   * `index` is a dependency on purpose: it is what makes a manual change reset
+   * the clock. Tapping a dot re-runs this effect, the clean-up clears the
+   * in-flight interval, and a fresh full 2s starts from the slide the visitor
+   * chose — without it, a tap 1.9s into a cycle would be yanked onward 100ms
+   * later, which reads as the carousel fighting the tap.
+   *
+   * The id lives in a local the clean-up closes over, rather than in a ref, so
+   * each run can only ever clear the interval that same run created. React runs
+   * this clean-up on unmount too, so no interval outlives the component and no
+   * `setIndex` fires into an unmounted tree.
+   */
   useEffect(() => {
     if (paused || count < 2) return undefined;
-    timer.current = setInterval(
-      () => setIndex((i) => (i + 1) % count),
-      INTERVAL
-    );
-    return () => clearInterval(timer.current);
+    const id = setInterval(() => setIndex((i) => (i + 1) % count), INTERVAL);
+    return () => clearInterval(id);
   }, [paused, index, count]);
 
   useEffect(() => {
@@ -146,7 +178,8 @@ export function Hero() {
               aria-label={`${i + 1} of ${HERO_SLIDES.length}: ${slide.eyebrow}`}
               aria-hidden={!active}
               className={cn(
-                'absolute inset-0 transition-opacity duration-[1200ms] ease-silk',
+                /* 700ms against the 2s cadence — see INTERVAL. */
+                'absolute inset-0 transition-opacity duration-[700ms] ease-silk',
                 active ? 'opacity-100' : 'pointer-events-none opacity-0'
               )}
             >
@@ -190,7 +223,20 @@ export function Hero() {
                   aria-hidden="true"
                   loading={i === 0 ? 'eager' : 'lazy'}
                   onLoad={i === 0 ? measureSlide : undefined}
-                  fetchPriority={i === 0 ? 'high' : 'low'}
+                  /*
+                   * Lowercase, and spread, exactly as in BrandLogo.
+                   *
+                   * React 18 does not recognise the camelCase `fetchPriority`
+                   * prop: it warns and drops the attribute, so the first slide
+                   * — the page's LCP image — was shipping with no priority hint
+                   * at all despite the JSX saying otherwise. The DOM attribute
+                   * is lowercase, but written literally that trips
+                   * `react/no-unknown-property`, which only inspects literal
+                   * JSX attributes; spreading passes the correct spelling
+                   * through. React 19 accepts the prop directly, at which point
+                   * both this and BrandLogo can go back to a plain attribute.
+                   */
+                  {...{ fetchpriority: i === 0 ? 'high' : 'low' }}
                   decoding={i === 0 ? 'sync' : 'async'}
                   /* One slide always fills the frame, at every width. */
                   sizes="100vw"
@@ -203,14 +249,16 @@ export function Hero() {
                    * centred like the desktop one.
                    */
                   className={cn(
-                    'h-full w-full object-cover transition-transform duration-[9000ms] ease-linear motion-reduce:transform-none sm:object-center',
+                    'h-full w-full object-cover transition-transform duration-[2700ms] ease-linear motion-reduce:transform-none sm:object-center',
                     mobileSrc && !mobileFailed.has(slide.id)
                       ? 'object-center'
                       : 'object-[50%_35%]',
-                    /* The Ken Burns drift is desktop-only: a nine-second
+                    /* The Ken Burns drift is desktop-only: a multi-second
                        compositor animation buys nothing at this size and costs
-                       battery on every visit. */
-                    active ? 'sm:scale-105' : 'sm:scale-100'
+                       battery on every visit. 1.5% rather than the old 5%
+                       because the drift now runs in 2.7s instead of 9 — see
+                       INTERVAL. */
+                    active ? 'sm:scale-[1.015]' : 'sm:scale-100'
                   )}
                 />
               </picture>
