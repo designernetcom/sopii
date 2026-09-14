@@ -125,7 +125,7 @@ export const OCCASIONS = [
     tags: 'wedding',
     seed: 404,
     image:
-      'https://suta.in/cdn/shop/files/Dress_9b943c2b-cc46-436c-abd2-7f9fa1081829.jpg?format=webp&v=1752903598&width=1000',
+      'https://sopiistore.com/cdn/shop/files/Dress_9b943c2b-cc46-436c-abd2-7f9fa1081829.jpg?format=webp&v=1752903598&width=1000',
   },
   {
     name: 'Party',

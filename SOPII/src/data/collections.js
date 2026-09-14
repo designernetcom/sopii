@@ -93,7 +93,7 @@ export const HOME_BANNERS = [
     tags: 'silk',
     align: 'left',
     image:
-      'https://suta.in/cdn/shop/files/saree_9656048d-67a5-4c6b-93b9-5fe16f6ef69d.jpg?format=webp&v=1752903494&width=1600',
+      'https://sopiistore.com/cdn/shop/files/saree_9656048d-67a5-4c6b-93b9-5fe16f6ef69d.jpg?format=webp&v=1752903494&width=1600',
   },
   {
     id: 'banner-handloom',
@@ -106,7 +106,7 @@ export const HOME_BANNERS = [
     tags: 'textile',
     align: 'right',
     image:
-      'https://suta.in/cdn/shop/files/Women_Kurta_48b4326a-29bd-46bb-b479-1782742c8203.jpg?format=webp&v=1752903557&width=1600',
+      'https://sopiistore.com/cdn/shop/files/Women_Kurta_48b4326a-29bd-46bb-b479-1782742c8203.jpg?format=webp&v=1752903557&width=1600',
   },
 ];
 
@@ -122,7 +122,7 @@ export const HERO_SLIDES = [
     seed: 101,
     tags: 'saree',
     image:
-      'https://suta.in/cdn/shop/files/saree_9656048d-67a5-4c6b-93b9-5fe16f6ef69d.jpg?format=webp&v=1752903494&width=1800',
+      'https://sopiistore.com/cdn/shop/files/saree_9656048d-67a5-4c6b-93b9-5fe16f6ef69d.jpg?format=webp&v=1752903494&width=1800',
   },
   {
     id: 'hero-2',
@@ -134,7 +134,7 @@ export const HERO_SLIDES = [
     seed: 102,
     tags: 'silk',
     image:
-      'https://suta.in/cdn/shop/files/Blouse_246f00ce-a14f-48bc-ab1f-97bd4f2bd429.jpg?format=webp&v=1752903535&width=1800',
+      'https://sopiistore.com/cdn/shop/files/Blouse_246f00ce-a14f-48bc-ab1f-97bd4f2bd429.jpg?format=webp&v=1752903535&width=1800',
   },
   {
     id: 'hero-3',
@@ -146,6 +146,6 @@ export const HERO_SLIDES = [
     seed: 103,
     tags: 'cotton',
     image:
-      'https://suta.in/cdn/shop/files/Women_Kurta_48b4326a-29bd-46bb-b479-1782742c8203.jpg?format=webp&v=1752903557&width=1800',
+      'https://sopiistore.com/cdn/shop/files/Women_Kurta_48b4326a-29bd-46bb-b479-1782742c8203.jpg?format=webp&v=1752903557&width=1800',
   },
 ];
