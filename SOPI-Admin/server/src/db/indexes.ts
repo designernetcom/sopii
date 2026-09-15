@@ -40,6 +40,7 @@ type IndexKeys = mongoose.mongo.IndexSpecification;
 type IndexBuildOptions = mongoose.mongo.CreateIndexesOptions;
 import {
   AdminUserModel,
+  AnnouncementModel,
   CategoryModel,
   CollectionModel,
   CouponModel,
@@ -281,6 +282,12 @@ const definitions: Definition[] = [
     keys: { status: 1, endDate: 1 },
     name: 'ix_coupon_status_end',
     why: 'The live-coupon filter on the storefront feed.',
+  },
+  {
+    model: AnnouncementModel,
+    keys: { isActive: 1, priority: 1, createdAt: 1 },
+    name: 'ix_announcement_active_priority',
+    why: 'The storefront strip: live announcements, in display order, on every bootstrap.',
   },
   {
     model: NotificationModel,

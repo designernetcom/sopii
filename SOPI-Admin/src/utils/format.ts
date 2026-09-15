@@ -72,6 +72,15 @@ export function formatDateInput(value?: string | Date | null) {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
 }
 
+/** `<input type="datetime-local">` value, in the admin's own timezone. */
+export function formatDateTimeInput(value?: string | Date | null) {
+  const day = formatDateInput(value);
+  if (!day) return '';
+  const date = typeof value === 'string' ? new Date(value) : (value as Date);
+  const pad = (n: number) => String(n).padStart(2, '0');
+  return `${day}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
 export function formatRelativeTime(value?: string | Date | null) {
   if (!value) return '—';
   const date = typeof value === 'string' ? new Date(value) : value;

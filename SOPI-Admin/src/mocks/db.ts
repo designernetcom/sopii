@@ -12,18 +12,21 @@ import { products } from '@/data/products';
 import { customers } from '@/data/customers';
 import { orders } from '@/data/orders';
 import { collections, coupons, reviews, stockMovements } from '@/data/catalog';
-import { banners, homeSections, media, notifications } from '@/data/cms';
+import { announcements, banners, homeSections, media, notifications } from '@/data/cms';
+import { featuredCollectionDefaults } from '@/data/featuredCollection';
 import { adminUsers, roles } from '@/data/admin';
 import { settings } from '@/data/settings';
 
 import type {
   AdminUser,
+  Announcement,
   AppNotification,
   Banner,
   Category,
   Collection,
   Coupon,
   Customer,
+  FeaturedCollectionSection,
   HomeSection,
   MediaAsset,
   Order,
@@ -45,6 +48,8 @@ export interface MockDb {
   stockMovements: StockMovement[];
   banners: Banner[];
   homeSections: HomeSection[];
+  announcements: Announcement[];
+  featuredCollection: FeaturedCollectionSection;
   media: MediaAsset[];
   notifications: AppNotification[];
   adminUsers: AdminUser[];
@@ -63,6 +68,8 @@ export const db: MockDb = {
   stockMovements,
   banners,
   homeSections,
+  announcements,
+  featuredCollection: structuredClone(featuredCollectionDefaults),
   media,
   notifications,
   adminUsers,

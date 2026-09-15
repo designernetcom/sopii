@@ -788,7 +788,7 @@ export function GenericPageSkeleton() {
 function ChromeSkeleton({ children }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <Skeleton className="h-9 w-full" />
+      <Skeleton className="h-9 w-full lg:h-11" />
 
       <div className="border-b border-beige bg-cream">
         <div className="container-site flex items-center justify-between gap-6 py-5">

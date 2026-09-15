@@ -44,6 +44,7 @@ import { categoryRoutes, collectionRoutes } from './routes/taxonomy.js';
 import { customerRoutes, inventoryRoutes, orderRoutes } from './routes/commerce.js';
 import { couponRoutes, reviewRoutes } from './routes/marketing.js';
 import { homepageRoutes, mediaRoutes, notificationRoutes } from './routes/cms.js';
+import { footerRoutes } from './routes/footer.js';
 import { uploadRoutes } from './routes/uploads.js';
 import {
   adminUserRoutes,
@@ -339,6 +340,8 @@ export function createApp() {
   api.use('/reviews', invalidates(NAMESPACE.reviews, NAMESPACE.catalog), reviewRoutes);
 
   api.use('/homepage', invalidates(NAMESPACE.cms, NAMESPACE.catalog), homepageRoutes);
+  /* The footer rides in the storefront's bootstrap payload, like the strip. */
+  api.use('/footer', invalidates(NAMESPACE.cms, NAMESPACE.catalog), footerRoutes);
   api.use('/media', rateLimit(limits.upload), invalidates(NAMESPACE.cms), mediaRoutes);
   /* The panel's one door to Cloudinary. Kept apart from /media because it
      uploads bytes without writing a library record — a product gallery image

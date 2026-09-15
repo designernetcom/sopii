@@ -15,6 +15,7 @@ import { useDocumentTitle, useDragReorder, usePermissions } from '@/hooks';
 import {
   useCreateBannerMutation,
   useDeleteBannerMutation,
+  useGetAnnouncementsQuery,
   useGetBannersQuery,
   useGetHomeSectionsQuery,
   useReorderBannersMutation,
@@ -39,6 +40,8 @@ import { useToast } from '@/components/common/Toast';
 import { formatDate, formatDateInput } from '@/utils/format';
 import { readImageFile } from '@/utils/image';
 import type { Banner, HomeSection } from '@/types';
+import { AnnouncementsTab } from './AnnouncementsTab';
+import { FeaturedCollectionTab } from './FeaturedCollectionTab';
 
 interface BannerForm {
   id?: string;
@@ -850,12 +853,13 @@ export default function HomepagePage() {
   const [tab, setTab] = useState('banners');
   const { data: banners } = useGetBannersQuery();
   const { data: sections } = useGetHomeSectionsQuery();
+  const { data: announcements } = useGetAnnouncementsQuery();
 
   return (
     <div className="space-y-5">
       <PageHeader
         title="Homepage"
-        description="Control the hero carousel and the order of every block on the storefront home page."
+        description="Control the hero carousel, the announcement strip, the featured collection and the order of every block on the storefront home page."
         actions={
           <Button
             size="sm"
@@ -871,13 +875,18 @@ export default function HomepagePage() {
       <Tabs
         items={[
           { key: 'banners', label: 'Hero Banners', count: banners?.length },
+          { key: 'announcements', label: 'Announcements', count: announcements?.length },
+          { key: 'featured', label: 'Featured Collection' },
           { key: 'sections', label: 'Page Sections', count: sections?.length },
         ]}
         active={tab}
         onChange={setTab}
       />
 
-      {tab === 'banners' ? <BannersTab /> : <SectionsTab />}
+      {tab === 'banners' && <BannersTab />}
+      {tab === 'announcements' && <AnnouncementsTab />}
+      {tab === 'featured' && <FeaturedCollectionTab />}
+      {tab === 'sections' && <SectionsTab />}
     </div>
   );
 }

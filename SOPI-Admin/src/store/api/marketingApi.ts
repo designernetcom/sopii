@@ -1,6 +1,8 @@
 import type {
+  Announcement,
   Banner,
   Coupon,
+  FeaturedCollectionSection,
   HomeSection,
   ListParams,
   MediaAsset,
@@ -188,6 +190,43 @@ export const marketingApi = baseApi.injectEndpoints({
       invalidatesTags: [{ type: 'HomeSection', id: 'LIST' }],
     }),
 
+    getAnnouncements: builder.query<Announcement[], void>({
+      query: () => '/homepage/announcements',
+      providesTags: [{ type: 'Announcement', id: 'LIST' }],
+    }),
+
+    createAnnouncement: builder.mutation<Announcement, Partial<Announcement>>({
+      query: (body) => ({ url: '/homepage/announcements', method: 'POST', body }),
+      invalidatesTags: [{ type: 'Announcement', id: 'LIST' }],
+    }),
+
+    updateAnnouncement: builder.mutation<
+      Announcement,
+      { id: string; body: Partial<Announcement> }
+    >({
+      query: ({ id, body }) => ({ url: `/homepage/announcements/${id}`, method: 'PUT', body }),
+      invalidatesTags: [{ type: 'Announcement', id: 'LIST' }],
+    }),
+
+    deleteAnnouncement: builder.mutation<{ id: string }, string>({
+      query: (id) => ({ url: `/homepage/announcements/${id}`, method: 'DELETE' }),
+      invalidatesTags: [{ type: 'Announcement', id: 'LIST' }],
+    }),
+
+    /* The home page's split image/copy section — one document, saved whole or in part. */
+    getFeaturedCollection: builder.query<FeaturedCollectionSection, void>({
+      query: () => '/homepage/featured-collection',
+      providesTags: ['FeaturedCollection'],
+    }),
+
+    updateFeaturedCollection: builder.mutation<
+      FeaturedCollectionSection,
+      Partial<FeaturedCollectionSection>
+    >({
+      query: (body) => ({ url: '/homepage/featured-collection', method: 'PUT', body }),
+      invalidatesTags: ['FeaturedCollection'],
+    }),
+
     /* --------------------------------- uploads ------------------------------- */
 
     /*
@@ -282,6 +321,12 @@ export const {
   useGetHomeSectionsQuery,
   useUpdateHomeSectionMutation,
   useReorderHomeSectionsMutation,
+  useGetAnnouncementsQuery,
+  useCreateAnnouncementMutation,
+  useUpdateAnnouncementMutation,
+  useDeleteAnnouncementMutation,
+  useGetFeaturedCollectionQuery,
+  useUpdateFeaturedCollectionMutation,
   useGetUploadStatusQuery,
   useUploadImagesMutation,
   useDiscardUploadMutation,

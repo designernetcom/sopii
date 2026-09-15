@@ -110,6 +110,28 @@ export const HOME_BANNERS = [
   },
 ];
 
+/**
+ * The home page's Featured Collection section, for the offline fallback only.
+ * A live store's copy comes from the panel (Homepage → Featured Collection);
+ * this is in the API's public shape so it goes through the same adapter.
+ */
+export const FEATURED_COLLECTION = {
+  enabled: true,
+  eyebrow: 'SOPII Signature',
+  heading: 'Timeless silhouettes.\nContemporary craftsmanship.',
+  description:
+    'Our Signature pieces are the ones we refine season after season rather than replace. Each begins on a loom with a weaver we know by name, and ends in a cut designed for how women actually move through an Indian day.',
+  image:
+    'https://res.cloudinary.com/w2brnx9l/image/upload/v1789307325/sopii/banners/ban_0002/yy3olw4ut5n3wmxiwazb.jpg',
+  imageAlt: 'A model wearing a piece from the SOPII Signature collection',
+  pillars: [
+    { id: 'pil_0001', title: 'Woven by hand', text: 'Eleven weaving clusters across five states.' },
+    { id: 'pil_0002', title: 'Natural fibres', text: 'Cotton, silk and linen. Nothing synthetic.' },
+    { id: 'pil_0003', title: 'Made to last', text: 'Cut and finished to survive a decade of wear.' },
+  ],
+  cta: { text: 'Explore Signature', link: '/collections/sopii-signature' },
+};
+
 /** Hero carousel slides. */
 export const HERO_SLIDES = [
   {

@@ -1,4 +1,4 @@
-import type { Banner, MediaAsset } from '@/types';
+import type { Announcement, Banner, FeaturedCollectionSection, MediaAsset } from '@/types';
 import { db, nextId, nowIso } from '../db';
 import { applyPatch, badRequest, list, matchesSearch, notFound, num, paginate, route, sortBy } from '../utils';
 
@@ -72,7 +72,100 @@ export const homepageRoutes = [
     });
     return [...db.homeSections].sort((a, b) => a.sortOrder - b.sortOrder);
   }),
+
+  /* A lighter mirror of `server/src/lib/announcements.ts`: enough validation
+     that the panel's error paths can be exercised without the API running. */
+
+  route('GET', '/homepage/announcements', () => sortedAnnouncements()),
+
+  route('POST', '/homepage/announcements', ({ body }) => {
+    const payload = body as Partial<Announcement>;
+    const message = payload.message?.replace(/\s+/g, ' ').trim();
+    if (!message) badRequest('Announcement message is required');
+    checkWindow(payload.startDate ?? null, payload.endDate ?? null);
+
+    const now = nowIso();
+    const announcement: Announcement = {
+      id: nextId('ann'),
+      message,
+      isActive: payload.isActive ?? false,
+      priority: payload.priority ?? 0,
+      startDate: payload.startDate ?? null,
+      endDate: payload.endDate ?? null,
+      createdAt: now,
+      updatedAt: now,
+    };
+    db.announcements.push(announcement);
+    return announcement;
+  }),
+
+  route('PUT', '/homepage/announcements/:id', ({ params, body }) => {
+    const announcement = db.announcements.find((a) => a.id === params.id);
+    if (!announcement) notFound('Announcement');
+
+    const patch = { ...(body as Partial<Announcement>) };
+    if (patch.message !== undefined) {
+      patch.message = patch.message.replace(/\s+/g, ' ').trim();
+      if (!patch.message) badRequest('Announcement message is required');
+    }
+    checkWindow(
+      patch.startDate !== undefined ? patch.startDate : announcement.startDate,
+      patch.endDate !== undefined ? patch.endDate : announcement.endDate,
+    );
+
+    applyPatch(announcement, { ...patch, updatedAt: nowIso() });
+    return announcement;
+  }),
+
+  route('DELETE', '/homepage/announcements/:id', ({ params }) => {
+    const index = db.announcements.findIndex((a) => a.id === params.id);
+    if (index === -1) notFound('Announcement');
+    const [removed] = db.announcements.splice(index, 1);
+    return { id: removed.id };
+  }),
+
+  /* A lighter mirror of `server/src/lib/featuredCollection.ts`: the cross-field
+     rules the form's error paths depend on, not every limit. */
+
+  route('GET', '/homepage/featured-collection', () => db.featuredCollection),
+
+  route('PUT', '/homepage/featured-collection', ({ body }) => {
+    const patch = { ...(body as Partial<FeaturedCollectionSection>) };
+    delete patch.updatedAt;
+    const merged = { ...db.featuredCollection, ...patch };
+
+    if (merged.enabled && !merged.heading?.trim()) badRequest('Add a heading, or hide the section');
+    if (merged.enabled && merged.image && !merged.imageAlt?.trim()) {
+      badRequest('Describe the image in the alt text — screen readers announce it');
+    }
+    if (merged.ctaEnabled && (!merged.ctaText?.trim() || !merged.ctaLink?.trim())) {
+      badRequest('A visible button needs both its text and its link');
+    }
+    if (merged.ctaLink && !/^\/(?![/\\])/.test(merged.ctaLink) && !/^https?:\/\/[^\s/]+/i.test(merged.ctaLink)) {
+      badRequest('Button link must start with / or http(s)://');
+    }
+    if (merged.pillars.some((pillar) => !pillar.title?.trim())) badRequest('Every pillar needs a title');
+
+    db.featuredCollection = {
+      ...merged,
+      pillars: merged.pillars.map((pillar) => ({ ...pillar, id: pillar.id || nextId('pil') })),
+      updatedAt: nowIso(),
+    };
+    return db.featuredCollection;
+  }),
 ];
+
+function sortedAnnouncements() {
+  return [...db.announcements].sort(
+    (a, b) => a.priority - b.priority || (a.createdAt ?? '').localeCompare(b.createdAt ?? ''),
+  );
+}
+
+function checkWindow(start: string | null, end: string | null) {
+  if (start && end && new Date(end) <= new Date(start)) {
+    badRequest('End date must be after the start date');
+  }
+}
 
 /* ---------------------------------- media ---------------------------------- */
 

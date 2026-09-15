@@ -16,7 +16,7 @@ import { products } from '@/data/products';
 import { customers } from '@/data/customers';
 import { orders } from '@/data/orders';
 import { collections, coupons, reviews, stockMovements } from '@/data/catalog';
-import { banners, homeSections, media, notifications } from '@/data/cms';
+import { announcements, banners, homeSections, media, notifications } from '@/data/cms';
 import { adminUsers, roles } from '@/data/admin';
 import { settings } from '@/data/settings';
 
@@ -24,6 +24,7 @@ import { env } from '../env.js';
 import { connectDb, disconnectDb } from './connect.js';
 import {
   AdminUserModel,
+  AnnouncementModel,
   BannerModel,
   CategoryModel,
   CollectionModel,
@@ -91,6 +92,7 @@ export async function seedDatabase({ fresh = false }: { fresh?: boolean } = {}) 
       { ordered: false },
     ),
     SettingsModel.create({ _id: SETTINGS_ID, ...settings }),
+    AnnouncementModel.insertMany(toDocs(announcements), { ordered: false }),
   ]);
 
   const counts = {
@@ -108,6 +110,7 @@ export async function seedDatabase({ fresh = false }: { fresh?: boolean } = {}) 
     notifications: written[11].length,
     roles: written[12].length,
     adminUsers: written[13].length,
+    announcements: written[15].length,
   };
 
   console.log('[seed] inserted:', counts);

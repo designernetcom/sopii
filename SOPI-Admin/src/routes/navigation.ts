@@ -8,6 +8,7 @@ import {
   Search,
   MessageSquareText,
   Package,
+  PanelBottom,
   Settings,
   ShieldCheck,
   ShoppingCart,
@@ -112,6 +113,9 @@ export const NAVIGATION: NavSection[] = [
     label: 'Storefront',
     items: [
       { label: 'Homepage', to: '/admin/homepage', icon: LayoutTemplate, resource: 'homepage' },
+      /* Governed by the `homepage` permission, like the announcement strip:
+         both are site-wide storefront content rather than catalogue data. */
+      { label: 'Footer', to: '/admin/footer', icon: PanelBottom, resource: 'homepage' },
       { label: 'SEO Management', to: '/admin/seo', icon: Search, resource: 'seo' },
       { label: 'Media Library', to: '/admin/media', icon: Image, resource: 'media' },
     ],
@@ -156,6 +160,7 @@ const CRUMB_LABELS: Record<string, string> = {
   coupons: 'Coupons',
   reviews: 'Reviews',
   homepage: 'Homepage',
+  footer: 'Footer',
   media: 'Media Library',
   seo: 'SEO Management',
   reports: 'Reports',

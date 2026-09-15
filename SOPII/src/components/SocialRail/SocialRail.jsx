@@ -1,15 +1,16 @@
-import { Facebook, Instagram, Sparkle, Youtube } from 'lucide-react';
-import { SOCIAL_LINKS } from '../../data/site';
-import { useSiteSettings } from '../../context/CatalogContext';
+import { useFooter, useSiteSettings } from '../../context/CatalogContext';
 import { WhatsAppMark } from '../auth/WhatsAppMark';
+import { socialIcon } from '../Footer/footerIcons';
 
 /**
  * The social rail — a fixed tab of icons pinned to the left edge.
  *
- * Reads `SOCIAL_LINKS`, the same list the footer renders, so a channel is
- * added or dropped in one place and both surfaces follow. The icon map is
- * local for the same reason the footer's is: `icon` is a lucide export name,
- * and an unknown one degrades to `Sparkle` rather than throwing.
+ * Reads the footer's social channels (admin panel → Storefront → Footer →
+ * Social links), so a channel is added or dropped in one place and both
+ * surfaces follow. It shows them even while the footer's own social column is
+ * hidden; switching a single channel off removes it from both. `icon` is a
+ * platform name mapped in `Footer/footerIcons.js`, and an unknown one degrades
+ * to a globe rather than throwing.
  *
  * Desktop only, from `lg`. Below that the viewport is narrow enough that a
  * 44px rail eats into the product grid, and a phone already carries the fixed
@@ -44,8 +45,6 @@ import { WhatsAppMark } from '../auth/WhatsAppMark';
  * any of it.
  */
 
-const ICONS = { Instagram, Facebook, Sparkle, Youtube };
-
 /** Plum, for a channel that carries no brand colour of its own. */
 const FALLBACK = '#540000';
 
@@ -65,8 +64,9 @@ const waNumber = (phone) => String(phone ?? '').replace(/\D/g, '');
 export function SocialRail() {
   const { brand: BRAND } = useSiteSettings();
   const whatsapp = waNumber(BRAND?.whatsapp ?? BRAND?.phone);
+  const socialLinks = useFooter()?.socialLinks ?? [];
 
-  if (!SOCIAL_LINKS.length && !whatsapp) return null;
+  if (!socialLinks.length && !whatsapp) return null;
 
   return (
     <nav
@@ -85,14 +85,14 @@ export function SocialRail() {
         carried by the one tile that actually paints a background instead.
       */}
       <ul className="flex flex-col rounded-r-lg border border-l-0 border-beige bg-cream/90 shadow-[6px_0_24px_-12px_rgba(45,31,43,0.35)] backdrop-blur-sm">
-        {SOCIAL_LINKS.map((social, index) => {
-          const Icon = ICONS[social.icon] || Sparkle;
+        {socialLinks.map((social, index) => {
+          const Icon = socialIcon(social.icon);
           const colour = social.color || FALLBACK;
 
           return (
-            <li key={social.name} className="border-beige border-t first:border-t-0">
+            <li key={social.id} className="border-beige border-t first:border-t-0">
               <a
-                href={social.href}
+                href={social.url}
                 target="_blank"
                 rel="noreferrer noopener"
                 className="rail-link animate-slide-in-left"
@@ -102,7 +102,7 @@ export function SocialRail() {
                     screen reader announces "Instagram, link" once, not twice. */}
                 <Icon size={18} strokeWidth={1.6} aria-hidden="true" />
                 <span className="rail-pill" style={{ backgroundColor: colour }}>
-                  {social.name}
+                  {social.label}
                 </span>
               </a>
             </li>
@@ -121,7 +121,7 @@ export function SocialRail() {
               style={{
                 '--rail': '#FFFDFC',
                 backgroundColor: WHATSAPP_GREEN,
-                animationDelay: `${SOCIAL_LINKS.length * STAGGER_MS}ms`,
+                animationDelay: `${socialLinks.length * STAGGER_MS}ms`,
               }}
             >
               {/*

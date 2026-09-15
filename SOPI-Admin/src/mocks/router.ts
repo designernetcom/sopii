@@ -4,6 +4,7 @@ import { categoryRoutes, collectionRoutes } from './handlers/taxonomy';
 import { customerRoutes, inventoryRoutes, orderRoutes } from './handlers/commerce';
 import { couponRoutes, reviewRoutes } from './handlers/marketing';
 import { homepageRoutes, mediaRoutes, notificationRoutes } from './handlers/cms';
+import { footerRoutes } from './handlers/footer';
 import { seoRoutes } from './handlers/seo';
 import {
   adminRoutes,
@@ -26,6 +27,7 @@ const routes: Route[] = [
   ...couponRoutes,
   ...reviewRoutes,
   ...homepageRoutes,
+  ...footerRoutes,
   ...mediaRoutes,
   ...notificationRoutes,
   ...seoRoutes,

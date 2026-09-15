@@ -19,6 +19,8 @@
  * shopper is already waiting through.
  */
 
+import { adaptFeaturedCollection, adaptFooter } from '../services/adapters';
+
 let cached = null;
 
 /**
@@ -47,6 +49,15 @@ export async function loadFallbackCatalogue() {
     collections: collections.COLLECTIONS,
     heroSlides: collections.HERO_SLIDES,
     editorialBanners: collections.HOME_BANNERS,
+    /* Announcements come only from the panel. With the API unreachable there
+       is no way to know which offers are really running, so the strip hides. */
+    announcements: [],
+    /* Editorial copy rather than a claim about the store, so — like the hero
+       slides — the bundled version stands in and the home page has no hole. */
+    featuredCollection: adaptFeaturedCollection(collections.FEATURED_COLLECTION),
+    /* Policies, contact details and navigation rather than claims about a
+       running offer, so the bundled footer stands in. */
+    footer: adaptFooter(site.FOOTER),
     testimonials: reviews.TESTIMONIALS,
     coupons: site.COUPONS,
     homeSections: site.HOME_SECTIONS,

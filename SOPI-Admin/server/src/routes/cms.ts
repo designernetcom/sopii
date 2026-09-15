@@ -1,12 +1,22 @@
 import { Router } from 'express';
 import type { Banner, HomeSection, MediaAsset } from '@/types';
 import {
+  AnnouncementModel,
   BannerModel,
+  FeaturedCollectionModel,
   HomeSectionModel,
   MediaModel,
   NotificationModel,
   ProductModel,
 } from '../db/models.js';
+import { ANNOUNCEMENT_SORT, parseAnnouncementInput } from '../lib/announcements.js';
+import {
+  FEATURED_COLLECTION_ID,
+  FEATURED_COLLECTION_UPLOAD_OWNER,
+  ownsFeaturedAsset,
+  parseFeaturedCollectionInput,
+  resolveFeaturedCollection,
+} from '../lib/featuredCollection.js';
 import { requirePermission } from '../lib/auth.js';
 import {
   CloudinaryError,
@@ -262,6 +272,141 @@ homepageRoutes.put(
   }),
 );
 
+/*
+ * Announcements — the scrolling strip above the storefront header.
+ *
+ * Under `/homepage` so they inherit what that mount already carries: the admin
+ * auth gate, the `homepage` permission set, and the cache invalidation that
+ * makes a save show up on the shop without waiting out a TTL.
+ */
+
+homepageRoutes.get(
+  '/announcements',
+  requirePermission('homepage'),
+  ah(async (_req, res) => {
+    const announcements = await AnnouncementModel.find().sort(ANNOUNCEMENT_SORT).lean();
+    res.json(serializeMany(announcements));
+  }),
+);
+
+homepageRoutes.post(
+  '/announcements',
+  requirePermission('homepage', 'create'),
+  ah(async (req, res) => {
+    const input = parseAnnouncementInput(req.body);
+    const now = nowIso();
+
+    const created = await AnnouncementModel.create({
+      _id: nextId('ann'),
+      isActive: false,
+      priority: 0,
+      startDate: null,
+      endDate: null,
+      ...input,
+      createdAt: now,
+      updatedAt: now,
+    });
+
+    res.status(201).json(created.toJSON());
+  }),
+);
+
+homepageRoutes.put(
+  '/announcements/:id',
+  requirePermission('homepage', 'edit'),
+  ah(async (req, res) => {
+    const existing = await AnnouncementModel.findById(req.params.id).lean();
+    if (!existing) notFound('Announcement');
+
+    const input = parseAnnouncementInput(req.body, { partial: true, existing });
+
+    const updated = await AnnouncementModel.findByIdAndUpdate(
+      req.params.id,
+      /* `updatedAt` always moves, even on a toggle: the storefront's change
+         token reads it, so an edit that keeps the live count the same is
+         still noticed. */
+      { $set: { ...input, updatedAt: nowIso() } },
+      { new: true, runValidators: true },
+    );
+    if (!updated) notFound('Announcement');
+
+    res.json(updated.toJSON());
+  }),
+);
+
+homepageRoutes.delete(
+  '/announcements/:id',
+  requirePermission('homepage', 'delete'),
+  ah(async (req, res) => {
+    const removed = await AnnouncementModel.findByIdAndDelete(req.params.id).lean();
+    if (!removed) notFound('Announcement');
+    res.json({ id: removed._id });
+  }),
+);
+
+/*
+ * Featured Collection — the split image/copy section on the storefront home
+ * page. One document, saved whole or in part.
+ *
+ * Under `/homepage` for the same reasons as announcements: the auth gate, the
+ * `homepage` permissions, and the cache invalidation that puts a save on the
+ * shop without waiting out a TTL.
+ */
+
+const featuredFolder = () => bannerFolder(FEATURED_COLLECTION_UPLOAD_OWNER);
+
+async function loadFeaturedCollection() {
+  return resolveFeaturedCollection(
+    await FeaturedCollectionModel.findById(FEATURED_COLLECTION_ID).lean(),
+  );
+}
+
+homepageRoutes.get(
+  '/featured-collection',
+  requirePermission('homepage'),
+  ah(async (_req, res) => {
+    res.json(await loadFeaturedCollection());
+  }),
+);
+
+homepageRoutes.put(
+  '/featured-collection',
+  requirePermission('homepage', 'edit'),
+  ah(async (req, res) => {
+    const existing = await loadFeaturedCollection();
+    const input = parseFeaturedCollectionInput(req.body, existing, {
+      makeId: () => nextId('pil'),
+    });
+
+    /* The whole merged section is written, not just the patch: a store saving
+       for the first time has no document, and its defaults are what it saw. */
+    const { updatedAt: _previous, ...base } = existing;
+    const saved = await FeaturedCollectionModel.findByIdAndUpdate(
+      FEATURED_COLLECTION_ID,
+      { $set: { ...base, ...input, updatedAt: nowIso() } },
+      { new: true, upsert: true, runValidators: true, setDefaultsOnInsert: true },
+    ).lean();
+
+    const section = resolveFeaturedCollection(saved);
+
+    /* A replaced or removed upload is released — but only one filed under this
+       section's own folder. A photograph picked from the library, or the
+       banner image the seed copy points at, belongs to someone else. */
+    const released = existing.imagePublicId;
+    if (
+      released &&
+      released !== section.imagePublicId &&
+      ownsFeaturedAsset(released, featuredFolder())
+    ) {
+      void destroyImages([released]).catch((error) => {
+        console.warn('[featured-collection] could not clean up the replaced image:', error?.message ?? error);
+      });
+    }
+
+    res.json(section);
+  }),
+);
+
 /* ---------------------------------- media ----------------------------------- */
 
 export const mediaRoutes = Router();
@@ -299,10 +444,13 @@ async function reapLibrary(publicIds: (string | null | undefined)[]) {
   const ids = [...new Set(publicIds.filter((id): id is string => Boolean(id)))];
   if (!ids.length) return;
 
-  const [inProducts, inBanners] = await Promise.all([
+  const [inProducts, featured, inBanners] = await Promise.all([
     ProductModel.distinct('images.publicId', { 'images.publicId': { $in: ids } }).catch(
       () => [] as string[],
     ),
+    FeaturedCollectionModel.findById(FEATURED_COLLECTION_ID, { imagePublicId: 1 })
+      .lean()
+      .catch(() => null),
     BannerModel.find(
       {
         $or: [
@@ -317,6 +465,7 @@ async function reapLibrary(publicIds: (string | null | undefined)[]) {
   ]);
 
   const used = new Set<string>(inProducts as string[]);
+  if (featured?.imagePublicId) used.add(featured.imagePublicId);
   for (const banner of inBanners as BannerPayload[]) {
     for (const { publicId } of BANNER_SLOTS) {
       const value = banner[publicId];

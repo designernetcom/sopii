@@ -9,10 +9,13 @@ import {
 } from 'react';
 import { fetchBootstrap, fetchProductPage, fetchVersion } from '../services/api';
 import {
+  adaptAnnouncements,
   adaptCategories,
   adaptCollections,
   adaptCoupons,
   adaptEditorialBanner,
+  adaptFeaturedCollection,
+  adaptFooter,
   adaptHeroSlide,
   adaptHomeSections,
   adaptProducts,
@@ -39,9 +42,10 @@ import {
  * store. It now lives behind a dynamic import in `data/fallback.js` and is
  * fetched only on the branch that needs it. `data/site` stays static because
  * `BRAND` is the shop's own name and logo, rendered in the header on first
- * paint by `SeoContext` as well as this one.
+ * paint by `SeoContext` as well as this one — and `FOOTER`, the small offline
+ * copy of the footer, which the footer used to import from there directly.
  */
-import { BRAND } from '../data/site';
+import { BRAND, FOOTER } from '../data/site';
 import { RouteSkeleton } from '../components/ui/PageSkeletons';
 import { useToast } from './ToastContext';
 
@@ -86,6 +90,9 @@ const PAGE_SIZE = 60;
 /** How many live banners head the page as hero slides; the rest go inline. */
 const HERO_SLIDE_COUNT = 3;
 
+/** The bundled footer, for when there is no feed to read one from. */
+const BUNDLED_FOOTER = adaptFooter(FOOTER);
+
 /** The shape every consumer reads, before anything has loaded. */
 const EMPTY = {
   products: [],
@@ -94,6 +101,11 @@ const EMPTY = {
   collections: [],
   heroSlides: [],
   editorialBanners: [],
+  announcements: [],
+  /** The home page's split image/copy section; `null` renders nothing. */
+  featuredCollection: null,
+  /** `{ sections, socialLinks }` — see `adaptFooter`. */
+  footer: BUNDLED_FOOTER,
   testimonials: [],
   coupons: [],
   homeSections: [],
@@ -137,6 +149,21 @@ function adaptBootstrap(payload, editorial) {
     editorialBanners: editorialBanners.length
       ? editorialBanners.map(adaptEditorialBanner)
       : (editorial?.editorialBanners ?? []),
+
+    /* No bundled stand-in: an announcement is a statement about the live
+       store — an offer, a shipping rule — and the demo copy saying one the
+       store never made is worse than an empty strip. */
+    announcements: adaptAnnouncements(payload.announcements),
+
+    /* Always sent by the API — its defaults when the panel has never saved the
+       section — so `null` here means hidden in the panel, or an API too old to
+       know the section. Either way the home page leaves it out. */
+    featuredCollection: adaptFeaturedCollection(payload.featuredCollection),
+
+    /* The API sends its built-in footer until the panel saves one, so a missing
+       key means an API that predates the footer screen — the bundled copy
+       stands in. An empty section list is the panel's answer and is kept. */
+    footer: adaptFooter(payload.footer) ?? BUNDLED_FOOTER,
 
     testimonials,
     coupons,
@@ -400,6 +427,9 @@ export const useProducts = () => useCatalog().products;
 
 /** Store identity and shipping rules, as configured in the admin panel. */
 export const useSiteSettings = () => useCatalog().settings;
+
+/** The footer's sections and the social channels, as arranged in the admin panel. */
+export const useFooter = () => useCatalog().footer;
 
 /**
  * Holds the first paint until the catalogue is in — rendering the shop against

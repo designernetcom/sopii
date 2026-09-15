@@ -429,6 +429,131 @@ export interface HomeSection {
   itemLimit?: number;
 }
 
+/** One numbered point under the Featured Collection copy. Its number is its position. */
+export interface FeaturedCollectionPillar {
+  id: ID;
+  title: string;
+  text: string;
+  enabled: boolean;
+}
+
+/**
+ * The home page's split image/copy section ("SOPII Signature").
+ *
+ * A single document: the store has one of these. Where it sits on the page is
+ * still the `collections` home section's business — this is only what it says.
+ *
+ * `heading` keeps its line breaks; each line renders as its own line on the
+ * storefront. `pillars` are stored in display order. The CTA fields are flat,
+ * like a banner's `buttonText`/`buttonLink`.
+ */
+export interface FeaturedCollectionSection {
+  enabled: boolean;
+  eyebrow: string;
+  heading: string;
+  description: string;
+  image: string;
+  /** Cloudinary handle for `image`; see `ProductImage.publicId`. */
+  imagePublicId: string;
+  imageAlt: string;
+  pillars: FeaturedCollectionPillar[];
+  ctaEnabled: boolean;
+  ctaText: string;
+  ctaLink: string;
+  updatedAt?: ISODate;
+}
+
+/**
+ * One message in the storefront's scrolling strip above the header.
+ *
+ * `priority` is the display order — lower runs first. `startDate`/`endDate`
+ * are an optional window; `null` means "no limit on that side", so a cleared
+ * date survives the API's strip-undefined patch handling.
+ */
+export interface Announcement {
+  id: ID;
+  message: string;
+  isActive: boolean;
+  priority: number;
+  startDate: ISODate | null;
+  endDate: ISODate | null;
+  createdAt?: ISODate;
+  updatedAt?: ISODate;
+}
+
+/* ---------------------------------- footer --------------------------------- */
+
+/**
+ * The kinds of block the storefront footer is built from.
+ *
+ * Where each one renders is fixed by its type, not stored: `brand`, `links`,
+ * `text` and `social` are the columns across the top; `utility`, `copyright`
+ * and `payments` share the tinted bar under them; `legal` and `credit` are
+ * the full-width lines at the very bottom. Order within each area follows the
+ * section list.
+ */
+export type FooterSectionType =
+  | 'brand'
+  | 'links'
+  | 'text'
+  | 'social'
+  | 'utility'
+  | 'copyright'
+  | 'payments'
+  | 'legal'
+  | 'credit';
+
+/**
+ * One entry inside a footer section — a link, a social channel or a payment
+ * badge. Which fields matter depends on the section: a payment badge is just
+ * a `label`, a social channel also carries an `icon` and a `color`.
+ */
+export interface FooterItem {
+  id: ID;
+  label: string;
+  /** A site path (`/pages/faq`), an absolute http(s) URL, `mailto:` or `tel:`. */
+  url: string;
+  /** A name from the footer icon list; empty for none. */
+  icon: string;
+  /** `#rrggbb`, social channels only — the rail's hover colour. */
+  color: string;
+  enabled: boolean;
+  openInNewTab: boolean;
+}
+
+/** Which of the store's contact details the brand column shows. */
+export interface FooterBrandDisplay {
+  logo: boolean;
+  address: boolean;
+  email: boolean;
+  phone: boolean;
+}
+
+export interface FooterSection {
+  id: ID;
+  type: FooterSectionType;
+  /** Column heading, or the admin's own label for blocks that show none. */
+  title: string;
+  enabled: boolean;
+  /** Body copy: the brand blurb, a text column, the copyright line, the credit's lead-in. */
+  content: string;
+  items: FooterItem[];
+  /** Brand sections only. */
+  display?: FooterBrandDisplay;
+}
+
+/**
+ * The whole footer, in display order.
+ *
+ * `updatedAt` is `null` until the first save: until then the API serves the
+ * built-in default footer, so a store that has never opened this screen still
+ * shows its policies and contact details.
+ */
+export interface FooterConfig {
+  sections: FooterSection[];
+  updatedAt: ISODate | null;
+}
+
 /* ----------------------------------- media --------------------------------- */
 
 export type MediaFolder = 'products' | 'banners' | 'categories' | 'collections' | 'blog' | 'other';

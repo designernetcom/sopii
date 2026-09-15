@@ -88,14 +88,14 @@ SOPII/
     ├── index.css               Tailwind layers + design-system classes
     │
     ├── components/
-    │   ├── AnnouncementBar/    Rotating strip above the header
+    │   ├── AnnouncementBar/    Scrolling strip above the header (copy from the panel)
     │   ├── Auth/               AuthShell + AuthField (login/register/reset)
     │   ├── CartDrawer/         Right-side bag with free-shipping meter
     │   ├── CategoryCard/       Category tile + the home CategoryGrid
     │   ├── CollectionBanner/   Asymmetric editorial banner
-    │   ├── FeaturedCollection/ "SOPII Signature" split section
+    │   ├── FeaturedCollection/ "SOPII Signature" split section (copy from the panel)
     │   ├── Filters/            FilterPanel — shared by sidebar and drawer
-    │   ├── Footer/             Multi-column footer
+    │   ├── Footer/             Multi-column footer (content from the panel)
     │   ├── Header/             Sticky header, nav, utility icons
     │   ├── Hero/               Full-bleed carousel with autoplay
     │   ├── InstagramSection/   Social grid with hover overlay
@@ -152,7 +152,7 @@ SOPII/
     │   ├── collections.js      Demo collections, hero slides, banners
     │   ├── reviews.js          Testimonials + per-product review generator
     │   ├── navigation.js       Fallback nav + mobile tabs
-    │   ├── site.js             Announcements, trust, footer, occasions
+    │   ├── site.js             Trust, occasions, offline footer fallback
     │   └── pages.js            Content-page copy
     │
     ├── hooks/
@@ -425,8 +425,26 @@ What is not:
   the shop shows one price per product and the API charges that price, so nobody is billed
   more than they were shown. Showing per-variant prices is the change to make first if
   that matters.
-- **Announcements, occasion tiles, the Instagram grid and the content pages** stay in
-  `src/data/` — the panel has no field for them, so their imagery is still generated.
+- **Occasion tiles, the Instagram grid and the content pages** stay in `src/data/` — the
+  panel has no field for them, so their imagery is still generated.
+- **Announcements** are managed in the panel (Homepage → Announcements) and arrive in the
+  `/bootstrap` feed. With the API unreachable the strip is hidden rather than showing copy
+  the store may no longer stand behind. A store seeded before announcements existed can
+  load the starting set with `npm run seed:announcements` in `SOPI-Admin/server`.
+- **The Featured Collection section** (the "SOPII Signature" split block) is managed in the
+  panel (Homepage → Featured Collection): on/off, eyebrow, heading, description, image and
+  alt text, pillars (add, edit, delete, reorder, show/hide) and the button. It arrives in
+  `/bootstrap` as `featuredCollection`; where it sits on the page is still the Curated
+  Collections entry in Page Sections. A store that has never saved it is served the
+  original copy, so nothing changes until someone edits it. With the API unreachable the
+  bundled copy in `src/data/collections.js` stands in.
+- **The footer** is managed in the panel (Storefront → Footer): columns, links, social
+  channels, quick links, payment badges, policies, copyright and credit — added, edited,
+  deleted, reordered and switched on or off there, and delivered in `/bootstrap`. The
+  store's address, email and phone still come from Settings → Store. A store that has
+  never saved its footer is served the built-in default, so no seeding is needed. The
+  social channels also drive the desktop social rail. `FOOTER` in `src/data/site.js` is
+  used only when there is no feed (API unreachable, or an API older than the screen).
 - **Product ratings** are the panel's stored `rating` and `reviewCount`; the review list
   and star breakdown on a product page are its approved reviews, fetched per product.
   Reviews can be read but not written from the shop.

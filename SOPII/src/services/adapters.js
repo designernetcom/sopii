@@ -513,6 +513,179 @@ export function adaptEditorialBanner(banner, index) {
   };
 }
 
+/* ---------------------------- featured collection ---------------------------- */
+
+const trimmed = (value) => (typeof value === 'string' ? value.replace(/\s+/g, ' ').trim() : '');
+
+/**
+ * Where a CTA may point: a path on the shop, rendered as a router link, or an
+ * absolute http(s) URL. The API refuses anything else on save; this is the
+ * backstop for a payload that did not come through it.
+ */
+function ctaTarget(link) {
+  const value = typeof link === 'string' ? link.trim() : '';
+  if (/^\/(?![/\\])/.test(value)) return { to: value, external: false };
+  if (/^https?:\/\/[^\s/]+/i.test(value)) return { to: value, external: true };
+  return null;
+}
+
+/**
+ * The home page's split image/copy section, as edited in the panel's
+ * Homepage → Featured Collection tab.
+ *
+ * `null` means "render nothing": the section is switched off, the payload is
+ * missing or malformed, or there is no heading to anchor it. Nothing here
+ * throws — a half-filled section renders with what it has, pillars numbered by
+ * their position so hiding one never leaves a gap in the count.
+ */
+export function adaptFeaturedCollection(raw) {
+  if (!raw || typeof raw !== 'object' || raw.enabled !== true) return null;
+
+  const headingLines = (typeof raw.heading === 'string' ? raw.heading : '')
+    .split(/\r?\n/)
+    .map(trimmed)
+    .filter(Boolean);
+  if (!headingLines.length) return null;
+
+  const eyebrow = trimmed(raw.eyebrow);
+  const seed = 240 + (hash(`${eyebrow}${headingLines[0]}`) % 200);
+  const placeholder = photo({ seed, tags: imageTagFor(`${eyebrow} ${headingLines.join(' ')}`), w: 900, h: 1125 });
+
+  const seen = new Set();
+  const pillars = (Array.isArray(raw.pillars) ? raw.pillars : [])
+    .filter((pillar) => pillar && pillar.enabled !== false && trimmed(pillar.title))
+    .map((pillar, index) => {
+      let id = String(pillar.id ?? '') || `pillar-${index}`;
+      if (seen.has(id)) id = `${id}-${index}`;
+      seen.add(id);
+      return {
+        id,
+        number: String(index + 1).padStart(2, '0'),
+        title: trimmed(pillar.title),
+        text: trimmed(pillar.text),
+      };
+    });
+
+  const target = raw.cta ? ctaTarget(raw.cta.link) : null;
+  const label = trimmed(raw.cta?.text);
+
+  return {
+    eyebrow,
+    headingLines,
+    description: trimmed(raw.description),
+    image: cdnMedia(raw.image, 'detail') ?? placeholder,
+    /* Shown if the photograph fails to load, so a broken URL degrades to
+       on-brand art rather than a generic swatch. */
+    fallbackImage: placeholder,
+    imageAlt: trimmed(raw.imageAlt) || headingLines.join(' '),
+    pillars,
+    cta: target && label ? { label, ...target } : null,
+  };
+}
+
+/* ------------------------------- announcements ------------------------------- */
+
+/**
+ * The strip above the header, as arranged in the panel's Homepage screen.
+ *
+ * The API has already dropped anything switched off or outside its schedule
+ * and sorted by priority; the sort is repeated here only so the strip can
+ * never depend on a payload's order. A blank message is dropped rather than
+ * rendered as an empty gap in a moving line.
+ */
+export function adaptAnnouncements(raw = []) {
+  return raw
+    .filter((announcement) => announcement?.id && String(announcement.message ?? '').trim())
+    .sort((a, b) => (Number(a.priority) || 0) - (Number(b.priority) || 0))
+    .map((announcement) => ({
+      id: announcement.id,
+      message: String(announcement.message).trim(),
+    }));
+}
+
+/* ---------------------------------- footer ----------------------------------- */
+
+const FOOTER_SECTION_TYPES = new Set([
+  'brand',
+  'links',
+  'text',
+  'social',
+  'utility',
+  'copyright',
+  'payments',
+  'legal',
+  'credit',
+]);
+
+/**
+ * Whether a footer link is safe to put in an `href`: a site path, http(s),
+ * `mailto:` or `tel:`. The API refuses anything else on save; this repeats the
+ * check because the value lands on every page, and a hand-edited document or a
+ * compromised feed should not be one `javascript:` away from running script.
+ * Same rule as `isSafeFooterUrl` in the panel's `src/data/footer.ts`.
+ */
+export function isSafeFooterHref(url) {
+  const value = String(url ?? '').trim();
+  if (!value) return false;
+  if (value.startsWith('/')) return !value.startsWith('//') && !value.startsWith('/\\');
+  return /^(https?:\/\/[^\s/]+|mailto:[^\s]+|tel:\+?[0-9][0-9\s()-]*)/i.test(value);
+}
+
+function adaptFooterItems(raw = []) {
+  return (Array.isArray(raw) ? raw : [])
+    .filter((item) => item?.id && String(item.label ?? '').trim())
+    .filter((item) => !item.url || isSafeFooterHref(item.url))
+    .map((item) => {
+      const url = String(item.url ?? '').trim();
+      return {
+        id: item.id,
+        label: String(item.label).trim(),
+        url,
+        icon: item.icon || '',
+        color: item.color || '',
+        /* Only site paths go through the router; everything else is a plain
+           anchor, which is also what a new-tab link needs to be. */
+        internal: url.startsWith('/'),
+        newTab: Boolean(item.openInNewTab),
+      };
+    });
+}
+
+/**
+ * The footer, as arranged in the panel's Footer screen.
+ *
+ * The API sends switched-on sections in display order with their switched-on
+ * items, plus the social channels on their own for the desktop rail. `null`
+ * means the payload carried no footer at all (an API older than the feature),
+ * which the caller answers with the bundled footer; an empty `sections` list is
+ * a real answer — the admin hid everything — and is kept.
+ */
+export function adaptFooter(raw) {
+  if (!raw || !Array.isArray(raw.sections)) return null;
+
+  return {
+    sections: raw.sections
+      .filter((section) => section?.id && FOOTER_SECTION_TYPES.has(section.type))
+      .map((section) => ({
+        id: section.id,
+        type: section.type,
+        title: String(section.title ?? '').trim(),
+        content: String(section.content ?? '').trim(),
+        items: adaptFooterItems(section.items),
+        display:
+          section.type === 'brand'
+            ? {
+                logo: section.display?.logo !== false,
+                address: section.display?.address !== false,
+                email: section.display?.email !== false,
+                phone: section.display?.phone !== false,
+              }
+            : undefined,
+      })),
+    socialLinks: adaptFooterItems(raw.socialLinks),
+  };
+}
+
 /* ------------------------------- testimonials -------------------------------- */
 
 export function adaptTestimonials(raw = []) {

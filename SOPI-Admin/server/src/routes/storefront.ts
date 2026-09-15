@@ -33,14 +33,29 @@
 import { Router } from 'express';
 import type { PipelineStage } from 'mongoose';
 import {
+  AnnouncementModel,
   BannerModel,
   CategoryModel,
   CollectionModel,
   CouponModel,
+  FeaturedCollectionModel,
+  FOOTER_ID,
+  FooterModel,
   HomeSectionModel,
   ProductModel,
   ReviewModel,
 } from '../db/models.js';
+import {
+  FEATURED_COLLECTION_ID,
+  publicFeaturedCollection,
+  resolveFeaturedCollection,
+} from '../lib/featuredCollection.js';
+import {
+  ANNOUNCEMENT_PUBLIC_LIMIT,
+  ANNOUNCEMENT_SORT,
+  liveAnnouncementFilter,
+} from '../lib/announcements.js';
+import { DEFAULT_FOOTER_SECTIONS, publicFooter } from '../lib/footer.js';
 import { isDataUri, withTransform, type ImagePreset } from '../lib/cloudinary.js';
 import { enabledGateways, liveZones, loadSettings } from '../lib/settings.js';
 import {
@@ -252,6 +267,16 @@ const BANNER_FIELDS = {
   sortOrder: 1,
 } as const;
 
+/**
+ * The strip renders the words, in order. Whether it is switched on and its
+ * schedule are decided by the filter before anything is sent, so neither is
+ * the shop's business.
+ */
+const ANNOUNCEMENT_FIELDS = {
+  message: 1,
+  priority: 1,
+} as const;
+
 const REVIEW_FIELDS = {
   productId: 1,
   productName: 1,
@@ -384,6 +409,34 @@ const loadCollections = () =>
 
 const loadBanners = () =>
   BannerModel.find(liveBannerFilter(), BANNER_FIELDS).sort({ sortOrder: 1 }).lean();
+
+const loadAnnouncements = () =>
+  AnnouncementModel.find(liveAnnouncementFilter(), ANNOUNCEMENT_FIELDS)
+    .sort(ANNOUNCEMENT_SORT)
+    .limit(ANNOUNCEMENT_PUBLIC_LIMIT)
+    .lean();
+
+/**
+ * The footer as the shop renders it. A store that has never saved one gets the
+ * built-in default rather than an empty footer — see `FooterModel`.
+ */
+const loadFooter = async () => {
+  const doc = await FooterModel.findById(FOOTER_ID, { sections: 1 }).lean();
+  return publicFooter(doc?.sections ?? DEFAULT_FOOTER_SECTIONS);
+};
+
+/**
+ * The Featured Collection section as the shop renders it. A store that has
+ * never saved it gets the copy the shop used to hard-code. The photograph is
+ * sized for a half-page 4:5 slot — the `detail` preset's box.
+ */
+const loadFeaturedCollection = async () =>
+  publicFeaturedCollection(
+    resolveFeaturedCollection(
+      await FeaturedCollectionModel.findById(FEATURED_COLLECTION_ID).lean(),
+    ),
+    (url) => withTransform(url, 'detail'),
+  );
 
 const loadCoupons = () =>
   CouponModel.find(liveCouponFilter(), {
@@ -522,19 +575,25 @@ storefrontRoutes.get(
           categories,
           collections,
           banners,
+          announcements,
           coupons,
           testimonials,
           homeSections,
           settings,
+          footer,
+          featuredCollection,
         ] = await Promise.all([
           loadProducts(limit),
           loadCategories(),
           loadCollections(),
           loadBanners(),
+          loadAnnouncements(),
           loadCoupons(),
           loadTestimonials(12),
           loadHomeSections(),
           loadPublicSettings(),
+          loadFooter(),
+          loadFeaturedCollection(),
         ]);
 
         return {
@@ -542,10 +601,19 @@ storefrontRoutes.get(
           categories: serializeMany(categories).map(publicCategory),
           collections: serializeMany(collections).map(publicCollection),
           banners: serializeMany(banners).map(publicBanner),
+          /* In the first-paint payload rather than a request of its own: the
+             strip sits above the header on every page, so fetching it
+             separately would be one more round trip on every cold load. */
+          announcements: serializeMany(announcements),
           coupons: serializeMany(coupons),
           testimonials: serializeMany(testimonials),
           homeSections: serializeMany(homeSections),
           settings,
+          /* On every page, so it belongs in the first-paint payload too. */
+          footer,
+          /* The home page's split image/copy section. `{ enabled: false }`
+             when hidden in the panel; where it sits is `homeSections`' call. */
+          featuredCollection,
           /*
            * The shop pages through `/products` for anything past this, and it
            * needs to know whether there *is* anything past it.
@@ -593,7 +661,18 @@ storefrontRoutes.get(
       cacheKey(NAMESPACE.catalog, 'version'),
       TTL.version,
       async () => {
-        const [products, categories, collections, banners, sections, latest] = await Promise.all([
+        const [
+          products,
+          categories,
+          collections,
+          banners,
+          sections,
+          latest,
+          announcements,
+          latestAnnouncement,
+          footer,
+          featuredCollection,
+        ] = await Promise.all([
           ProductModel.countDocuments(publishedProducts),
           CategoryModel.countDocuments({ status: 'active' }),
           CollectionModel.countDocuments({ status: 'active' }),
@@ -602,6 +681,18 @@ storefrontRoutes.get(
           ProductModel.findOne(publishedProducts, { updatedAt: 1 })
             .sort({ updatedAt: -1 })
             .lean(),
+          /*
+           * The live count catches a schedule opening or closing; the newest
+           * `updatedAt` catches a reworded or toggled message, which a count
+           * alone would miss. A deletion of a live one moves the count.
+           */
+          AnnouncementModel.countDocuments(liveAnnouncementFilter()),
+          AnnouncementModel.findOne({}, { updatedAt: 1 }).sort({ updatedAt: -1 }).lean(),
+          /* Every footer write bumps the revision; a reset deletes the document,
+             which empties both parts of this token. */
+          FooterModel.findById(FOOTER_ID, { revision: 1, updatedAt: 1 }).lean(),
+          /* Every save moves `updatedAt`, a toggle included. */
+          FeaturedCollectionModel.findById(FEATURED_COLLECTION_ID, { updatedAt: 1 }).lean(),
         ]);
 
         return {
@@ -612,12 +703,17 @@ storefrontRoutes.get(
             banners,
             sections,
             latest?.updatedAt ?? '',
+            announcements,
+            latestAnnouncement?.updatedAt ?? '',
+            `${footer?.revision ?? ''}@${footer?.updatedAt ?? ''}`,
+            featuredCollection?.updatedAt ?? '',
           ].join(':'),
           products,
           categories,
           collections,
           banners,
           sections,
+          announcements,
         };
       },
     );
@@ -993,6 +1089,21 @@ storefrontRoutes.get(
   ah(async (_req, res) => {
     const payload = await cached(cacheKey(NAMESPACE.cms, 'banners'), TTL.catalog, async () =>
       serializeMany(await loadBanners()).map(publicBanner),
+    );
+    publicCache(res, { browserSeconds: 60, cdnSeconds: 300, staleSeconds: 600 });
+    res.json(payload);
+  }),
+);
+
+/**
+ * The live announcements on their own, for a consumer that does not want the
+ * whole bootstrap. The shop itself reads them from `/bootstrap`.
+ */
+storefrontRoutes.get(
+  '/announcements',
+  ah(async (_req, res) => {
+    const payload = await cached(cacheKey(NAMESPACE.cms, 'announcements'), TTL.catalog, async () =>
+      serializeMany(await loadAnnouncements()),
     );
     publicCache(res, { browserSeconds: 60, cdnSeconds: 300, staleSeconds: 600 });
     res.json(payload);

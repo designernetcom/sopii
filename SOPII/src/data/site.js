@@ -1,7 +1,9 @@
 /**
  * Site-wide copy and configuration.
- * Edit this file to change the announcement bar, trust badges, social grid
- * and footer without touching a single component.
+ * Edit this file to change the trust badges and occasion grid without touching
+ * a single component. The announcement bar and the footer are not edited here:
+ * they are managed in the admin panel (Homepage → Announcements, and
+ * Storefront → Footer); `FOOTER` below is only the offline fallback.
  */
 
 export const BRAND = {
@@ -20,14 +22,6 @@ export const BRAND = {
   whatsapp: '+91 8105292614',
   address: 'Studio 4, Kala Ghoda, Mumbai 400001',
 };
-
-/** Rotating strip above the header. Add or remove items freely. */
-export const ANNOUNCEMENTS = [
-  'FREE SHIPPING ABOVE ₹19999',
-  'NO RETURNS',
-  // 'COD AVAILABLE ACROSS INDIA',
-  'HANDCRAFTED IN INDIA',
-];
 
 export const FREE_SHIPPING_THRESHOLD = 1999;
 export const SHIPPING_FEE = 99;
@@ -155,93 +149,143 @@ export const INSTAGRAM_POSTS = [
 ];
 
 /**
- * `color` is the channel's own brand hue, used by the home page's social rail
- * for the hover state and the label pill — nowhere else. The footer ignores it
- * and stays oxblood, because a column of four different brand colours reads as a
- * ransom note; a single icon lighting up under the cursor does not.
- */
-export const SOCIAL_LINKS = [
-  { name: 'Instagram', icon: 'Instagram', href: 'https://www.instagram.com/sopiiofficial?stkn=MXQ1cXdodTc5d3M4&utm_source=qr', color: '#E1306C' },
-  // { name: 'Facebook', icon: 'Facebook', href: 'https://facebook.com', color: '#1877F2' },
-  { name: 'YouTube', icon: 'Youtube', href: 'https://youtube.com', color: '#FF0000' },
-];
-
-export const FOOTER_COLUMNS = [
-  {
-    title: 'Shop',
-    links: [
-      { label: 'New Arrivals', to: '/new-arrivals' },
-      { label: 'Sarees', to: '/sarees' },
-      // { label: 'Blouses', to: '/blouses' },
-      // { label: 'Dresses', to: '/shop?category=Dresses' },
-      { label: 'Bestsellers', to: '/bestsellers' },
-      { label: 'Sale', to: '/sale' },
-    ],
-  },
-  {
-    title: 'Customer Care',
-    links: [
-      { label: 'Contact Us', to: '/pages/contact' },
-      { label: 'Shipping', to: '/pages/shipping' },
-      { label: 'Returns', to: '/pages/returns' },
-      { label: 'FAQ', to: '/pages/faq' },
-      { label: 'Track Order', to: '/orders' },
-      // { label: 'Size Guide', to: '/pages/size-guide' },
-    ],
-  },
-  {
-    title: 'About SOPII',
-    links: [
-      { label: 'Our Story', to: '/pages/our-story' },
-      // { label: 'Our Craft', to: '/pages/our-craft' },
-      // { label: 'Sustainability', to: '/pages/sustainability' },
-      // { label: 'Careers', to: '/pages/careers' },
-    ],
-  },
-];
-
-/**
- * Quick links in the footer's bottom bar — the utility row that sits under the
- * link columns. `icon` is a lucide-react export name; the footer maps it, so an
- * unknown name degrades to a default rather than throwing.
- */
-export const FOOTER_UTILITY_LINKS = [
-  { label: 'Track Order', to: '/orders', icon: 'Package' },
-  { label: 'Help Centre', to: '/pages/faq', icon: 'LifeBuoy' },
-  // { label: 'Our Craft', to: '/pages/our-craft', icon: 'Scissors' },
-  // { label: 'Careers', to: '/pages/careers', icon: 'Briefcase' },
-];
-
-/**
- * The "we accept" chips in the footer.
+ * The footer — a fallback only.
  *
- * Deliberately text, not card artwork: six card logos is six more image
- * requests on every page for a row nobody scrolls to, and the marks are
- * trademarked besides. What a customer needs from this row is the reassurance
- * that their method is taken, which the words carry on their own.
+ * The live footer (columns, links, social channels, payment badges, policies,
+ * copyright and credit) is managed in the admin panel under Storefront →
+ * Footer and arrives in the `/bootstrap` feed. This copy, in the feed's own
+ * shape, is used only when there is no feed to read: the demo catalogue with
+ * the API unreachable, or an API older than the footer screen. It matches the
+ * panel's built-in default, which is what a store that has never edited its
+ * footer is served.
  *
- * This is a display list. What checkout actually offers comes from the panel
- * (see `PAYMENT_METHODS` above for the fallback) — keep the two in step.
+ * `socialLinks` also drives the desktop social rail. A channel's `color` is
+ * its own brand hue, used by the rail for the hover state and label pill only;
+ * the footer ignores it and stays oxblood, because a column of four brand
+ * colours reads as a ransom note.
  */
-export const PAYMENT_BADGES = ['UPI', 'Visa', 'Mastercard', 'RuPay', 'Net Banking', 'COD'];
+const footerLink = (id, label, url, extra = {}) => ({
+  id,
+  label,
+  url,
+  icon: '',
+  color: '',
+  openInNewTab: false,
+  ...extra,
+});
 
-export const LEGAL_LINKS = [
-  { label: 'Privacy Policy', to: '/pages/privacy-policy' },
-  { label: 'Terms & Conditions', to: '/pages/terms' },
-  { label: 'Shipping Policy', to: '/pages/shipping' },
-  { label: 'Return Policy', to: '/pages/returns' },
-  { label: 'Refund Policy', to: '/pages/refund' },
+const FOOTER_SOCIAL = [
+  footerLink(
+    'fitm_social_instagram',
+    'Instagram',
+    'https://www.instagram.com/sopiiofficial?stkn=MXQ1cXdodTc5d3M4&utm_source=qr',
+    { icon: 'Instagram', color: '#E1306C', openInNewTab: true },
+  ),
+  footerLink('fitm_social_youtube', 'YouTube', 'https://youtube.com', {
+    icon: 'Youtube',
+    color: '#FF0000',
+    openInNewTab: true,
+  }),
 ];
 
-/**
- * The build credit, on the last line of the footer.
- *
- * Here rather than inline in the component for the same reason every other
- * string on this page is: the footer renders the site's constants, and a
- * company name that changes — an agency, a legal suffix, a rebrand — should be
- * a one-line edit in this file and not a hunt through JSX.
- */
-export const BUILT_BY = 'Netcom Business Solutions Pvt Ltd';
+export const FOOTER = {
+  sections: [
+    {
+      id: 'fsec_brand',
+      type: 'brand',
+      title: 'Brand & contact',
+      content:
+        'Contemporary Indian Fashion. Handwoven textiles and considered silhouettes, made with craftspeople across India.',
+      items: [],
+      display: { logo: true, address: true, email: true, phone: true },
+    },
+    {
+      id: 'fsec_shop',
+      type: 'links',
+      title: 'Shop',
+      content: '',
+      items: [
+        footerLink('fitm_shop_new', 'New Arrivals', '/new-arrivals'),
+        footerLink('fitm_shop_sarees', 'Sarees', '/sarees'),
+        footerLink('fitm_shop_best', 'Bestsellers', '/bestsellers'),
+        footerLink('fitm_shop_sale', 'Sale', '/sale'),
+      ],
+    },
+    {
+      id: 'fsec_care',
+      type: 'links',
+      title: 'Customer Care',
+      content: '',
+      items: [
+        footerLink('fitm_care_contact', 'Contact Us', '/pages/contact'),
+        footerLink('fitm_care_shipping', 'Shipping', '/pages/shipping'),
+        footerLink('fitm_care_returns', 'Returns', '/pages/returns'),
+        footerLink('fitm_care_faq', 'FAQ', '/pages/faq'),
+        footerLink('fitm_care_track', 'Track Order', '/orders'),
+      ],
+    },
+    {
+      id: 'fsec_about',
+      type: 'links',
+      title: 'About SOPII',
+      content: '',
+      items: [footerLink('fitm_about_story', 'Our Story', '/pages/our-story')],
+    },
+    {
+      id: 'fsec_utility',
+      type: 'utility',
+      title: 'Quick links',
+      content: '',
+      items: [
+        footerLink('fitm_util_track', 'Track Order', '/orders', { icon: 'Package' }),
+        footerLink('fitm_util_help', 'Help Centre', '/pages/faq', { icon: 'LifeBuoy' }),
+      ],
+    },
+    {
+      id: 'fsec_copyright',
+      type: 'copyright',
+      title: 'Copyright',
+      content: '© {year} {store}. All Rights Reserved.',
+      items: [],
+    },
+    {
+      /* Text, not card artwork: six logos is six image requests on every page
+         for a row nobody scrolls to, and the words carry the reassurance. */
+      id: 'fsec_payments',
+      type: 'payments',
+      title: 'We Accept',
+      content: '',
+      items: ['UPI', 'Visa', 'Mastercard', 'RuPay', 'Net Banking', 'COD'].map((label) =>
+        footerLink(`fitm_pay_${label.toLowerCase().replace(/\s+/g, '_')}`, label, ''),
+      ),
+    },
+    {
+      id: 'fsec_legal',
+      type: 'legal',
+      title: 'Policies',
+      content: '',
+      items: [
+        footerLink('fitm_legal_privacy', 'Privacy Policy', '/pages/privacy-policy'),
+        footerLink('fitm_legal_terms', 'Terms & Conditions', '/pages/terms'),
+        footerLink('fitm_legal_shipping', 'Shipping Policy', '/pages/shipping'),
+        footerLink('fitm_legal_returns', 'Return Policy', '/pages/returns'),
+        footerLink('fitm_legal_refund', 'Refund Policy', '/pages/refund'),
+      ],
+    },
+    {
+      id: 'fsec_credit',
+      type: 'credit',
+      title: 'Credit',
+      content: 'Designed and Developed by',
+      items: [
+        footerLink('fitm_credit_netcom', 'Netcom Business Solutions Pvt Ltd', 'https://netcom-india.com/', {
+          openInNewTab: true,
+        }),
+      ],
+    },
+  ],
+  socialLinks: FOOTER_SOCIAL,
+};
 
 /**
  * Fallback coupons — used only when the API cannot be reached. Live codes come

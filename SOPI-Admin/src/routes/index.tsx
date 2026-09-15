@@ -29,6 +29,7 @@ const CustomerDetailPage = lazy(() => import('@/pages/customers/CustomerDetailPa
 const CouponsPage = lazy(() => import('@/pages/coupons/CouponsPage'));
 const ReviewsPage = lazy(() => import('@/pages/reviews/ReviewsPage'));
 const HomepagePage = lazy(() => import('@/pages/homepage/HomepagePage'));
+const FooterPage = lazy(() => import('@/pages/footer/FooterPage'));
 const MediaPage = lazy(() => import('@/pages/media/MediaPage'));
 const SeoManagementPage = lazy(() => import('@/pages/seo/SeoManagementPage'));
 const ReportsPage = lazy(() => import('@/pages/reports/ReportsPage'));
@@ -229,6 +230,14 @@ export function AppRoutes() {
           element={
             <Guarded resource="homepage">
               <HomepagePage />
+            </Guarded>
+          }
+        />
+        <Route
+          path="footer"
+          element={
+            <Guarded resource="homepage">
+              <FooterPage />
             </Guarded>
           }
         />

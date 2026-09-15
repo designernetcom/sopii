@@ -482,9 +482,10 @@
    * Social rail (home page, lg and up).
    *
    * The hover colour is a custom property rather than a class per channel:
-   * `SOCIAL_LINKS` carries the hex, the component sets `--rail` inline, and
-   * this file never has to learn the names of the networks. Adding a fifth
-   * channel is a line of data, not a line of CSS.
+   * each social channel carries its hex (set in the admin panel's Footer
+   * screen), the component sets `--rail` inline, and this file never has to
+   * learn the names of the networks. Adding a fifth channel is a form entry,
+   * not a line of CSS.
    *
    * The pill's transform is written out rather than composed from Tailwind's
    * translate utilities. Those write into `--tw-translate-*` and are then
@@ -746,6 +747,109 @@
     }
   }
 
+  /*
+   * The announcement strip — see AnnouncementBar.jsx for how the loop is built.
+   *
+   * Everything that moves is a transform on one element, so the browser can
+   * hand it to the compositor: no layout, no paint, and it keeps running
+   * smoothly on a phone while the main thread is busy rendering the page.
+   * `contain` stops the strip's contents from ever invalidating the header
+   * beneath it.
+   */
+  .announcement-bar {
+    display: flex;
+    align-items: center;
+    min-height: theme('spacing.9');
+    overflow: hidden;
+    contain: layout paint;
+  }
+
+  @media (min-width: 1024px) {
+    .announcement-bar {
+      min-height: theme('spacing.11');
+    }
+  }
+
+  .announcement-bar__track {
+    display: flex;
+    flex-shrink: 0;
+    width: max-content;
+    animation: announcement-scroll 30s linear infinite;
+    will-change: transform;
+  }
+
+  .announcement-bar__sequence {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+  }
+
+  /* Spacing lives on the separator, not in a flex `gap`: a gap would sit
+     between items but not after the last one, so the join between two copies
+     of the sequence would be narrower than every other join. */
+  .announcement-bar__item {
+    display: inline-flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .announcement-bar__separator {
+    margin-inline: theme('spacing.6');
+  }
+
+  @media (min-width: 1024px) {
+    .announcement-bar__separator {
+      margin-inline: theme('spacing.12');
+    }
+  }
+
+  /* Pausing lets a shopper finish reading an offer. Only where hover is real:
+     on touch screens a tap leaves `:hover` stuck on, freezing the strip. */
+  @media (hover: hover) {
+    .announcement-bar:hover .announcement-bar__track {
+      animation-play-state: paused;
+    }
+  }
+
+  /*
+   * Reduced motion: no scrolling at all. One copy, centred, allowed to wrap —
+   * the bar grows a line rather than cutting off copy that would otherwise
+   * only ever have been reachable by watching it go past.
+   */
+  @media (prefers-reduced-motion: reduce) {
+    .announcement-bar {
+      justify-content: center;
+      padding: theme('spacing.2') theme('spacing.4');
+    }
+
+    .announcement-bar__track {
+      width: auto;
+      flex-shrink: 1;
+      animation: none;
+      will-change: auto;
+    }
+
+    .announcement-bar__track > [data-clone] {
+      display: none;
+    }
+
+    .announcement-bar__sequence {
+      flex-shrink: 1;
+      flex-wrap: wrap;
+      justify-content: center;
+      row-gap: theme('spacing.1');
+    }
+
+    .announcement-bar__item {
+      white-space: normal;
+      text-align: center;
+    }
+
+    .announcement-bar__item:last-child .announcement-bar__separator {
+      display: none;
+    }
+  }
+
   /* Screen-reader-only text that becomes visible when focused (skip link) */
   .skip-link {
     @apply sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100]
@@ -795,6 +899,18 @@
   /* Staggered reveal helper used by scroll-in animations */
   .stagger > * {
     animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+}
+
+/* The announcement strip's loop: from the second half in view to the first,
+   which is the same picture — so the restart has nothing to jump between.
+   Left to right. `translate3d` keeps it on its own compositor layer. */
+@keyframes announcement-scroll {
+  from {
+    transform: translate3d(-50%, 0, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
   }
 }
 

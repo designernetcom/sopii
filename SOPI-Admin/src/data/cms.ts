@@ -1,4 +1,11 @@
-import type { AppNotification, Banner, HomeSection, MediaAsset, MediaFolder } from '@/types';
+import type {
+  Announcement,
+  AppNotification,
+  Banner,
+  HomeSection,
+  MediaAsset,
+  MediaFolder,
+} from '@/types';
 import { chance, daysAgo, daysAhead, pick, randInt, uid } from './seed';
 import { products } from './products';
 import { orders } from './orders';
@@ -76,6 +83,58 @@ export const homeSections: HomeSection[] = [
   { id: 'sec_reviews', key: 'reviews', title: 'Customer Reviews', subtitle: 'Social proof carousel', enabled: true, sortOrder: 6, itemLimit: 6 },
   { id: 'sec_instagram', key: 'instagram', title: 'Instagram Feed', subtitle: '@sopii.studio', enabled: true, sortOrder: 7, itemLimit: 8 },
   { id: 'sec_newsletter', key: 'newsletter', title: 'Newsletter Signup', subtitle: 'Email capture block', enabled: true, sortOrder: 8 },
+];
+
+/* ------------------------------- announcements ----------------------------- */
+
+/*
+ * The storefront strip's starting copy — the messages the shop front used to
+ * hard-code, so a freshly seeded store looks the way it did before the strip
+ * became editable. Fixed timestamps rather than `daysAgo()`: the order of
+ * equal priorities falls back to `createdAt`, and it should not shuffle
+ * between seeds.
+ */
+export const announcements: Announcement[] = [
+  {
+    id: 'ann_0001',
+    message: 'Free shipping above ₹19999',
+    isActive: true,
+    priority: 1,
+    startDate: null,
+    endDate: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'ann_0002',
+    message: 'No returns',
+    isActive: true,
+    priority: 2,
+    startDate: null,
+    endDate: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'ann_0003',
+    message: 'COD available across India',
+    isActive: false,
+    priority: 3,
+    startDate: null,
+    endDate: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+  },
+  {
+    id: 'ann_0004',
+    message: 'Handcrafted in India',
+    isActive: true,
+    priority: 4,
+    startDate: null,
+    endDate: null,
+    createdAt: '2026-01-01T00:00:00.000Z',
+    updatedAt: '2026-01-01T00:00:00.000Z',
+  },
 ];
 
 /* ---------------------------------- media ---------------------------------- */

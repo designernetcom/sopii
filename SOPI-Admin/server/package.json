@@ -10,6 +10,7 @@
     "seed": "tsx src/db/seed.ts",
     "seed:fresh": "tsx src/db/seed.ts --fresh",
     "seed:banner-images": "tsx src/db/seed-banner-images.ts",
+    "seed:announcements": "tsx src/db/seed-announcements.ts",
     "relink:images": "tsx src/db/relink-product-images.ts",
     "prune:blob-images": "tsx src/db/prune-blob-images.ts",
     "prune:dead-media": "tsx src/db/prune-dead-media.ts",

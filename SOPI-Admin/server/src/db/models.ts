@@ -15,12 +15,15 @@
 import { Schema, model, type Model } from 'mongoose';
 import type {
   AdminUser,
+  Announcement,
   AppNotification,
   Banner,
   Category,
   Collection,
   Coupon,
   Customer,
+  FeaturedCollectionSection,
+  FooterSection,
   HomeSection,
   MediaAsset,
   Order,
@@ -460,6 +463,114 @@ const homeSectionSchema = new Schema(
   baseOptions,
 );
 
+/*
+ * The storefront's announcement strip. Kept apart from banners rather than
+ * folded into them: a banner is imagery with a call to action, an announcement
+ * is one line of copy, and sharing a collection would mean every reader of
+ * either filtering out the other.
+ *
+ * Validation of what a request may write lives in `lib/announcements.ts`; the
+ * schema limits here are the backstop for anything that bypasses it.
+ */
+const announcementSchema = new Schema(
+  {
+    _id: String,
+    message: { type: String, required: true, trim: true, maxlength: 200 },
+    isActive: { type: Boolean, default: false },
+    priority: { type: Number, default: 0, min: 0 },
+    startDate: { type: String, default: null },
+    endDate: { type: String, default: null },
+    createdAt: String,
+    updatedAt: String,
+  },
+  baseOptions,
+);
+
+/*
+ * The storefront footer — one document holding every section in order.
+ *
+ * One document rather than a collection of sections, for two reasons. The
+ * absence of the document carries meaning: "never edited, serve the default
+ * footer", which is what lets a store upgraded in place keep its policy links
+ * instead of rendering an empty footer from an empty collection. And a reorder
+ * or a delete is then a single atomic write, guarded by `revision`, rather than
+ * a bulk update that a concurrent edit can interleave with.
+ *
+ * Validation lives in `lib/footer.ts`; the limits here are the backstop.
+ */
+const footerItemSchema = sub({
+  id: { type: String, required: true },
+  label: { type: String, default: '', maxlength: 60 },
+  url: { type: String, default: '', maxlength: 500 },
+  icon: { type: String, default: '' },
+  color: { type: String, default: '' },
+  enabled: { type: Boolean, default: true },
+  openInNewTab: { type: Boolean, default: false },
+});
+
+const footerSectionSchema = sub({
+  id: { type: String, required: true },
+  type: {
+    type: String,
+    required: true,
+    enum: ['brand', 'links', 'text', 'social', 'utility', 'copyright', 'payments', 'legal', 'credit'],
+  },
+  title: { type: String, default: '', maxlength: 60 },
+  enabled: { type: Boolean, default: true },
+  content: { type: String, default: '', maxlength: 1000 },
+  items: { type: [footerItemSchema], default: [] },
+  display: {
+    type: sub({ logo: Boolean, address: Boolean, email: Boolean, phone: Boolean }),
+    default: undefined,
+  },
+});
+
+const footerSchema = new Schema(
+  {
+    _id: String,
+    sections: { type: [footerSectionSchema], default: [] },
+    /** Bumped on every write; the optimistic-concurrency guard. */
+    revision: { type: Number, default: 0 },
+    updatedAt: String,
+  },
+  baseOptions,
+);
+
+/*
+ * The home page's Featured Collection section — one document, `_id` fixed to
+ * `FEATURED_COLLECTION_ID`. Validation of what a request may write lives in
+ * `lib/featuredCollection.ts`; the limits here are the backstop.
+ */
+const featuredCollectionPillarSchema = sub({
+  id: { type: String, required: true },
+  title: { type: String, required: true, trim: true, maxlength: 80 },
+  text: { type: String, default: '', trim: true, maxlength: 240 },
+  enabled: { type: Boolean, default: true },
+});
+
+const featuredCollectionSchema = new Schema(
+  {
+    _id: String,
+    enabled: { type: Boolean, default: true },
+    eyebrow: { type: String, default: '', maxlength: 60 },
+    heading: { type: String, default: '', maxlength: 160 },
+    description: { type: String, default: '', maxlength: 1000 },
+    image: { type: String, default: '' },
+    imagePublicId: { type: String, default: '' },
+    imageAlt: { type: String, default: '', maxlength: 200 },
+    pillars: {
+      type: [featuredCollectionPillarSchema],
+      default: [],
+      validate: [(value: unknown[]) => value.length <= 8, 'At most 8 pillars'],
+    },
+    ctaEnabled: { type: Boolean, default: false },
+    ctaText: { type: String, default: '', maxlength: 40 },
+    ctaLink: { type: String, default: '', maxlength: 500 },
+    updatedAt: String,
+  },
+  baseOptions,
+);
+
 const mediaSchema = new Schema(
   {
     _id: String,
@@ -659,6 +770,19 @@ export const ReviewModel = model<Doc<Review>>('Review', reviewSchema);
 export const StockMovementModel = model<Doc<StockMovement>>('StockMovement', stockMovementSchema);
 export const BannerModel = model<Doc<Banner>>('Banner', bannerSchema);
 export const HomeSectionModel = model<Doc<HomeSection>>('HomeSection', homeSectionSchema);
+export const AnnouncementModel = model<Doc<Announcement>>('Announcement', announcementSchema);
+export type FooterDoc = { _id: string; sections: FooterSection[]; revision: number; updatedAt: string };
+export const FooterModel: Model<FooterDoc> = model<FooterDoc>('Footer', footerSchema);
+/** The footer collection only ever holds this one document. */
+export const FOOTER_ID = 'site_footer';
+
+export type FeaturedCollectionDoc = FeaturedCollectionSection & { _id: string };
+/** One document, `_id` = `FEATURED_COLLECTION_ID` in `lib/featuredCollection.ts`. */
+export const FeaturedCollectionModel: Model<FeaturedCollectionDoc> = model<FeaturedCollectionDoc>(
+  'FeaturedCollection',
+  featuredCollectionSchema,
+  'featured_collection',
+);
 export const MediaModel = model<Doc<MediaAsset>>('Media', mediaSchema);
 export const NotificationModel = model<Doc<AppNotification>>('Notification', notificationSchema);
 export const RoleModel = model<Doc<Role>>('Role', roleSchema);
@@ -706,6 +830,9 @@ export const allModels: Model<any>[] = [
   StockMovementModel,
   BannerModel,
   HomeSectionModel,
+  AnnouncementModel,
+  FooterModel,
+  FeaturedCollectionModel,
   MediaModel,
   NotificationModel,
   RoleModel,
